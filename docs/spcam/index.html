@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>camera</title>
+<style>
+body{
+    font-family: Arial;
+}
+
+dt{
+    margin-top: 3em;
+    margin-bottom: 0;
+}
+
+dt:first-child{
+    margin-top: 0;
+}
+
+dd{
+    margin-top: 0;
+    padding: 0.5em;
+    background: #CCC;
+    border-radius: 8px;
+    margin: 1em 0;
+}
+
+
+
+#getCameraWrapper{
+    display: none;
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100vh;
+    background: rgba(255,255,255,0.8);
+    backdrop-filter: blur(12px);
+}
+
+#getCameraWrapper.show{
+    display: block;
+}
+
+#getCameraWrapperCore{
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate( -50%, -50% );
+}
+
+#getCameraWrapperCore canvas{
+    width: 60px;
+    height: auto;
+    margin-right: 1px;
+}
+
+#doItCapture{
+    width: 100%;
+    height: 64px !important;
+}
+
+video#videoCore{
+    width: 100%;
+    height: auto;
+}
+
+</style>
+</head>
+<body>
+
+<h1>Camera</h1>
+
+<dl>
+<dt>写真</dt>
+<dd>
+<div>
+<label><span>背面カメラ</span>
+<input type="file" capture="environment" accept="image/*"></label>
+</div>
+<div>
+<label><span>インカメラ</span>
+<input type="file" capture="user" accept="image/*"></label>
+</div>
+
+<div>
+<form method="post" enctype="multipart/form-data">
+<label for="selectImage"　class="selectImage"><span>写真を選ぶ</span>
+<input type="file" name="写真を選ぶ" accept="image/*">
+</label>
+</form>
+</div>
+
+<div>
+<form method="post" enctype="multipart/form-data">
+<label for="selectImage"><span>写真を複数選ぶ</span>
+<input type="file" name="写真を選ぶ" accept="image/*" multiple>
+</label>
+</form>
+</div>
+
+</dd>
+<dt>動画</dt>
+<dd>
+<div>
+<label><span>背面カメラ</span>
+<input type="file" capture="environment" accept="video/*"></label>
+</div>
+<div>
+<label><span>インカメラ</span>
+<input type="file" capture="user" accept="video/*"></label>
+</div>
+
+</dd>
+
+
+<dt>オリジナル</dt>
+<dd>
+<div><label><span>JS</span></label>
+<button id="getCamera">カメラ起動</button>
+</div>
+</dd>
+</dl>
+
+<div id="getCameraWrapper">
+<div id="getCameraWrapperCore">
+<video id="videoCore" playsinline></video>
+<button id="doItCapture">CAPTURE</button>
+</div>
+</div>
+
+
+<script>
+window.addEventListener('load',e=>{
+
+    let _btn = document.querySelector('#getCamera');
+
+    _btn.addEventListener('click', e=>{
+        addVideo();
+    })
+      
+
+})
+
+    function addVideo()
+    {
+        let _webcam = document.querySelector('video#videoCore');
+        // _webcam.style.width = window.innerWidth + 'px';
+        // _webcam.style.height = window.innerHeight + 'px';
+        _webcam.autoplay = true;
+
+        let _doBtn = document.querySelector('#doItCapture');
+        _doBtn.addEventListener('click', ()=>{
+            let _w = document.querySelector('#getCameraWrapperCore')
+
+            let _canvas = document.createElement('canvas')
+            _canvas.width = _webcam.clientWidth * 2.0;
+            _canvas.height = _webcam.clientHeight * 2.0;
+            let _ctx = _canvas.getContext('2d')
+            _ctx.drawImage( _webcam, 0, 0 )
+
+            _w.appendChild( _canvas );
+
+
+
+
+        })
+
+
+        //  webカメラの起動プログラム
+
+        let _resolution = { w: window.innerWidth, h: window.innerHeight };
+
+        let _option = {
+            audio: false,
+            video: {
+            facingMode: {
+                exact: 'user'
+                // facingMode: "environment" or "user"
+            },
+            aspectRatio: _resolution.h / _resolution.w,
+            // width: { ideal: _resolution.w, min: 750, max: 1080 },
+            // height: { ideal: _resolution.h, min: 1334, max: 1920 }
+            // width: { ideal: _resolution.w },
+            // height: { ideal: _resolution.h }
+            }
+        }
+
+        //  アウトカメラ起動設定
+        _media = navigator.mediaDevices.getUserMedia( _option );
+
+        //  カメラのストリーミング開始
+        _media.then( stream => {
+            /* ストリームを使用 */
+
+            //  document.querySelector('#videoSuccess').classList.add('show');
+
+            document.querySelector('#getCameraWrapper').classList.add('show')
+
+            window.addEventListener('resize', ()=>{
+                _resolution = { w: window.innerWidth, h: window.innerHeight };
+                // _webcam.style.width = _resolution.w + 'px';
+                // _webcam.style.height = _resolution.h + 'px';
+            });
+
+            _webcam.srcObject = stream;
+            _webcam.play();
+
+            //  camera close.
+            // setTimeout(()=>{
+            //     stream.getTracks().forEach(track => track.stop())
+            // },10000)
+
+            //  check
+            let tracks = stream.getTracks();
+            for ( var i = 0; i < tracks.length; i++ )
+            {
+                // 種類
+                console.log('kind: '+tracks[i].kind);
+
+                let constraints = tracks[i].getConstraints();
+
+                // 音声トラックの制約
+                if (tracks[i].kind == 'audio') {
+                    console.log('autoGainControl: '+constraints.autoGainControl)
+                    console.log('channelCount: '+constraints.channelCount)
+                    console.log('echoCancellation: '+constraints.echoCancellation)
+                    console.log('latency: '+constraints.latency)
+                    console.log('noiseSuppression: '+constraints.noiseSuppression)
+                    console.log('sampleRate: '+constraints.sampleRate)
+                    console.log('sampleSize: '+constraints.sampleSize)
+                    console.log('volume: '+constraints.volume)
+                }
+
+                // 動画トラックの制約
+                if (tracks[i].kind == 'video') {
+                    console.log('aspectRatio: '+constraints.aspectRatio)
+                    console.log('facingMode: '+constraints.facingMode)
+                    console.log('frameRate: '+constraints.frameRate)
+                    console.log('height: '+constraints.height)
+                    console.log('width: '+constraints.width)
+                    console.log('resizeMode: '+constraints.resizeMode)
+                }
+            }
+        });
+
+        _media.catch( err => {
+            /* エラーを処理 */
+            // alert('Camera And Video Settimg Error.\nウィンドウ閉じ、再度アクセスしてください。');
+            // alert('Camera And Video Settimg Error.\n設定をしてもらってリロードを促す。');
+            console.log(JSON.stringify(err));
+
+            //  設定をしてもらってリロードを促す
+            let _ua = navigator.userAgent.toLowerCase();
+            if( _ua.indexOf('iphone') != -1 )
+            {
+                //document.querySelector('#videoError .ios').classList.add('show');
+            } else if( _ua.indexOf('android') != -1 )
+            {
+                //document.querySelector('#videoError .android').classList.add('show');
+            } else {
+                //  from pc
+                //document.querySelector('#videoError .pc').classList.add('show');
+            }
+
+            //document.querySelector('#videoError').classList.add('show');
+            //document.querySelector('#videoSuccess').classList.add('none');
+
+        });
+
+    }
+
+</script>
+</body>
+</html>

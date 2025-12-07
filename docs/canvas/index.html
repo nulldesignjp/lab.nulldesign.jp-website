@@ -1,0 +1,553 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Noto+Sans+JP:wght@100..900&display=swap" rel="stylesheet">
+<meta name="description" content="" />
+<title>CanvasRenderingContext2D.fillText()</title>
+<style>
+body{
+  margin: 0;
+  background: #181818;
+}
+canvas{
+/*  filter: drop-shadow(0px 0px 8px rgba(255,255,255,0.4) );*/
+}
+img.result{
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate( -50% ,-50% )  scale( 0.5 );
+  border: 1px solid #F0F0F0;
+}
+p{
+  margin: 1em 0;
+  padding: 0 48px;
+  color: #CCC;
+  font-family: Lato;
+  font-weight: 300;
+}
+a{
+  color: #CCC;
+  text-decoration: none;
+}
+a:hover{
+  color: #181818;
+  background: #FF0;
+}
+
+.chip{
+  position: fixed;
+  width: 10px;
+  height: 10px;
+  transform: translate( -50%, -50% );
+/*  border: 1px solid #FFF;*/
+}
+
+</style>
+
+</head>
+<body>
+<canvas id="myCanvas"></canvas>
+<p>
+参考URL:<br>
+<a href="https://pqina.nl/blog/cross-browser-alignment-of-the-canvas-filltext-draw-call/" target="_blank">https://pqina.nl/blog/cross-browser-alignment-of-the-canvas-filltext-draw-call/</a><br>
+<a href="https://www.bennadel.com/blog/4320-rendering-text-to-canvas-with-adjusted-x-y-offsets-for-better-cross-browser-consistency.htm" target="_blank">https://www.bennadel.com/blog/4320-rendering-text-to-canvas-with-adjusted-x-y-offsets-for-better-cross-browser-consistency.htm</a></p>
+<script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js"></script>
+<script>
+
+WebFont.load({
+  google: {
+    families: ['Noto Sans JP:100,200,300,400,500,600,700,800,900', 'Lato:100,300,400,700']
+  },
+  loading: function() {
+    console.log('loading');
+  },
+  active: function() {
+    console.log('active');
+    init();
+    // particle();
+    tetorisu();
+  },
+  inactive: function() {
+    console.log('inactive');
+  },
+  fontloading: function(familyName, fvd) {
+    console.log('fontloading', familyName, fvd);
+  },
+  fontactive: function(familyName, fvd) {
+    console.log('fontactive', familyName, fvd);
+  },
+  fontinactive: function(familyName, fvd) {
+    console.log('fontinactive', familyName, fvd);
+  }
+});
+
+function init()
+{
+  let _canvas = document.querySelector('canvas');
+  let _ctx = _canvas.getContext('2d');
+
+  let _txt = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  let _number = '0123456789!@#$%^&*()_+-=[]{};\':",.<>/?;'
+  let _padding = 48;
+  let _top = 126 + _padding;
+  let _marginTop = 32;
+  let _lineHeight = 16;
+  let _fontSize = 48;
+
+  let _offsetBase = getTextOffsets('100 48px Lato');
+  _top += _offsetBase.y;
+
+
+  let _ua = navigator.userAgent;
+  _canvas.width = 960;
+  _canvas.height = 960;
+
+  //  event
+  _canvas.addEventListener('click', ()=>{
+
+    let _img = new Image();
+    document.body.appendChild( _img );
+    _img.classList.add( 'result' );
+    _img.src = _canvas.toDataURL();
+
+  }, {  once: true });
+
+
+
+  //  back
+  _ctx.fillStyle = '#181818'
+  _ctx.fillRect( 0, 0, _canvas.width, _canvas.height );
+
+
+
+  //  title
+  _ctx.textAlign = 'left';
+  _ctx.textBaseline = 'top'
+  _ctx.font = '100 48px Lato';
+  // _ctx.font = 'normal ' + _fontSize + 'px "Noto Sans JP"';
+  _ctx.fillStyle = '#F0F0F0';
+  _ctx.fillText( 'CanvasRenderingContext2D.fillText()', _padding, _padding );
+
+  //  description
+  _ctx.textAlign = 'left';
+  _ctx.textBaseline = 'top'
+  _ctx.font = '300 12px Lato';
+  // _ctx.font = 'normal ' + _fontSize + 'px "Noto Sans JP"';
+  _ctx.fillStyle = '#F0F0F0';
+  _ctx.fillText( _ua, _padding, _padding + 50 );
+
+
+
+  //  label
+  _ctx.textAlign = 'left';
+  _ctx.textBaseline = 'top'
+  _ctx.font = '700 14px Lato';
+  _ctx.fillStyle = '#F0F0F0';
+  _ctx.fillText( 'Default fillText()', _padding, _top );
+  _top += 28;
+
+
+  //  line
+  _ctx.beginPath()
+  _ctx.lineWidth = 1;
+  _ctx.strokeStyle = 'rgba(255,255,255,0.4)'
+  _ctx.moveTo( _padding, _top );
+  _ctx.lineTo( _canvas.width - _padding, _top );
+  _ctx.moveTo( _padding, _top + _fontSize );
+  _ctx.lineTo( _canvas.width - _padding, _top + _fontSize );
+  _ctx.stroke();
+
+  //  txt
+  _ctx.textAlign = 'left';
+  _ctx.textBaseline = 'top'
+  _ctx.font = '700 ' + _fontSize + 'px Lato';
+  // _ctx.font = 'normal ' + _fontSize + 'px "Noto Sans JP"';
+  _ctx.fillStyle = '#F0F0F0';
+  _ctx.fillText( _txt, _padding, _top );
+
+  _top += _fontSize + _lineHeight;
+
+  //  line
+  _ctx.beginPath()
+  _ctx.lineWidth = 1;
+  _ctx.strokeStyle = 'rgba(255,255,255,0.4)'
+  _ctx.moveTo( _padding, _top );
+  _ctx.lineTo( _canvas.width - _padding, _top );
+  _ctx.moveTo( _padding, _top + _fontSize );
+  _ctx.lineTo( _canvas.width - _padding, _top + _fontSize );
+  _ctx.stroke();
+
+  //  txt
+  _ctx.textAlign = 'left';
+  _ctx.textBaseline = 'top'
+  _ctx.font = '700 ' + _fontSize + 'px Lato';
+  // _ctx.font = 'normal ' + _fontSize + 'px "Noto Sans JP"';
+  _ctx.fillStyle = '#F0F0F0';
+  _ctx.fillText( _number, _padding, _top );
+
+
+  _top += _fontSize + _marginTop;
+
+  //  line
+  _ctx.beginPath()
+  _ctx.lineWidth = 1;
+  _ctx.strokeStyle = 'rgba(255,255,255,0.4)'
+  _ctx.moveTo( _padding, _top );
+  _ctx.lineTo( _canvas.width - _padding, _top );
+  _ctx.moveTo( _padding, _top + _fontSize );
+  _ctx.lineTo( _canvas.width - _padding, _top + _fontSize );
+  _ctx.stroke();
+
+  //  txt
+  _ctx.textAlign = 'left';
+  _ctx.textBaseline = 'top'
+  // _ctx.font = '700 ' + _fontSize + 'px Lato';
+  _ctx.font = '900 ' + _fontSize + 'px "Noto Sans JP"';
+  _ctx.fillStyle = '#F0F0F0';
+  _ctx.fillText( '私の戦闘能力は53万です。', _padding, _top );
+
+  _top += _fontSize + _lineHeight;
+
+  //  line
+  _ctx.beginPath()
+  _ctx.lineWidth = 1;
+  _ctx.strokeStyle = 'rgba(255,255,255,0.4)'
+  _ctx.moveTo( _padding, _top );
+  _ctx.lineTo( _canvas.width - _padding, _top );
+  _ctx.moveTo( _padding, _top + _fontSize );
+  _ctx.lineTo( _canvas.width - _padding, _top + _fontSize );
+  _ctx.stroke();
+
+  //  txt
+  _ctx.textAlign = 'left';
+  _ctx.textBaseline = 'top'
+  // _ctx.font = '700 ' + _fontSize + 'px Lato';
+  _ctx.font = '900 ' + _fontSize + 'px "Noto Sans JP"';
+  _ctx.fillStyle = '#F0F0F0';
+  _ctx.fillText( 'My combat ability is 530,000.', _padding, _top );
+
+
+  let _offsetLato = getTextOffsets( '700 ' + _fontSize + 'px Lato' );
+  _top += _fontSize + _marginTop;
+  _top += _fontSize + _marginTop;
+
+
+  //  label
+  _ctx.textAlign = 'left';
+  _ctx.textBaseline = 'top'
+  _ctx.font = '700 14px Lato';
+  _ctx.fillStyle = '#F0F0F0';
+  _ctx.fillText( 'Calculate Offset fillText()', _padding, _top );
+  _top += 28;
+
+  //  line
+  _ctx.beginPath()
+  _ctx.lineWidth = 1;
+  _ctx.strokeStyle = 'rgba(255,255,255,0.4)'
+  _ctx.moveTo( _padding, _top );
+  _ctx.lineTo( _canvas.width - _padding, _top );
+  _ctx.moveTo( _padding, _top + _fontSize );
+  _ctx.lineTo( _canvas.width - _padding, _top + _fontSize );
+  _ctx.stroke();
+
+  //  txt
+  _ctx.textAlign = 'left';
+  _ctx.textBaseline = 'top'
+  _ctx.font = '700 ' + _fontSize + 'px Lato';
+  // _ctx.font = 'normal ' + _fontSize + 'px "Noto Sans JP"';
+  _ctx.fillStyle = '#F0F0F0';
+  _ctx.fillText( _txt, _padding + _offsetLato.x, _top + _offsetLato.y );
+
+  _top += _fontSize + _lineHeight;
+
+  //  line
+  _ctx.beginPath()
+  _ctx.lineWidth = 1;
+  _ctx.strokeStyle = 'rgba(255,255,255,0.4)'
+  _ctx.moveTo( _padding, _top );
+  _ctx.lineTo( _canvas.width - _padding, _top );
+  _ctx.moveTo( _padding, _top + _fontSize );
+  _ctx.lineTo( _canvas.width - _padding, _top + _fontSize );
+  _ctx.stroke();
+
+  //  txt
+  _ctx.textAlign = 'left';
+  _ctx.textBaseline = 'top'
+  _ctx.font = '700 ' + _fontSize + 'px Lato';
+  // _ctx.font = 'normal ' + _fontSize + 'px "Noto Sans JP"';
+  _ctx.fillStyle = '#F0F0F0';
+  _ctx.fillText( _number, _padding + _offsetLato.x, _top + _offsetLato.y );
+
+
+
+  let _offsetNotoSansJP = getTextOffsets( '900 ' + _fontSize + 'px "Noto Sans JP"' );
+
+  _top += _fontSize + _marginTop;
+
+  //  line
+  _ctx.beginPath()
+  _ctx.lineWidth = 1;
+  _ctx.strokeStyle = 'rgba(255,255,255,0.4)'
+  _ctx.moveTo( _padding, _top );
+  _ctx.lineTo( _canvas.width - _padding, _top );
+  _ctx.moveTo( _padding, _top + _fontSize );
+  _ctx.lineTo( _canvas.width - _padding, _top + _fontSize );
+  _ctx.stroke();
+
+  //  txt
+  _ctx.textAlign = 'left';
+  _ctx.textBaseline = 'top'
+  // _ctx.font = '700 ' + _fontSize + 'px Lato';
+  _ctx.font = '900 ' + _fontSize + 'px "Noto Sans JP"';
+  _ctx.fillStyle = '#F0F0F0';
+  _ctx.fillText( '私の戦闘能力は53万です。', _padding + _offsetNotoSansJP.x, _top + _offsetNotoSansJP.y );
+
+  _top += _fontSize + _lineHeight;
+
+  //  line
+  _ctx.beginPath()
+  _ctx.lineWidth = 1;
+  _ctx.strokeStyle = 'rgba(255,255,255,0.4)'
+  _ctx.moveTo( _padding, _top );
+  _ctx.lineTo( _canvas.width - _padding, _top );
+  _ctx.moveTo( _padding, _top + _fontSize );
+  _ctx.lineTo( _canvas.width - _padding, _top + _fontSize );
+  _ctx.stroke();
+
+  //  txt
+  _ctx.textAlign = 'left';
+  _ctx.textBaseline = 'top'
+  // _ctx.font = '700 ' + _fontSize + 'px Lato';
+  _ctx.font = '900 ' + _fontSize + 'px "Noto Sans JP"';
+  _ctx.fillStyle = '#F0F0F0';
+  _ctx.fillText( 'My combat ability is 530,000.', _padding + _offsetNotoSansJP.x, _top + _offsetNotoSansJP.y );
+
+
+}
+
+function getTextOffsets( font ) {
+
+      // We're going to create a small, non-rendered canvas onto which we will draw
+      // the letter "F", which has a hard top-left point. Seeing how far this point
+      // is from 0,0 will give us the offset that is being used by this browser for
+      // this font at this font-size.
+      var tempCanvasWidth = 30;
+      var tempCanvasHeight = 50;
+      var tempCanvas = document.createElement( "canvas" );
+      tempCanvas.setAttribute( "width", tempCanvasWidth );
+      tempCanvas.setAttribute( "height", tempCanvasHeight );
+
+      var tempContext = tempCanvas.getContext( "2d" );
+      tempContext.fillStyle = "#ffffff";
+      tempContext.textBaseline = "top";
+      tempContext.font = font;
+      tempContext.fillText( "F", 0, 0 );
+
+      var imageData = tempContext.getImageData( 0, 0, tempCanvasWidth, tempCanvasHeight );
+      var pixelData = imageData.data;
+      // The pixel data for the canvas is stored as a linear series of R,G,B,A
+      // readings. Which means, each pixel consumes 4 indices in the data array;
+      // hence the concept of a "pixel width".
+      var pixelWidth = 4;
+      // When the text is rendered to the canvas, it is anti-aliased, which means
+      // that it has soft, partially-transparent edges. As we're scanning for
+      // pixels within the pixel data, we want to skip over "mostly transparent"
+      // pixels so that we can find a nice, dark pixel that better represents the
+      // visual edge of the text glyph.
+      var alphaCutoff = 127;
+
+      // CAUTION: This is NOT A GENERAL PURPOSE approach. This is working based on
+      // several assumptions: that the font is using a SANS-SERIF face and that the
+      // test letter, "F", has no unexpected rising or falling in either the
+      // vertical or the horizontal axis. What this means is that as we scan the
+      // liner pixel data, the first "strong" pixel (ie, a pixel that crosses the
+      // non-transparent threshold) that we find should represent BOTH the X AND Y
+      // delta between the origin point and where the browser is rendering the text
+      // characters.
+      for ( var i = 0 ; i < pixelData.length ; i += pixelWidth ) {
+
+        // Check the A threshold (of R,G,B,A), which is the last reading in the
+        // pixel tuple.
+        if ( pixelData[ i + pixelWidth - 1 ] > alphaCutoff ) {
+
+          // Since the pixel data is one linear series of readings, we have to
+          // convert the linear offset into a set of X,Y offsets.
+          var x = ( ( i / pixelWidth ) % tempCanvasWidth );
+          var y = Math.floor( i / pixelWidth / tempCanvasWidth );
+
+          return({
+            x: -x,
+            y: -y
+          });
+
+        }
+
+      }
+
+      // If we found no pixel data (maybe the font was SO LARGE that it actually
+      // didn't render on our small, temporary canvas), just default to zero.
+      return({
+        x: 0,
+        y: 0
+      });
+
+    }
+
+function particle()
+{
+  let _wind = {x:0,y:0,z:0}
+  let _list = [];
+
+  let _main = document.createElement('div');
+  _main.style.position = 'fixed';
+  _main.style.left = 0;
+  _main.style.top = 0;
+  _main.style.width = '100vw';
+  _main.style.height = '100vh';
+  _main.style.zIndex = 1000;
+  document.body.appendChild( _main );
+
+  let _scene = document.createElement('div');
+  _scene.style.position = 'fixed';
+  _scene.style.left = '50%';
+  _scene.style.top = '50%';
+  _scene.style.zIndex = 1000;
+  _scene.style.perspective = '750px'
+  _scene.style.perspectiveOrigin = '50% 50%'
+  document.body.appendChild( _scene );
+
+  for( var i = 0; i < 1000; i++ )
+  {
+    let _chip = document.createElement('div');
+    _chip.classList.add('chip');
+    _chip.style.backgroundColor = 'rgba( ' + ~~( Math.random() * 255 ) + ', ' + ~~( Math.random() * 255 ) + ', ' + ~~( Math.random() * 255 ) + ', 0.9 )'
+
+    _scene.appendChild( _chip );
+
+    let _w = window.innerWidth;
+    let _h = window.innerHeight;
+    let _d = 500;
+    let _x = Math.floor( ( Math.random() - 0.5 ) * _w );
+    let _y = Math.floor( ( Math.random() - 0.5 ) * _h );
+    let _z = Math.floor( ( Math.random() - 0.5 ) * _d );
+
+    let _rx = Math.floor( ( Math.random() - 0.5 ) * 360 );
+    let _ry = Math.floor( ( Math.random() - 0.5 ) * 360 );
+
+    _x = _y = _z = 0;
+
+    _chip.style.transform = 'translate3d( ' + _x + 'px, ' + _y + 'px, ' + _z + 'px ) rotateX( ' + _rx + 'deg ) rotateY( ' + _ry + 'deg )'
+
+
+    let _param = {
+      dom: _chip,
+      x: _x, y: _y, z: _z,
+      rx: _rx, ry: _ry,
+
+      rvx: ( Math.random() - 0.5 ) * 45,
+      rvy: ( Math.random() - 0.5 ) * 45,
+
+      vx: ( Math.random() - 0.5 ),
+      vy: ( Math.random() - 0.5 ),
+      vz: ( Math.random() - 0.5 ) 
+    }
+
+
+    let _len = Math.sqrt( _param.vx * _param.vx + _param.vy * _param.vy + _param.vz * _param.vz );
+
+    _param.vx /= _len;
+    _param.vy /= _len;
+    _param.vz /= _len;
+
+    _param.vx *= ( 1.0 - Math.random() * Math.random() ) * 32.0;
+    _param.vy *= ( 1.0 - Math.random() * Math.random() ) * 32.0;
+    _param.vz *= ( 1.0 - Math.random() * Math.random() ) * 32.0;
+    _list.push( _param );
+
+    // return;
+
+  }
+
+
+    (function _loop(){
+
+      window.requestAnimationFrame( _loop )
+
+      let _w = window.innerWidth;
+      let _h = window.innerHeight;
+      let _d = 500;
+
+      _w *= 0.5;
+      _h *= 0.5;
+      _d *= 0.5;
+
+      let _refrection = 0.96;
+      let _refrectionR = 0.998;
+      let len = _list.length;
+      while( len )
+      {
+        len--
+
+        let _obj = _list[len];
+
+        _obj.rvx *= _refrectionR;
+        _obj.rvy *= _refrectionR;
+
+        _obj.rx += _obj.rvx;
+        _obj.ry += _obj.rvy;
+
+        _obj.vy += 0.01;
+
+        _obj.vx *= _refrection;
+        _obj.vy *= _refrection;
+        _obj.vz *= _refrection;
+
+        _obj.x += _obj.vx;
+        _obj.y += _obj.vy;
+        _obj.z += _obj.vz;
+
+
+        // _obj.x = _obj.x < - _w ? _obj.x + _w * 2 : _obj.x > _w ? _obj.x - _w * 2 : _obj.x;
+        _obj.y = _obj.y < - _h ? _obj.y + _h * 2 : _obj.y > _h ? _obj.y - _h * 2 : _obj.y;
+        // _obj.z = _obj.z < - _d ? _obj.z + _d * 2 : _obj.z > _d ? _obj.z - _d * 2 : _obj.z;
+
+
+        _obj.dom.style.transform = 'translate3d( ' + _obj.x + 'px, ' + _obj.y + 'px, ' + _obj.z + 'px ) rotateX( ' + _obj.rx + 'deg ) rotateY( ' + _obj.ry + 'deg )'
+
+
+      }
+
+    })()
+
+}
+
+
+function tetorisu()
+{
+  let _b = [
+    [ 1, 1, 1, 1],
+    [[1,1,1]
+      [1,0,0]],
+  ];
+
+  const transpose = a => a[0].map((_, c) => a.map(r => r[c]));
+
+transpose( _b[1])
+  console.log(_b[1] );
+
+
+
+
+}
+
+
+</script>
+
+
+</body>
+</html>

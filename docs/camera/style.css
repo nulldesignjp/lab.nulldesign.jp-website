@@ -1,0 +1,169 @@
+/*
+	style.css
+*/
+
+
+*{
+  box-sizing: border-box;
+}
+
+html,
+body{
+	margin: 0;
+	padding: 0;
+	font-family: "Noto Sans JP", sans-serif;
+	font-size: 100%;
+	text-align: center;
+	background-color: #FFF;
+}
+
+h1,h2,h3,h4,h5,h6{
+	font-weight: 300;
+}
+
+h1,h2,h3,h4,h5,h6,p,
+dl, ul, ol, li, dt, dd,
+table, tr, th, td,
+form, input{
+	margin: 0;
+	padding: 0;
+	font-size: 1em;
+}
+
+ul,ol,li{
+	list-style-type: none;
+}
+
+
+body{
+	overflow: hidden;
+
+	background: #181818;
+}
+
+#moviearea{
+	position: fixed;
+	left: 0;
+	top: 0;
+	width: 100vw;
+	height: 100vh;
+	z-index: 0;
+
+	background: repeat-y 50% 50% url(bg_success00.png);
+	background-size: cover;
+}
+
+#videoError{
+	display: none;
+	width: 100%;
+	height: 100vh;
+	background: repeat-y 50% 50% url(bg_error00.png);
+	background-size: cover;
+	text-align: left;
+}
+
+	.error-inner{
+		position: fixed;
+		left: 50%;
+		top: 50%;
+		width: 85vw;
+		padding: 5vw;
+		transform: translate( -50%, -50% );
+		background: rgba(255,255,255,0.9);
+		border-radius: 2vw;
+		box-shadow: 0 0 5vw rgba( 0,0,0,0.2);
+	}
+
+	#videoError h2{
+		color: #181818;
+		font-weight: bold;
+	}
+
+	#videoError p,
+	#videoError ol{
+		margin-top: 5vw;
+	}
+
+	#videoError ol{
+		margin-left: 5vw;
+	}
+
+	#videoError li{
+		font-size: 3vw;
+		list-style-type: decimal;
+	}
+
+#videoError.show{
+	display: block;
+}
+
+	#videoError .android,
+	#videoError .ios,
+	#videoError .pc{
+		display: none;
+	}
+
+		#videoError .android.show,
+		#videoError .ios.show,
+		#videoError .pc.show{
+			display: block;
+		}
+
+#arView{
+	position: fixed;
+	left: 0;
+	top: 0;
+	z-index: 2;
+}
+
+	#arViewCore{
+		width: 100vw;
+		height: 100vh;
+		z-index: 1;
+	}
+
+#videoSuccess{
+	position: fixed;
+	left: 0;
+	top: 0;
+	display: none;
+}
+
+#videoSource{
+	position: fixed;
+	left: -9999px;
+	top: -9999px;
+	aspect-ratio: 9 / 16;
+	width: 100vw;
+}
+
+
+#videoSuccess.show{
+	display: block;
+}
+
+#videoError.none,
+#arView.none,
+#videoSuccess.none{
+	display: none;
+}
+
+
+
+
+
+
+
+
+#ui{
+	position: fixed;
+	left: 0;
+	bottom: 0;
+	width: 100%;
+	text-align: center;
+	padding: 0 0 30px 0;
+}
+
+#ui button{
+	padding: 2vw;
+}

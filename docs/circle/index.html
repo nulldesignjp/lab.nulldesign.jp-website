@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0">
+<meta name="robots" content="noindex, nofollow" />
+<meta name="description" content="">
+<meta name="keywords" content="">
+<title>reisze</title>
+<style>img{display:block;width:300px;height: auto;border-bottom:1px solid rgba(0,0,0,0)}</style>
+</head>
+<body>
+<img src="IMG_4221.GIF" alt="">
+<img src="IMG_5004.JPG" alt="">
+
+<script>
+window.addEventListener('DOMContentLoaded',()=>{
+	
+	let _canvas = document.createElement('canvas');
+	document.body.appendChild( _canvas );
+	let _ctx = _canvas.getContext('2d');
+
+	let _img = new Image();
+	_img.onload = () => {
+		let _icon = new Image();
+		_icon.onload = ()=>
+		{
+			let _scale = _canvas.width / _img.width;
+
+
+
+			_ctx.beginPath();
+			_ctx.fillStyle = 'rgba(0.1,0.1,0.1,0.1)';
+			_ctx.rect( 0, 0, _canvas.width, _canvas.height );
+			_ctx.fill();
+
+
+
+
+			_ctx.save();
+			_ctx.beginPath();
+        	_ctx.arc(60, 40, 50, 0, Math.PI * 2, false);
+        	_ctx.clip();
+			_ctx.drawImage( _img, 0, 0, _img.width * _scale, _img.height * _scale );
+			_ctx.restore();
+
+			_scale = _canvas.width / _icon.width;
+			_ctx.save();
+			_ctx.beginPath();
+        	_ctx.arc(150, 40, 50, 0, Math.PI * 2, false);
+        	_ctx.clip();
+			_ctx.drawImage( _icon, 0, 0, _icon.width * _scale, _icon.height * _scale );
+			_ctx.restore();
+
+
+			_ctx.textAlign = 'left';
+			_ctx.textBaseline = 'top'
+			// _ctx.font = "small-caps bold 22px arial";
+			_ctx.font = "small-caps 24px arial";
+			_ctx.fillStyle = '#181818';
+			// _ctx.rotate( - Math.PI / 2);
+			_ctx.fillText( '1,234,567,890', 0, 0 );
+
+			_ctx.textAlign = 'center';
+			_ctx.textBaseline = 'middle'
+			// _ctx.font = "small-caps bold 22px arial";
+			_ctx.font = "small-caps 16px arial";
+			_ctx.fillStyle = '#000000';
+			// _ctx.rotate( - Math.PI / 2);
+			_ctx.fillText( '大人の実験室', _canvas.width / 2, _canvas.height / 2 );
+
+			_ctx.textAlign = 'right';
+			_ctx.textBaseline = 'bottom'
+			// _ctx.font = "small-caps bold 22px arial";
+			_ctx.font = "small-caps 16px arial";
+			_ctx.fillStyle = '#181818';
+			// _ctx.rotate( - Math.PI / 2);
+			_ctx.fillText( '復興支援に金沢旅行', _canvas.width, _canvas.height );
+
+
+      
+
+		}
+		_icon.src = 'IMG_4221.GIF'
+	}
+	_img.src ='IMG_5004.JPG'
+})
+</script>
+</body>
+</html>

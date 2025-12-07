@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex,nofollow" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0">
+<meta http-equiv="imagetoolbar" content="no">
+<meta name="keywords" content="">
+<link rel="stylesheet" href="style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<title>web camera view</title>
+</head>
+<body>
+
+
+<div id="moviearea">
+<div id="videoError">
+<div class="android">
+<div class="error-inner">
+<h2>android error.</h2>
+<ol>
+<li>Chrome のアドレスバー（URL表示窓）の右側にある 縦3点リーダー をタップします。</li>
+<li>[設定] をタップします</li>
+<li>[サイトの設定] をタップします</li>
+<li>[カメラ] をタップし、[オン] をタップします<br>
+このページの”ブロック中”に以下のURLがある場合、URLをタップし [許可] をタップします。</li>
+</ol>
+<!--/error-inner--></div>
+<!--/android--></div>
+<div class="ios">
+<div class="error-inner">
+<h2>ios error.</h2>
+<ol>
+<li>設定アプリから[Safari] -> [カメラ]</li>
+<li>「確認」もしくは「許可」にしてください。</li>
+</ol>
+<ol>
+<li>アドレスバーの左にある「あぁ」をクリック -> [Webサイトの設定]</li>
+<li>[カメラ]->「確認」か「許可」にしてください。</li>
+</ol>
+<!--/error-inner--></div>
+<!--/ios--></div>
+<div class="pc">
+<div class="error-inner">
+<h2>pc error.</h2>
+<p>PC Chrome</p>
+<ol>
+<li>アドレスバー左の「鍵アイコン」クリック。その後「サイトの設定」をクリックします。</li>
+<li>「権限 > カメラ」項目をクリックし、「許可」を選択してブラウザのリロードを行ってください。</li>
+</ol>
+
+<p>PC Safari</p>
+<ol>
+<li>ツールバーから「Safari」> 「環境設定」をクリックします。</li>
+<li>「Webサイト > カメラ」から「現在開いているWebサイト」を確認し、本人確認を行うサイトのアクセスを「許可」にしてください。</li>
+<li>ブラウザのリロードを行ってください。</li>
+</ol>
+<!--/error-inner--></div>
+<!--/pc--></div>
+<!--/videoError--></div>
+<div id="arView"><canvas id="arViewCore"></canvas></div>
+<div id="videoSuccess"><video id="videoCore" playsinline mute></video><!--/videoSuccess--></div>
+<video id="videoSource" src="movie.mp4" playsinline></video>
+<!--/moviearea--></div>
+
+
+
+<div id="ui">
+<button id="camerasetup">Camera setup.</button>
+<button id="videoplay" disabled>Video Play.</button>
+<button id="videopause" disabled>Video Pause.</button>
+</div>
+    
+
+<script type="text/javascript" src="three.min.js"></script>
+<script type="text/javascript" src="script.js"></script>
+</body>
+</html>

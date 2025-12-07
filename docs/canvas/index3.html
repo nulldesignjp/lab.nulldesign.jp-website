@@ -1,0 +1,196 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Noto+Sans+JP:wght@100..900&display=swap" rel="stylesheet">
+<meta name="description" content="" />
+<title>CanvasRenderingContext2D.fillText()</title>
+<style>
+body{
+  margin: 0;
+  background: #181818;
+}
+canvas{
+/*  filter: drop-shadow(0px 0px 8px rgba(255,255,255,0.4) );*/
+}
+
+#myInput{
+  font-size: 32px;
+  margin-left: 48px;
+  background: #CCC;
+  border-radius:32px;
+  padding: 6px 20px;
+  border: none;
+}
+
+</style>
+
+</head>
+<body>
+<div><canvas id="myCanvas"></canvas></div>
+<p><input type="text" id="myInput"></input></p>
+<script>
+
+let _input = document.querySelector('#myInput')
+_input.addEventListener('input',(event)=>{
+
+  init( _input.value );
+})
+
+init('ここにてきすとがはいります');
+
+function init( txt = "")
+{
+
+  let _padding = 48;
+  let _top = 126 + _padding;
+  let _marginTop = 32;
+  let _lineHeight = 16;
+  let _fontSize = 64;
+  let _fontWeight = 400;
+  let _ua = navigator.userAgent
+
+  let _txt = txt
+
+  let _offsetNotoSansJP = getTextOffsets( _fontWeight + ' ' + _fontSize + 'px "Noto Sans JP"' );
+
+
+  let _canvas = document.querySelector('canvas');
+  let _ctx = _canvas.getContext('2d');
+  _canvas.width = 960;
+  _canvas.height = 320;
+
+  //  back
+  _ctx.fillStyle = '#181818'
+  _ctx.fillRect( 0, 0, _canvas.width, _canvas.height );
+
+
+
+  //  title
+  _ctx.textAlign = 'left';
+  _ctx.textBaseline = 'top'
+  _ctx.font = '100 48px Lato';
+  // _ctx.font = 'normal ' + _fontSize + 'px "Noto Sans JP"';
+  _ctx.fillStyle = '#F0F0F0';
+  _ctx.fillText( 'CanvasRenderingContext2D.fillText()', _padding, _padding );
+
+  //  description
+  _ctx.textAlign = 'left';
+  _ctx.textBaseline = 'top'
+  _ctx.font = '300 12px Lato';
+  // _ctx.font = 'normal ' + _fontSize + 'px "Noto Sans JP"';
+  _ctx.fillStyle = '#F0F0F0';
+  _ctx.fillText( _ua, _padding, _padding + 50 );
+
+
+
+
+  //  label
+  _ctx.textAlign = 'left';
+  _ctx.textBaseline = 'top'
+  _ctx.font = '700 14px Noto Sans JP';
+  _ctx.fillStyle = '#F0F0F0';
+  _ctx.fillText( 'Realtime Rendedring fillText()', _padding, _top );
+  _top += 28;
+
+  //  line
+  _ctx.beginPath()
+  _ctx.lineWidth = 1;
+  _ctx.strokeStyle = 'rgba(255,255,255,0.4)'
+  _ctx.moveTo( _padding, _top );
+  _ctx.lineTo( _canvas.width - _padding, _top );
+  _ctx.moveTo( _padding, _top + _fontSize );
+  _ctx.lineTo( _canvas.width - _padding, _top + _fontSize );
+  _ctx.stroke();
+
+  //  txt
+  _ctx.textAlign = 'left';
+  _ctx.textBaseline = 'top'
+  _ctx.font = _fontWeight + ' ' + _fontSize + 'px "Noto Sans JP"';
+  _ctx.fillStyle = '#F0F0F0';
+  _ctx.fillText( _txt, _padding + _offsetNotoSansJP.x, _top + _offsetNotoSansJP.y );
+
+
+
+
+
+}
+
+function getTextOffsets( font ) {
+
+      // We're going to create a small, non-rendered canvas onto which we will draw
+      // the letter "F", which has a hard top-left point. Seeing how far this point
+      // is from 0,0 will give us the offset that is being used by this browser for
+      // this font at this font-size.
+      var tempCanvasWidth = 30;
+      var tempCanvasHeight = 50;
+      var tempCanvas = document.createElement( "canvas" );
+      tempCanvas.setAttribute( "width", tempCanvasWidth );
+      tempCanvas.setAttribute( "height", tempCanvasHeight );
+
+      var tempContext = tempCanvas.getContext( "2d" );
+      tempContext.fillStyle = "#ffffff";
+      tempContext.textBaseline = "top";
+      tempContext.font = font;
+      tempContext.fillText( "F", 0, 0 );
+
+      var imageData = tempContext.getImageData( 0, 0, tempCanvasWidth, tempCanvasHeight );
+      var pixelData = imageData.data;
+      // The pixel data for the canvas is stored as a linear series of R,G,B,A
+      // readings. Which means, each pixel consumes 4 indices in the data array;
+      // hence the concept of a "pixel width".
+      var pixelWidth = 4;
+      // When the text is rendered to the canvas, it is anti-aliased, which means
+      // that it has soft, partially-transparent edges. As we're scanning for
+      // pixels within the pixel data, we want to skip over "mostly transparent"
+      // pixels so that we can find a nice, dark pixel that better represents the
+      // visual edge of the text glyph.
+      var alphaCutoff = 127;
+
+      // CAUTION: This is NOT A GENERAL PURPOSE approach. This is working based on
+      // several assumptions: that the font is using a SANS-SERIF face and that the
+      // test letter, "F", has no unexpected rising or falling in either the
+      // vertical or the horizontal axis. What this means is that as we scan the
+      // liner pixel data, the first "strong" pixel (ie, a pixel that crosses the
+      // non-transparent threshold) that we find should represent BOTH the X AND Y
+      // delta between the origin point and where the browser is rendering the text
+      // characters.
+      for ( var i = 0 ; i < pixelData.length ; i += pixelWidth ) {
+
+        // Check the A threshold (of R,G,B,A), which is the last reading in the
+        // pixel tuple.
+        if ( pixelData[ i + pixelWidth - 1 ] > alphaCutoff ) {
+
+          // Since the pixel data is one linear series of readings, we have to
+          // convert the linear offset into a set of X,Y offsets.
+          var x = ( ( i / pixelWidth ) % tempCanvasWidth );
+          var y = Math.floor( i / pixelWidth / tempCanvasWidth );
+
+          return({
+            x: -x,
+            y: -y
+          });
+
+        }
+
+      }
+
+      // If we found no pixel data (maybe the font was SO LARGE that it actually
+      // didn't render on our small, temporary canvas), just default to zero.
+      return({
+        x: 0,
+        y: 0
+      });
+
+}
+
+
+
+</script>
+
+
+</body>
+</html>
