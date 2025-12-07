@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="robots" content="noindex">
+<title>prototype2023</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+
+*{  box-sizing: border-box;  }
+
+body{
+  margin: 0;
+  pading: 0;
+  background: #F0F0F0;
+  color: #181818;
+  font-family: 'Noto Sans', sans-serif;
+}
+
+h1{
+  font-size: 1em;
+  font-weight: 500;
+}
+
+p,li{
+  font-weight: 300;
+  font-size: 1em;
+}
+
+img{
+  width: 100%;
+  min-height: 100px;
+  background: #CCC;
+}
+
+a{
+  color: #333;
+  text-decoration: none;
+}
+
+  a:hover{
+    background-color: #FF0;
+  }
+
+header{}
+
+footer{
+  clear: both;
+  font-size: 0.75em;
+}
+
+  footer p{
+    margin: 0;
+  }
+
+  .inner{
+    padding: 10px;
+  }
+
+  header h1,
+  header p{
+    margin: 0;
+    padding: 0;
+    line-height: 1;
+  }
+
+  header p{
+    font-size: 0.75em;
+  }
+
+.entries{
+  text-align: center;
+}
+
+.entries ul{
+  overflow: hidden;
+  margin: 0 auto;
+  padding: 0;
+  list-style-type: none;
+}
+
+.entries li{
+  display: block;
+  float: left;
+  padding: 10px;
+  width: 320px;
+  text-align: left;
+
+  transition: background 0.5s ease;
+}
+
+.entries .figure{
+  height: 100px;
+  overflow: hidden;
+  background-color: #CCC;
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  filter: grayscale(1.0) brightness(1.0) contrast(1.0);
+
+  transition: filter 0.5s ease;
+}
+
+.entries li:hover .figure{
+  filter: grayscale(1.0) brightness(1.20) contrast(0.85);
+
+}
+
+.entries li h1,
+.entries li p{
+  margin: 0;
+}
+
+.entries li h1{
+  margin-top: 10px;
+  font-weight: 500;
+}
+
+.entries li p,
+.entries li time{
+  font-size: 0.625em;
+}
+
+.entries li a{
+  color: #181818;
+  text-decoration: none;
+}
+
+
+.entries.layout{}
+
+.entries.layout ul{
+  float: left;
+}
+
+.entries.layout ul li{
+  float: none;
+}
+
+.webglview{
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1;
+}
+
+
+</style>
+</head>
+<body>
+
+<header>
+<div class="inner">
+<h1 class="title">prototype2023</h1>
+<p class="description">crafton</p>
+<p>INDEX / sort by Data, Categoty, Tags</p>
+<p>古臭い、ボツかな。</p>
+<p style="font-weight: 700;">THREE.js のカスタムクラス群の設計ねじ込み。でもこの規模のクラスのカスタムは無理がある（できることが多いので方向性を絞らなあかん）</p>
+</div>
+</header>
+
+<section class="entries">
+<ul>
+  <li>
+    <a href="#">
+      <div class="figure"><img src="img_6539.jpg" alt="" /></div>
+      <h1>title</h1>
+      <p>description. description. description. description. description. </p>
+      <time>230825</time>
+    </a>
+  </li>
+  <li>
+    <a href="#">
+      <div class="figure"><img src="GR000481.jpg" alt="" /></div>
+      <h1>title</h1>
+      <p>description. description. description. description. description. description. description. description. description. description. description. description. description. description. description. </p>
+      <time>230825</time>
+    </a>
+  </li>
+  <li>
+    <a href="#">
+      <div class="figure"><img src="img_6538.jpg" alt="" /></div>
+      <h1>title</h1>
+      <p>ここにテキストが入ります。 ここにテキストが入ります。 ここにテキストが入ります。 ここにテキストが入ります。 ここにテキストが入ります。 ここにテキストが入ります。 ここにテキストが入ります。 ここにテキストが入ります。 ここにテキストが入ります。 ここにテキストが入ります。 </p>
+      <time>230825</time>
+    </a>
+  </li>
+  <li>
+    <a href="#">
+      <div class="figure"><img src="img_6539.jpg" alt="" /></div>
+      <h1>title</h1>
+      <p>description. description. description. description. description. </p>
+      <time>230825</time>
+    </a>
+  </li>
+  <li>
+    <a href="#">
+      <div class="figure"><img src="img_6538.jpg" alt="" /></div>
+      <h1>title</h1>
+      <p>description. description. description. description. description. </p>
+      <time>230825</time>
+    </a>
+  </li>
+  <li>
+    <a href="#">
+      <div class="figure"><img src="GR000481.jpg" alt="" /></div>
+      <h1>title</h1>
+      <p>description. description. description. description. description. description. description. description. description. description. description. description. description. description. description. </p>
+      <time>230825</time>
+    </a>
+  </li>
+  <li>
+    <a href="#">
+      <div class="figure"><img src="GR000481.jpg" alt="" /></div>
+      <h1>title</h1>
+      <p>ここにテキストが入ります。 ここにテキストが入ります。 ここにテキストが入ります。 ここにテキストが入ります。 ここにテキストが入ります。 </p>
+      <time>230825</time>
+    </a>
+  </li>
+  <li>
+    <a href="#">
+      <div class="figure"><img src="img_6539.jpg" alt="" /></div>
+      <h1>title</h1>
+      <p>ここにテキストが入ります。 ここにテキストが入ります。 ここにテキストが入ります。 ここにテキストが入ります。 ここにテキストが入ります。 ここにテキストが入ります。 ここにテキストが入ります。 ここにテキストが入ります。 ここにテキストが入ります。 ここにテキストが入ります。 </p>
+      <time>230825</time>
+    </a>
+  </li>
+  <li>
+    <a href="#">
+      <div class="figure"><img src="img_6538.jpg" alt="" /></div>
+      <h1>title</h1>
+      <p>ここにテキストが入ります。 ここにテキストが入ります。 ここにテキストが入ります。 ここにテキストが入ります。 ここにテキストが入ります。 </p>
+      <time>230825</time>
+    </a>
+  </li>
+  <li>
+    <a href="#">
+      <div class="figure"><img src="img_6539.jpg" alt="" /></div>
+      <h1>title</h1>
+      <p>description. description. description. description. description. </p>
+      <time>230825</time>
+    </a>
+  </li>
+  <li>
+    <a href="#">
+      <div class="figure"><img src="GR000481.jpg" alt="" /></div>
+      <h1>title</h1>
+      <p>description. description. description. description. description. </p>
+      <time>230825</time>
+    </a>
+  </li>
+</ul>
+</section>
+
+<footer>
+<div class="inner">
+<p>KOI.</p>
+<p>以下再掲してもいいかもしれないシリーズ</p>
+
+<ul>
+<li><a href="https://lab.nulldesign.jp/_prototype_all/data/r&d2019/doubleFace" target="_blank">doubleFace</a></li>
+<li><a href="https://lab.nulldesign.jp/_prototype_all/data/r&d2019/dustMessage" target="_blank">dustMessage</a></li>
+<li><a href="https://lab.nulldesign.jp/_prototype_all/data/r&d2019/mapbox_THREEJS13" target="_blank">mapbox_THREEJS13</a></li>
+<li><a href="https://lab.nulldesign.jp/_prototype_all/data/webglsamples2/recreation-03/src" target="_blank">recreation-03</a></li>
+<li><a href="https://lab.nulldesign.jp/_prototype_all/data/webglsamples2/randomjs/src" target="_blank">random</a></li>
+<li><a href="https://lab.nulldesign.jp/_prototype_all/data/webgl/mp3upload" target="_blank">mp3upload</a></li>
+<li><a href="https://lab.nulldesign.jp/_prototype_all/data/webgl/2015/webAudioAPI/waves" target="_blank">webAudioAPI/waves</a></li>
+<li><a href="https://lab.nulldesign.jp/_prototype_all/data/webgl/2015-01/150415_03" target="_blank">150415_03</a></li>
+</ul>
+</div>
+</footer>
+
+<canvas class="webglview"></canvas>
+
+<script type="text/javascript" src="three.min.js"></script>
+<script>
+
+
+class TheWorld
+{
+  static WORLD;
+
+  constructor( props = {} )
+  {
+    //  pseudo singleton
+    if( TheWorld.WORLD != undefined )
+    {
+      return TheWorld.WORLD;
+    }
+    TheWorld.WORLD = this;
+
+    //  check canvas
+    if( props.canvas == undefined || !props.canvas.getContext )
+    {
+      const _message = 'The argument does not contain a CANVAS element.';
+      throw new Error( _message );
+      return;
+    }
+
+    this.state = {}
+    this.props = props;
+
+    this.canvas;
+    this.time;
+    this.eventList;
+    this.scene;
+    this.camera;
+    this.renderer;
+
+    //  pseudo init
+    ( async ()=>{
+
+      await this.init();
+      await this.sleep();
+      await this.addEvents();
+      await this.sleep();
+
+      this.startRender();
+
+    })();
+
+  }
+
+  //  initialzie 
+  init()
+  {
+    return new Promise( resolve =>{
+      this.eventList = []
+      this.canvas = this.props.canvas;
+
+      this.sizes = new Sizes();
+      this.time = new Time();
+      this.scene = new Scene();
+      this.camera = new Camera();
+      this.renderer = new Renderer();
+      this.debug = new Debug();
+
+      resolve();
+
+    })
+  }
+
+  update()
+  {
+    this.camera.update();
+    this.renderer.render( this.scene.instance, this.camera.instance );
+  }
+
+  startRender()
+  {
+    this.stopRender();
+    this.time.start();
+    this.update();
+  }
+
+  stopRender()
+  {
+    window.cancelAnimationFrame( this.animationKey );
+    this.time.stop();
+  }
+
+  addEvent( _evt )
+  {
+    //  check argument
+    if( _evt.target == undefined || _evt.event == undefined || _evt.function == undefined )
+    {
+      const _message = 'The argument does not contain a target or event or function.';
+      throw new Error( _message );
+      return;
+    }
+
+    //  check option
+    if( _evt.option == undefined )
+    {
+      _evt.option = {};
+    }
+
+    _evt.target.addEventListener( _evt.event, _evt.function, _evt.option );
+    this.eventList.push( _evt );
+
+  }
+
+  addEvents()
+  {
+    //  resize window
+    var _evt0 = {
+      target: window,
+      event: 'resize',
+      function: ( event ) => 
+      {
+        this.sizes.resize();
+        this.renderer.resize();
+        this.camera.resize();
+      },
+      option: {}
+    }
+    this.addEvent( _evt0 );
+
+    //  tick
+    var _evt1 = {
+      target: document,
+      event: 'tick',
+      function: ( event ) => 
+      {
+        this.update();
+      },
+      option: {}
+    }
+    this.addEvent( _evt1 );
+
+  }
+
+  removeEvent( _evt )
+  {
+    let _len = this.eventList.length;
+    while( _len )
+    {
+      _len --;
+      let _evt0 = this.eventList[ _len ];
+      if( _evt0.target == _evt.target && _evt0.event == _evt.event && _evt0.function == _evt.function )
+      {
+        _evt.target.removeEventListener( _evt.event, _evt.function );
+        this.eventList.splice( _len, 1 );
+        break;
+      }
+    }
+  }
+
+  removeEvents()
+  {
+    let len = this.eventList.length;
+    while( len )
+    {
+      len--;
+      let _evt = this.eventList.pop();
+      _evt.target.removeEventListener( _evt.event, _evt.function );
+      _evt = null;
+    }
+
+    this.eventList = [];
+  }
+
+  add( _mesh )
+  {
+    this.scene.add( _mesh );
+  }
+
+  remove( _mesh )
+  {
+    this.scene.remove( _mesh );
+  }
+
+  addPass( _pass )
+  {
+    this.renderer.addPass( _pass );
+  }
+
+  removePass( _pass )
+  {
+    this.renderer.removePass( _pass );
+  }
+
+  sleep( _duration )
+  {
+    _duration = _duration == undefined? 16 : _duration;
+    return new Promise( resolve => {
+      setTimeout( resolve, _duration );
+    })
+  }
+
+  dispose()
+  {
+    //  再考。条件が曖昧。
+    //  Traverse the whole scene
+    this.scene.traverse((child) =>
+    {
+        // Test if it's a mesh
+        if( child instanceof THREE.Mesh )
+        {
+            child.geometry.dispose();
+
+            // Loop through the material properties
+            for( const key in child.material )
+            {
+                const value = child.material[key];
+
+                // Test if there is a dispose function
+                if( value && typeof value.dispose === 'function' )
+                {
+                    value.dispose()
+                }
+            }
+        }
+    })
+
+    // this.camera.controls.dispose();
+    this.renderer.instance.dispose();
+  }
+}
+
+class Scene
+{
+  constructor( props = {} )
+  {
+    this.state = {}
+    this.props = props;
+    this.instance;
+    this.focus;
+
+    this.init();
+
+  }
+
+  init()  
+  {
+    this.instance = new THREE.Scene();
+      // this.instance.fog = new THREE.Fog( this.bgColor, 2, 12 );
+      // this.instance.fog = new THREE.FogExp2( this.bgColor, 0.00090);
+  }
+
+  add( _mesh )
+  {
+    this.instance.add( _mesh );
+  }
+
+  remove( _mesh )
+  {
+    _mesh.parent.remove( _mesh )
+    _mesh.geometry.dispose();
+    if( _mesh.material.map )
+    {
+      _mesh.material.map.dispose();
+      _mesh.material.map = null;
+    }
+    _mesh.material.dispose();
+    _mesh = null;
+  }
+}
+
+class Camera
+{
+  constructor( props = {} )
+  {
+    this.state = {}
+    this.props = props;
+    this.instance;
+    this.focus;
+    this.world;
+
+    this.init();
+  }
+
+  init()
+  {
+    this.world = new TheWorld();
+    let width  = this.world.sizes.width;
+    let height = this.world.sizes.height;
+
+    //  set camera
+    this.instance = new THREE.PerspectiveCamera(60, width / height, 0.01, 100 );
+    // this.camera = new THREE.OrthographicCamera( - width * 0.5, width * 0.5, height * 0.5, - height * 0.5, 0.1, 2000 );
+    this.instance.position.set( 0, 0, 10 );
+    this.focus = new THREE.Vector3( 0, 0, 0 );
+  }
+
+  update()
+  {
+    this.instance.lookAt( this.focus );
+  }
+
+  resize()
+  {
+    let width  = this.world.sizes.width;
+    let height = this.world.sizes.height;
+
+    if( this.instance.aspect )
+    {
+
+      this.instance.aspect = width / height;
+
+    } else {
+
+      this.instance.left = - width * 0.5;
+      this.instance.right = width * 0.5;
+      this.instance.bottom = - height * 0.5;
+      this.instance.top = height * 0.5;
+
+    }
+
+    this.instance.updateProjectionMatrix();
+  }
+
+  //  3D to 2D (world to screen coordinate, WebGL3D座標をScreen2D座標に変換 )
+  getWorldToScreen2D( _mesh )
+  {
+    var vector = new THREE.Vector3();
+    var _ctx = this.renderer.getContext();
+    var widthHalf = 0.5 * _ctx.canvas.width;
+    var heightHalf = 0.5 * _ctx.canvas.height;
+    _mesh.updateMatrixWorld();
+    vector.setFromMatrixPosition(_mesh.matrixWorld);
+    vector.project( this.instance );
+    vector.x = ( vector.x * widthHalf ) + widthHalf;
+    vector.y = - ( vector.y * heightHalf ) + heightHalf;
+
+    var _dir0 = new THREE.Vector3().subVectors( this.focus, this.instance.position );
+    var _dir1 = new THREE.Vector3().subVectors( _mesh.position, this.instance.position );
+    var _d = _dir0.dot( _dir1 );
+    if( _d <= 0 ){
+      vector.x = -9999;
+      vector.y = -9999;
+    }
+
+    return { 
+        x: vector.x,
+        y: vector.y
+    };
+  }
+
+  //  focalLength to FOV (焦点距離から視野角を算出)
+  focalLengthToFOV( _focalLength = 35 )
+  {
+    var _h = this.instance.filmGauge; //  (36mm * 24mm (フルサイズ) の対角線の長さを算出)
+    var _v = _h * 2 / 3;
+    var _diagonalLine = Math.sqrt( _h * _h + _v * _v );
+    this.instance.fov = 180.0 / Math.PI * Math.atan( _diagonalLine / ( _focalLength * 2.0 ) ) * 2.0;
+    this.instance.updateProjectionMatrix();
+  }
+
+  //  pixelEqual Magnification (ピクセル等倍)
+  pixelEqualMagnification()
+  {
+    var _dist = ( ( this.world.sizes.height ) * 0.5 ) / Math.tan( ( this.instance.fov * 0.5 ) * Math.PI / 180 );
+    return _dist;
+  }
+}
+
+class Renderer
+{
+  constructor( props = {} )
+  {
+    this.state = {};
+    this.props = props;
+
+    this.world = new TheWorld();
+
+    this.instance;
+    this.animationKey;
+
+    this.isUseEffectcomposer;
+
+    this.init()
+  }
+
+  init()
+  {
+    let _bgColor = 0xF0F0F0;
+    let width  = this.world.sizes.width;
+    let height = this.world.sizes.height;
+    //  set renderer
+    this.instance = new THREE.WebGLRenderer({ antialias: true, canvas: this.world.canvas, alpha: false, preserveDrawingBuffer: true });
+    this.instance.setPixelRatio( window.devicePixelRatio );
+    this.instance.setSize( width, height  );
+    this.instance.setClearColor( _bgColor );
+    // this.instance.autoClearColor = false;
+    // this.instance.autoClear = false;
+  }
+
+  render( _scene, _camera )
+  {
+    this.instance.render( _scene, _camera );
+  }
+
+  resize()
+  {
+    let width  = this.world.sizes.width;
+    let height = this.world.sizes.height;
+    this.instance.setSize( width, height );
+  }
+
+  addPass( _pass )
+  {
+    this.instance.addPass( _pass );
+  }
+
+  removePass( _pass )
+  {
+    this.instance.removePass( _pass );
+  }
+}
+
+class Time
+{
+  constructor( props = {} )
+  {
+    this.state = {};
+    this.props = props;
+
+    this.timeIntervalKey;
+    this.clock;
+    this.time;
+    this.delta;
+    this.scale;
+    this.event;
+
+    this.init();
+    this.update();
+  }
+
+  init()
+  {
+    this.clock = new THREE.Clock()
+    this.time = 0;
+    this.delta = 0;
+    this.scale = 1.0;
+
+    this.event = new CustomEvent('tick');
+    this.elem = document;
+  }
+
+  update()
+  {
+    this.timeIntervalKey = window.requestAnimationFrame( ()=>{  this.update();  } );
+
+    this.delta = this.clock.getDelta()
+    this.time += this.delta * this.scale;
+
+    this.elem.dispatchEvent( this.event );
+  }
+
+  start()
+  {
+    this.clock.start();
+  }
+
+  stop()
+  {
+    this.clock.stop();
+  }
+}
+
+class Debug
+{
+  constructor( props )
+  {
+    if( location.href.toLowerCase().indexOf('#debug') != - 1 )
+    {
+      const _style = 'background: #000; color: #FF0; padding: 5px 8px 3px 8px; border-radius: 4px; font-weight:bold;border:1px solid #FF0';
+      console.log('%cDEBUG MODE', _style );
+    } else {
+      return;
+    }
+
+    this.state = {};
+    this.props = props;
+
+
+    this.init();
+  }
+
+  init()
+  {
+
+  }
+}
+
+class Sizes
+{
+  static SIZES;
+
+  constructor( props )
+  {
+    //  singleton
+    if( Sizes.SIZES != undefined )
+    {
+      return Sizes.SIZES;
+    }
+    Sizes.SIZES = this;
+
+    this.state = {};
+    this.props = props;
+
+    this.width;
+    this.height;
+    this.pixelRatio;
+
+    this.init();
+  }
+
+  init()
+  {
+    this.width = window.innerWidth;
+    this.height = window.innerHeight;
+    this.pixelRatio = window.devicePixelRatio;
+  }
+
+  resize()
+  {
+    this.width = window.innerWidth;
+    this.height = window.innerHeight;
+    this.pixelRatio = window.devicePixelRatio;
+  }
+
+}
+
+class planeTxtureLoader
+{
+  static load( _url, _scale = 1.0 )
+  {
+    return new Promise( ( resolve, reject ) =>
+    {
+      let _loader = new THREE.TextureLoader();
+      _loader.load(
+        _url,
+        _texture => {
+          let _geometry = new THREE.PlaneGeometry();
+          _geometry.scale( _texture.image.width * _scale, _texture.image.height * _scale, 1.0 );
+          let _material = new THREE.MeshBasicMaterial({map: _texture});
+          let _mesh = new THREE.Mesh( _geometry, _material );
+
+          resolve( _mesh );
+        },
+        _progress => {
+          console.log( _progress );
+        },
+        _error => {
+          console.log( _error );
+          reject( _error );
+        }
+      )
+    })
+  }
+}
+
+class StarPlatinum extends TheWorld{
+
+  constructor( props )
+  {
+    super( props );
+
+    this.componentDidMount();
+
+  }
+
+  async componentDidMount()
+  {
+    //  draw your code here.
+
+
+    let _geometry = new THREE.PlaneGeometry( 5, 5, 16, 16 )
+    let _material = new THREE.MeshBasicMaterial({color:0x666666,wireframe:true});
+    this.mesh = new THREE.Mesh( _geometry, _material )
+    this.scene.add( this.mesh )
+
+    this.mesh.position.x = 5;
+    this.mesh.position.y = -2.5;
+
+    setInterval(()=>{
+      let _array = this.mesh.geometry.attributes.position.array;
+      let _len = _array.length / 3;
+      for( var i = 0; i < _len; i++ )
+      {
+        var j = Math.floor( i / 17 );
+        var _rad = Date.now() * 0.001 + ( i%17 + j*0.7 ) * Math.PI * 0.075
+        _array[ i * 3 + 2 ] = Math.sin( _rad ) * .5;
+      };
+
+      this.mesh.geometry.attributes.position.needsUpdate = true;
+
+      this.mesh.rotation.x -= 0.00125;
+      this.mesh.rotation.y += 0.00125;
+
+    },16);
+
+  }
+}
+
+
+class proto{
+  constructor( props )
+  {
+    // super( props );
+    this.state = {};
+
+    //	pseudo init
+    this.componentDidMount();
+
+  }
+
+  componentDidMount()
+  {
+
+    const _world = new StarPlatinum({
+      canvas:document.querySelector('.webglview'),
+      backgroundColor: 0xF0F0F0
+    })
+
+    let _geometry = new THREE.IcosahedronGeometry( 3, 1 );
+    let _material = new THREE.MeshBasicMaterial({color:0x666666,wireframe:true});
+    let _mesh = new THREE.Mesh( _geometry, _material )
+    _world.add( _mesh )
+
+    setInterval(()=>{
+      _mesh.rotation.x += 0.01;
+      _mesh.rotation.y += 0.01;
+    },16);
+
+    planeTxtureLoader.load( './GR000481.jpg', 0.01 ).then( _mesh => {
+      _world.add( _mesh );
+    });
+
+    
+    var _imgs = document.querySelectorAll('img');
+
+    let _figures = document.querySelectorAll('.entries .figure')
+    _figures.forEach( _dom =>{
+
+      let _img = _dom.querySelector('img')
+      _img.style.display = 'none';
+      _dom.style.backgroundImage = 'url(' + _img.src + ')'
+
+    })
+
+    let _lis = document.querySelectorAll('.entries li')
+    let _ul0 = document.createElement('ul')
+    let _ul1 = document.createElement('ul')
+    document.querySelector('.entries').appendChild( _ul0 )
+    document.querySelector('.entries').appendChild( _ul1 )
+    document.querySelector('.entries').classList.add('layout')
+
+    let _uls = document.querySelectorAll('.entries ul')
+    _lis.forEach( ( _li, i ) =>{
+
+        _uls[ i % 3 ].appendChild( _li )
+
+    });
+
+
+
+
+
+
+
+
+    return;
+    _imgs.forEach( _img => {
+      var _tex = new THREE.TextureLoader().load( _img.src, ( _texture => {
+        let _scale = 0.001;
+        let _geometry = new THREE.PlaneGeometry();
+        _geometry.scale( _texture.image.width * _scale, _texture.image.height * _scale, 1.0 );
+        let _material = new THREE.MeshBasicMaterial({map: _texture});
+        let _mesh = new THREE.Mesh( _geometry, _material )
+        _world.add( _mesh )
+
+        _mesh.position.x = ( Math.random() - 0.5 ) * 5;
+        _mesh.position.y = ( Math.random() - 0.5 ) * 5;
+      }))
+    })
+
+
+    
+  }
+}
+
+window.addEventListener('DOMContentLoaded',()=>{	new proto();	});
+</script>
+</body>
+</html>

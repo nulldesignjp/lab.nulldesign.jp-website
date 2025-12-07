@@ -1,0 +1,168 @@
+{
+	"title": "Prototype2023",
+	"description": "INDEX",
+	"auther": "hrsk",
+	"data": [
+		{
+			"id": 20,
+			"title": "230905",
+			"img": "",
+			"url": "/230905",
+			"target": "",
+			"tags": ["NeRF","Luma","webgl"]
+		},
+		{
+			"id": 19,
+			"title": "230828",
+			"img": "",
+			"url": "/230828",
+			"target": "",
+			"tags": ["webgl","shader"]
+		},
+		{
+			"id": 18,
+			"title": "230824",
+			"img": "",
+			"url": "/230824",
+			"target": "",
+			"tags": ["webgl"]
+		},
+		{
+			"id": 17,
+			"title": "230823",
+			"img": "",
+			"url": "/fireworks2023#debug",
+			"target": "",
+			"tags": ["webgl","fireworks"]
+		},
+		{
+			"id": 16,
+			"title": "230818",
+			"img": "",
+			"url": "/230818",
+			"target": "",
+			"tags": ["AR"]
+		},
+		{
+			"id": 15,
+			"title": "230802",
+			"img": "",
+			"url": "/230802",
+			"target": "",
+			"tags": ["webgl","blender"]
+		},
+		{
+			"id": 14,
+			"title": "230801",
+			"img": "",
+			"url": "/230801",
+			"target": "",
+			"tags": ["webgl"]
+		},
+		{
+			"id": 13,
+			"title": "230731",
+			"img": "",
+			"url": "/230731",
+			"target": "",
+			"tags": ["webgl","projection"]
+		},
+		{
+			"id": 12,
+			"title": "230729",
+			"img": "",
+			"url": "/230729",
+			"target": "",
+			"tags": ["webgl","targetRendering"]
+		},
+		{
+			"id": 11,
+			"title": "230726",
+			"img": "",
+			"url": "/230726",
+			"target": "",
+			"tags": ["webgl","quaternion","project"]
+		},
+		{
+			"id": 10,
+			"title": "230725",
+			"img": "",
+			"url": "https://scrapbox.io/ist-tech-all/TeachableMachine%E3%81%AE%E8%82%B2%E3%81%A6%E6%96%B9",
+			"target": "_blank",
+			"tags": ["scrapbox","ai","project"]
+		},
+		{
+			"id": 9,
+			"title": "230723",
+			"img": "",
+			"url": "/230723",
+			"target": "",
+			"tags": ["JavaScript"]
+		},
+		{
+			"id": 8,
+			"title": "230710",
+			"img": "",
+			"url": "/230710",
+			"target": "",
+			"tags": ["webgl","project"]
+		},
+		{
+			"id": 7,
+			"title": "230702",
+			"img": "",
+			"url": "/230702",
+			"target": "",
+			"tags": ["webgl","animation","incomplete"]
+		},
+		{
+			"id": 6,
+			"title": "230630",
+			"img": "",
+			"url": "/230630",
+			"target": "",
+			"tags": ["webgl","animation"]
+		},
+		{
+			"id": 5,
+			"title": "230627",
+			"img": "",
+			"url": "/230627",
+			"target": "",
+			"tags": ["webgl","animation","fireworks","project"]
+		},
+		{
+			"id": 4,
+			"title": "230626",
+			"img": "assets/imgs/img_6.jpg",
+			"url": "/230626",
+			"target": "",
+			"tags": ["webgl","animation","blender"]
+		},
+		{
+			"id": 3,
+			"title": "230624",
+			"img": "",
+			"url": "/230624",
+			"target": "",
+			"tags": ["webgl","shader"]
+		},
+		{
+			"id": 2,
+			"title": "230623",
+			"img": "",
+			"url": "https://scrapbox.io/ist-tech-all/Blender%E3%81%A7%E5%9B%B3%E9%9D%A2%E3%82%84%E3%83%AD%E3%82%B4%E3%82%92%E4%BD%9C%E3%82%8B%E3%81%A6%E3%81%84%E3%81%AE%E3%81%84%E3%81%84%E6%96%B9%E6%B3%95",
+			"target": "_blank",
+			"tags": ["scrapbox","blender"]
+		},
+
+		{
+			"id": 0,
+			"title": "230512",
+			"img": "",
+			"url": "https://scrapbox.io/ist-tech-all/%E3%83%9D%E3%82%B9%E3%82%BF%E3%83%BC%E3%81%AE%E4%B8%AD%E3%81%AE1000%E5%80%8B%E3%81%8F%E3%82%89%E3%81%84%E3%81%82%E3%82%8B%E3%82%82%E3%81%AE%EF%BC%88%E5%9C%B0%E5%9B%B3%E4%B8%8A%E3%81%AE%E5%BA%97%E8%88%97%E5%90%8D%E3%81%AA%E3%81%A9%EF%BC%89%E3%82%92%E3%83%9E%E3%83%BC%E3%82%AB%E3%83%BC%E3%81%A8%E3%81%97%E3%81%A6AR%E8%A1%A8%E7%8F%BE%E3%82%92%E6%89%B1%E3%81%84%E3%81%9F%E3%81%84%E3%81%A8%E3%81%84%E3%81%86%E7%9B%B8%E8%AB%87%E3%81%8C%E3%81%82%E3%81%A3%E3%81%9F%E6%99%82%E3%81%AE%E9%A0%AD%E3%81%AE%E4%B8%AD%E3%83%A1%E3%83%A2%E3%80%82#645da2096d9fac000048b024",
+			"target": "_blank",
+			"tags": ["scrapbox","uncategolize"]
+		}
+	]
+}

@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/koi/prototype2023/fireworks2023/static/css/main.6c7852fb.css",
+    "main.js": "/koi/prototype2023/fireworks2023/static/js/main.e4879d55.js",
+    "static/js/787.598a45ad.chunk.js": "/koi/prototype2023/fireworks2023/static/js/787.598a45ad.chunk.js",
+    "index.html": "/koi/prototype2023/fireworks2023/index.html",
+    "main.6c7852fb.css.map": "/koi/prototype2023/fireworks2023/static/css/main.6c7852fb.css.map",
+    "main.e4879d55.js.map": "/koi/prototype2023/fireworks2023/static/js/main.e4879d55.js.map",
+    "787.598a45ad.chunk.js.map": "/koi/prototype2023/fireworks2023/static/js/787.598a45ad.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.6c7852fb.css",
+    "static/js/main.e4879d55.js"
+  ]
+}

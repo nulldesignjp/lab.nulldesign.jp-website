@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="ja-JP">
+<head>
+<title>WebAR Samples</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+<meta name="keywords" content="">
+<meta name="description" content="">
+</head>
+<body>
+<h1>WebAR Samples</h1>
+<ul>
+<li><a href="./fireworks/">fireworks</a></li>
+<li><a href="./calorie_mate/">calorie mate</a></li>
+<li><a href="./rocket/">rocket</a></li>
+<li><a href="./tex02/">tex02</a></li>
+<li><a href="./ist/">ist</a></li>
+<!-- <li><a href="./360vr/">360vr</a></li> -->
+</ul>
+<script>
+var _url = location.href;
+_url = _url.replace('http:', 'https:');
+var _qrcode = 'https://api.qrserver.com/v1/create-qr-code/?size=256x256&data=' + _url;
+document.write( '<p style="margin: 64px auto; text-align: center;"><img src="' + _qrcode + '"></p>' );
+</script>
+</body>
+</html>

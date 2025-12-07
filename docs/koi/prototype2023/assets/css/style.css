@@ -1,0 +1,82 @@
+body{
+	margin: 0;
+	pading: 0;
+	overflow: hidden;
+	background: #F0F0F0;
+	color: #181818;
+	font-family: 'Noto Sans', sans-serif;
+}
+
+body.dark{
+	background: #181818;
+	color: #999;
+}
+
+body.scroll{
+	overflow: inherit;
+}
+
+.title,
+.description{
+	margin: 0;
+	padding: 0;
+	line-height: 1;
+	font-weight: 100;
+}
+
+.title,
+.description,
+.info{
+	padding-left: 32px;
+	pointer-events: none;
+    -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+}
+
+.title{
+	margin-top: 32px;
+	font-size: 2.5em;
+}
+
+.description{
+	margin-top: 10px;
+	font-size: 0.5em;
+	width: calc( 100vw - 100px );
+	font-weight: 400;
+	line-height: 1.5;
+}
+
+.back{
+	padding-left: 32px;
+	font-size: 0.75em;
+}
+
+.back a{
+	text-decoration: none;
+	color: #333;
+}
+
+.back a:hover{
+	background: #FF0;
+}
+
+.webglview{
+	position: fixed;
+	left: 0;
+	top: 0;
+	width: 100vw;
+	height: 100vh;
+	z-index: -1;
+	background: #181818;
+}
+
+.sampleMovie{
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  width: 160px;
+  height: auto;
+  border-radius: 4px;
+}
