@@ -1,0 +1,392 @@
+<!doctype>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=yes">
+<meta name="keywords" content="">
+<meta name="description" content="CLASS, SHADER, MYNOISE">
+<title>webgl sample</title>
+<style>
+html,body{height:100%;overflow:hidden;}
+body{
+	margin: 0;
+	padding: 0;
+	background: #FFF;
+}
+#container{
+	width: 100%;
+	height: 100%;
+}
+</style>
+</head>
+<body>
+<div id="container"></div>
+<script src="../js/jquery-2.1.1.min.js"></script>
+<script src="../js/Tweener.js"></script>
+<script src="../js/stats.min.js"></script>
+<script src="../js/three.min.js"></script><!--/ v70 -->
+<script id="vertexShader" type="x-shader/x-vertex">
+void main( void ) 
+{
+	gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+}
+</script>
+<script id="fragmentShader" type="x-shader/x-fragment">
+uniform float time;
+uniform vec2 mouse;
+uniform vec2 resolution;
+
+//	http://www.demoscene.jp/?p=1147
+//	http://www.shaderific.com/glsl-functions/
+const int   oct  = 8;
+const float per  = 0.5;
+const float PI   = 3.1415926;
+const float cCorners = 1.0 / 16.0;
+const float cSides   = 1.0 / 8.0;
+const float cCenter  = 1.0 / 4.0;
+
+// 補間関数
+float interpolate(float a, float b, float x){
+    float f = (1.0 - cos(x * PI)) * 0.5;
+    return a * (1.0 - f) + b * f;
+}
+
+// 乱数生成
+float rnd(vec2 p){
+    return fract(sin(dot(p ,vec2(12.9898,78.233))) * 43758.5453);
+}
+
+// 補間乱数
+float irnd(vec2 p){
+    vec2 i = floor(p);
+    vec2 f = fract(p);
+    vec4 v = vec4(rnd(vec2(i.x,       i.y      )),
+                  rnd(vec2(i.x + 1.0, i.y      )),
+                  rnd(vec2(i.x,       i.y + 1.0)),
+                  rnd(vec2(i.x + 1.0, i.y + 1.0)));
+    return interpolate(interpolate(v.x, v.y, f.x), interpolate(v.z, v.w, f.x), f.y);
+}
+
+// ノイズ生成
+float noise(vec2 p){
+    float t = 0.0;
+    for(int i = 0; i < oct; i++){
+        float freq = pow(2.0, float(i));
+        float amp  = pow(per, float(oct - i));
+        t += irnd(vec2(p.x / freq, p.y / freq)) * amp;
+    }
+    return t;
+}
+
+// シームレスノイズ生成
+float snoise(vec2 p, vec2 q, vec2 r){
+    return noise(vec2(p.x,       p.y      )) *        q.x  *        q.y  +
+           noise(vec2(p.x,       p.y + r.y)) *        q.x  * (1.0 - q.y) +
+           noise(vec2(p.x + r.x, p.y      )) * (1.0 - q.x) *        q.y  +
+           noise(vec2(p.x + r.x, p.y + r.y)) * (1.0 - q.x) * (1.0 - q.y);
+}
+
+/*float xor(vec2 p)
+{
+  ivec2 ip = ivec2(fract(p)*256.0);
+  return float(ip.x^ip.y)/256.0;
+}*/
+
+void main( void ) 
+{
+	vec2 p = ( gl_FragCoord.xy / resolution.xy ) * 2.0 - 1.0;
+	//p *= vec2( 0, time );
+	p *= time;
+
+	float _val = rnd( p );
+
+	//	中心からの距離
+	vec2 pos = ( gl_FragCoord.xy * 2.0 - resolution ) / resolution.y;
+
+	_val *= ( 1.0 - sin( length(pos) * 0.8 ) );
+	vec3 c = vec3( _val, _val, _val ) * 0.4;
+	
+	gl_FragColor = vec4( c, 1.0 );
+}
+</script>
+<script type="text/javascript">
+window.addEventListener("load", function (){
+
+	//	uniforms
+	var uniforms = {
+		time: { type: "f", value: 1.0 },
+		resolution: { type: "v2", value: new THREE.Vector2() },
+		mouse: { type: "v2", value: new THREE.Vector2() }
+	};
+	uniforms.time.value = 0.0;
+	uniforms.resolution.value.x = window.innerWidth;
+	uniforms.resolution.value.y = window.innerHeight;
+	uniforms.mouse.value.x = 0;
+	uniforms.mouse.value.y = 0;
+
+	//	world
+	var _dom = document.getElementById('container');
+	var _vertexShader = document.getElementById('vertexShader').textContent;
+	var _fragmentShader = document.getElementById('fragmentShader').textContent;
+	var _world = new istWorld.Shader( _dom, _vertexShader, _fragmentShader, uniforms );
+	var mouse = istWorld.mouse;
+
+	//	start
+	createStats();
+	animate();
+
+	//	events
+	window.addEventListener( 'resize', onWindowResize, false );
+	window.addEventListener( 'mousemove', onMouseMove, false );
+	window.addEventListener( 'touchmove', onTouchMove, false );
+
+	function createObject()
+	{
+		var geometry = new THREE.IcosahedronGeometry(80,1);
+		var material = new THREE.MeshNormalMaterial({shading:THREE.NoShading});
+		var mesh = new THREE.Mesh(geometry, material);
+		return mesh;
+	}
+
+	//	method
+	function createStats()
+	{
+		stats = new Stats();
+		stats.domElement.style.position = 'fixed';
+		stats.domElement.style.left = "0px";
+		stats.domElement.style.top = '0px';
+		container.appendChild( stats.domElement );
+	}
+	function animate()
+	{
+		stats.update();
+
+		requestAnimationFrame( animate );
+		loop();
+	}
+	function loop()
+	{
+		var _time = Date.now() * 0.001;
+	}
+
+	//	Handler
+	function onWindowResize(e)
+	{
+		e.preventDefault();
+		var _widh = window.innerWidth;
+		var _height = window.innerHeight;
+		_world.camera.aspect = _widh / _height;
+		_world.camera.updateProjectionMatrix();
+		_world.renderer.setSize( _widh, _height );
+
+		istWorld.resolution = {x:_widh,y:_height};
+		uniforms.resolution.value.x = _widh;
+		uniforms.resolution.value.y = _height;
+	}
+
+	function onMouseMove(e)
+	{
+		e.preventDefault();
+		mouse.x = e.pageX;
+		mouse.y = e.pageY;
+
+		uniforms.mouse.value.x = mouse.x;
+		uniforms.mouse.value.y = mouse.y;
+	}
+	function onTouchMove(e)
+	{
+		e.preventDefault();
+		mouse.x = e.touches[0].pageX;
+		mouse.y = e.touches[0].pageY;
+
+		uniforms.mouse.value.x = mouse.x;
+		uniforms.mouse.value.y = mouse.y;
+	}
+
+});
+
+/**
+*	custom class
+*	v 70
+*	
+*
+*/
+var istWorld;
+(function(istWorld){
+
+	//	Mouse
+	istWorld.mouse = {x:window.innerWidth*0.5,y:window.innerHeight*0.5};
+
+	//	resolution
+	istWorld.resolution = {x:window.innerWidth,y:window.innerHeight}
+
+	var three = (function(){
+		function three( _dom )
+		{
+			//	props
+			this.scene;
+			this.camera;
+			this.focus;
+			this.renderer;
+
+			//	init
+			this.init3D( _dom );
+			this.animate();
+		}
+
+		//	is enable WebGL?[boolean]
+		three.isSupportedWebgl = function () {
+            try {
+                var canvas = document.createElement("canvas");
+                return !!window["WebGLRenderingContext"] && (canvas.getContext("webgl") || canvas.getContext("experimental-webgl"));
+            }
+            catch (e) {
+                return false;
+            }
+        };
+        three.ZERO = new THREE.Vector3(0, 0, 0);
+        //three.PROJECTOR = new THREE.Projector();
+
+		three.prototype = {
+			init3D	:	function( _dom )
+			{
+				var _width = window.innerWidth;
+				var _height = window.innerHeight;
+
+				//	カメラ
+				this.camera = new THREE.PerspectiveCamera( 50, _width / _height, 0.1, 1500 );
+				this.camera.position.z = 1000;
+
+				//	カメラフォーカス	
+				this.focus = new THREE.Vector3();
+				this.focus.set( 0, 0, 0 );
+				this.camera.lookAt( focus );
+
+				//	SCENE
+				this.scene = new THREE.Scene();
+				this.scene.fog = new THREE.Fog( 0x181818, 1000, 1500 );
+
+				//	renderer
+				this.renderer = new THREE.WebGLRenderer( { antialias: false } );
+				this.renderer.setClearColor( this.scene.fog.color, 1 );
+				this.renderer.setSize( window.innerWidth, window.innerHeight );
+				this.renderer.gammaInput = true;
+				this.renderer.gammaOutput = true;
+
+				_dom.appendChild( this.renderer.domElement );
+			},
+			animate	:	function()
+			{
+				//requestAnimationFrame( this.animate );
+				//this.render();
+				var _this = this;
+				setInterval(function(){
+					_this.render();
+				},1000/60);
+			},
+			render	:	function()
+			{
+				var _this = this;
+				_this.camera.lookAt( _this.focus );
+				_this.renderer.render( _this.scene, _this.camera );
+			}
+		}
+
+		return three;
+	})();
+	istWorld.Three = three;
+
+	var shader = (function(){
+		function shader( _dom, _vid, _fid, _uniforms )
+		{
+			//	props
+			this.scene;
+			this.camera;
+			this.focus;
+			this.renderer;
+
+			//
+			this.vid = _vid;
+			this.fid = _fid;
+
+			_uniforms = _uniforms||{}
+			this.uniforms = _uniforms;
+
+			if( !this.uniforms.time )
+			{
+				this.uniforms.time = { type: "f", value: 1.0 }
+			}
+
+			//	init
+			this.init3D( _dom );
+			this.createScreen();
+			this.animate();
+
+		}
+
+		shader.prototype = {
+			init3D	:	function( _dom )
+			{
+				var _width = window.innerWidth;
+				var _height = window.innerHeight;
+
+				//	カメラ
+				this.camera = new THREE.PerspectiveCamera( 50, _width / _height, 1, 1500 );
+				this.camera.position.z = 1;
+
+				//	カメラフォーカス	
+				this.focus = new THREE.Vector3();
+				this.focus.set( 0, 0, 0 );
+				this.camera.lookAt( focus );
+
+				//	SCENE
+				this.scene = new THREE.Scene();
+				this.scene.fog = new THREE.Fog( 0x181818, 1000, 1500 );
+
+				//	renderer
+				this.renderer = new THREE.WebGLRenderer( { antialias: false } );
+				this.renderer.setClearColor( this.scene.fog.color, 1 );
+				this.renderer.setSize( window.innerWidth, window.innerHeight );
+				this.renderer.gammaInput = true;
+				this.renderer.gammaOutput = true;
+
+				_dom.appendChild( this.renderer.domElement );
+			},
+			createScreen	:	function()
+			{
+				var geometry = new THREE.PlaneBufferGeometry( 2, 2 );
+				var material = new THREE.ShaderMaterial({
+					uniforms: this.uniforms,
+					vertexShader: this.vid,
+					fragmentShader: this.fid
+					//vertexShader: document.getElementById( this.vid ).textContent,
+					//fragmentShader: document.getElementById( this.fid ).textContent
+				} );
+
+				var mesh = new THREE.Mesh( geometry, material );
+				this.scene.add( mesh );
+			},
+			animate	:	function()
+			{
+				//requestAnimationFrame( this.animate );
+				//this.render();
+				var _this = this;
+				setInterval(function(){
+					_this.render();
+					_this.uniforms.time.value += 0.05;
+				},1000/60);
+			},
+			render	:	function()
+			{
+				var _this = this;
+				_this.camera.lookAt( _this.focus );
+				_this.renderer.render( _this.scene, _this.camera );
+			}
+		}
+		return shader;
+	})();
+	istWorld.Shader = shader;
+})(istWorld||(istWorld={}));
+</script>
+</body>
+</html>

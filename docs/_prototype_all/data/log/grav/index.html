@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>GravBall</title>
+<meta http-equiv="Content-Language" content="ja">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<meta http-equiv="Content-Script-Type" content="text/javascript">
+<meta http-equiv="imagetoolbar" content="no">
+<meta name="keywords" content="">
+<meta name="description" content="">
+<meta name="viewport" content="width=640, initial-scale=0.5, minimum-scale=0.5, maximum-scale=0.5, user-scalable=yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<link rel="apple-touch-icon" href="./favicon.png">
+<link rel="apple-touch-startup-image" href="./home.png">
+<link rel="apple-touch-startup-image" href="./home5.png" sizes="640x1136" media="(device-width: 640px) and (device-height: 1136px)">
+<link href='http://fonts.googleapis.com/css?family=EB+Garamond' rel='stylesheet' type='text/css'>
+<script type="text/javascript" src="jquery-1.8.0.min.js"></script>
+<script type="text/javascript" src="jquery.easing.1.3.js"></script>
+<script type="text/javascript" src="Tween.js"></script>
+<style type="text/css">
+html,
+body{
+	height: 100%;
+}
+body{
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+	-webkit-text-size-adjust: none;
+}
+h1,
+h2{
+	margin: 24px 0 0 24px;
+	padding: 0;
+	font-family: 'EB Garamond';
+	color: #333;
+	font-size: 24px;
+	line-height: 1;
+	font-weight: normal;
+	z-index: 100;
+}
+h2{
+	margin-top: 10px;
+	font-size: 14px;
+}
+
+canvas{
+	position: fixed;
+	top: 0;
+	left: 0;
+	z-index: -100;
+	zoom: 2;
+}
+
+p.note{
+	margin: 60px 24px;
+	font-weight: bold;
+	color: #333;
+}
+
+p.noteImg{
+	text-align: center;
+}
+
+img.arrow{
+	position: fixed;
+	left: 50%;
+	bottom: 10px;
+	margin-left: -30px;
+}
+
+
+
+</style>
+</head>
+<body>
+<h1>GravBall</h1>
+<h2>Device sensor.</h2>
+<script type="text/javascript">
+$(function(){
+	(function($){
+		var ua =
+		{
+			'msie'	:	false,
+			'msie6'	:	false,
+			'msie7'	:	false,
+			'msie8'	:	false,
+			'msie9'	:	false,
+			'iphone'	:	false,
+			'ipad'	:	false,
+			'ipod'	:	false,
+			'safari'	:	false,
+			'firefox'	:	false,
+			'chrome'	:	false,
+			'opera'	:	false,
+			'android'	:	false,
+			'blackberry'	:	false
+		};
+
+		var _ua = navigator.userAgent.toLowerCase();
+		_ua = _ua.replace(/ /g, "");
+		
+		for( var i in ua )
+		{
+			if( _ua.indexOf( i ) != -1 )
+			{
+				ua[i] = true;
+			}
+		}
+
+		if( ua.iphone || ua.ipad || ua.ipod )
+		{
+			if(window.navigator.standalone){
+			      //ホーム画面から起動してウェブアプリにアクセスがあった場合の処理
+			}else{
+			      //Safariで起動してウェブアプリにアクセスがあった場合の処理
+			      var _note = document.createElement('p');
+			      _note.className = 'note';
+			      _note.innerHTML = 'このサイトをiPhone/iPadのホーム画面に登録してから実行してください。<br>Please perform after registering this site into the home screen of iPhone.';
+			      document.body.appendChild( _note );
+
+			      var _noteImg = document.createElement('p');
+			      _noteImg.className = 'noteImg';
+			      _noteImg.innerHTML = '<img src="bg.jpg" width="244" height="432">';
+			      document.body.appendChild( _noteImg );
+
+			      var _arrow = new Image();
+			      _arrow.className = 'arrow';
+			      _arrow.src='arrow.png';
+			      document.body.appendChild( _arrow );
+
+				setInterval( function(){
+					$( _arrow ).css({
+						'bottom':'10px'
+					}).animate({
+						'bottom':'0'
+					}, 350 );
+				}, 400 );
+
+			      return;
+			}
+		}
+
+
+		var circle = function( _radius )
+		{
+			this.scale;
+			this.x;
+			this.y;
+			this.px;
+			this.py;
+			this.radius;
+			this.initialize.apply( this, arguments );
+		}
+		
+		circle.prototype = {
+			initialize	:	function( _radius )
+			{
+				this.scale = 1;
+				this.x = 0;
+				this.y = 0;
+				this.px = this.x;
+				this.py = this.y;
+				this.radius = _radius;
+			},
+			setPosition	:	function( x, y )
+			{
+				this.x = this.px = x;
+				this.y = this.py = y;
+			},
+			update	:	function()
+			{
+				var tempX = this.x;
+				var tempY = this.y;
+				this.x += this.vx();
+				this.y += this.vy();
+				this.px = tempX;
+				this.py = tempY;
+			},
+			constrain	:	function( a, b, c, d )
+			{
+	            this.x = Math.max(a, Math.min(a + c, this.x));
+	            this.y = Math.max(b, Math.min(b+d, this.y));
+			},
+			vx	:	function( e )
+			{
+				if( e == undefined )
+				{
+					return this.x - this.px;
+				} else {
+					this.px = this.x - e;
+				}
+			},
+			vy	:	function( e )
+			{
+				if( e == undefined )
+				{
+					return this.y - this.py;
+				} else {
+					this.py = this.y - e;
+				}
+			},
+			render	:	function( _canvas )
+			{
+				_posX = this.x + ( 1 - this.radius ) * this.scale;
+				_posY = this.y + ( 1 - this.radius ) * this.scale;
+				
+				var _ctx = _canvas.getContext( '2d' );
+				_ctx.beginPath();
+				_ctx.fillStyle = '#000000';
+				_ctx.arc( this.x, this.y, this.radius * this.scale, 0, Math.PI * 2 );
+				_ctx.fill();
+				
+			}
+		}
+		
+		
+		
+		var _fps = 60;
+		var _w = $( window ).width() * .5;
+		var _h = $( window ).height() * .5;
+		var _canvas = document.createElement( 'canvas' );
+		_canvas.width = _w;
+		_canvas.height = _h;
+
+		document.body.appendChild( _canvas );
+		var _l = [];
+		
+		var _num = 16;
+		
+		if( navigator.userAgent.indexOf('iPhone') != -1 )
+		{
+			_num = 16;
+			$( 'h1' ).css({
+				'marginTop'	:	'24px',
+				'fontSize':'48px'
+			});
+			$( 'h2' ).css({
+				'fontSize':'28px'
+			});
+			
+			_fps = 30;
+		}
+		
+		for( var i = 0; i < _num; i++ )
+		{
+			createCircle();
+		}
+		
+		
+		$( window ).bind( 'resize', function(){
+			_w = $( window ).width() * .5;
+			_h = $( window ).height() * .5;
+			_canvas.width = _w;
+			_canvas.height = _h;
+		} );
+		
+		var _gx = _gy = _gz = 0;
+		_gy = -1;
+		
+		window.addEventListener( 'devicemotion', _motion );
+		function _motion(e)
+		{
+			if( e.accelerationIncludingGravity )
+			{
+				_gx = e.accelerationIncludingGravity.x * .1;
+				_gy = e.accelerationIncludingGravity.y * .1;
+				_gz = e.accelerationIncludingGravity.z * .1;
+			}
+		}
+		
+		setInterval( function(){
+			var len = _l.length;
+			for( var i = 0; i < len; i++ )
+			{
+				var _c = _l[i];
+				_c.x += _gx;
+				_c.y -= _gy;
+				_c.update();
+			}
+			for( var i = 0; i < len-1; i++ )
+			{
+				var _c0 = _l[i];
+				for( var j = i + 1; j < len; j++ )
+				{
+					var _c1 = _l[j];
+					var _dx = _c1.x - _c0.x;
+					var _dy = _c1.y - _c0.y;
+					var _rDist = _c0.radius * _c0.scale + _c1.radius * _c1.scale;
+					var _dist = Math.sqrt( _dx * _dx + _dy * _dy );
+			            
+					
+					if( _rDist > _dist )
+					{
+			            var diff = _rDist - _dist;
+			            var offsetX = ( diff * _dx / _dist ) * .5;
+			            var offsetY = ( diff * _dy / _dist ) * .5;
+			            _c0.x -= offsetX;
+			            _c0.y -= offsetY;
+			            _c1.x += offsetX;
+			            _c1.y += offsetY;
+					}
+					
+				}
+			}
+			
+			var _ctx = _canvas.getContext( '2d' );
+			_ctx.clearRect( 0, 0, _w, _h );
+			
+			for( var i = 0; i < len; i++ )
+			{
+				var _c = _l[i];
+				_c.constrain( _c.radius * _c.scale, - _h * 2, _w - _c.radius * _c.scale * 2, _h * 3 - _c.radius * _c.scale );
+				_c.render( _canvas );
+			}
+			TWEEN.update();
+		}, 1000 / _fps );
+		
+		setInterval( function(){
+			
+			var _kill = _l.shift();
+			_kill = null;
+			
+			createCircle();
+			
+			var tween = new TWEEN.Tween( { scale: 1 } )
+            .to( { scale: 0 }, 400 )
+            .easing( TWEEN.Easing.Quartic.InOut )
+            .onUpdate( function () {
+            	_l[0].scale = this.scale;
+            })
+            .start();
+
+
+		}, 1000/ 1 );
+		
+		function createCircle()
+		{
+			var _a = ( navigator.userAgent.indexOf('iPhone') != -1 )? 30 : 30;
+			var _a2 = ( navigator.userAgent.indexOf('iPhone') != -1 )? 60 : 80;
+			
+			_a = ( navigator.userAgent.indexOf('iPad') != -1 )? _a * 2 : _a;
+			_a2 = ( navigator.userAgent.indexOf('iPad') != -1 )? _a2 * 3 : _a2;
+			
+			_a *= .5;
+			_a2 *= .5;
+			
+			var _r = Math.floor( Math.random() * _a2 ) + _a;
+			
+			var _c = new circle( _r );
+			_l.push( _c );
+			
+			var _rw = Math.floor( Math.random() * ( _w - _r * 2 ) ) + _r;
+			var _rh = Math.floor( Math.random() * ( _h - _r * 2 ) ) - _h + _r;
+			_c.setPosition( _rw, _rh );
+			
+			_c.render( _canvas );
+			
+			/*
+			var tween = new TWEEN.Tween( { scale: 0 } )
+            .to( { scale: 1 }, 800 )
+            .easing( TWEEN.Easing.Quartic.InOut )
+            .onUpdate( function () {
+            	_c.scale = this.scale;
+            })
+            .delay( _l.length * 50 )
+            .start();
+            */
+		}
+	})(jQuery);
+});
+</script>
+</body>
+</html>

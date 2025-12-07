@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0">
+<meta name="description" content="1,000,000">
+<meta name="keywords" content="">
+<title>DC.Experiments</title>
+<style>
+html,body{height: 100%;overflow: hidden;}
+body{margin: 0;padding: 0;background: #000;}
+</style>
+</head>
+<body>
+<div id="container"></div>
+<script type="x-shader/x-vertex" id="vertexshader">
+
+    uniform float time;
+    uniform float size;
+    attribute vec3 velocity;
+    attribute float delay;
+    varying vec2 vUv;
+
+	void main()
+	{
+        float par = clamp(time - delay, 0.0, 100.0 );   //  clamp(x, a, b) = min(max(x, a), b);
+
+        par = ( sin( par / 100.0 * 3.1416  - 3.1416 * 0.5 ) + 1.0 ) * 0.5 * 100.0;
+        par *= par;
+
+        vec3 pos = position + velocity * par;
+        vUv = uv;
+        vec4 mvPosition = modelViewMatrix * vec4( pos, 1.0 );
+        gl_PointSize = size * (100.0 / length(mvPosition.xyz));
+		gl_Position = projectionMatrix * modelViewMatrix * vec4( pos, 1.0 );
+	}
+</script>
+<script type="x-shader/x-fragment" id="fragmentshader">
+    
+    uniform sampler2D texture;
+    uniform sampler2D circle;
+    uniform float time;
+    varying vec2 vUv;
+	
+    void main()
+	{
+        vec4 color = texture2D( texture, vUv );
+        vec4 tex = texture2D( circle, gl_PointCoord.xy );
+		gl_FragColor = tex * vec4( color.rgb, 1.0 );
+	}
+</script>
+<script type="text/javascript" src="three.min.js"></script>
+<script type="text/javascript" src="stats.min.js"></script>
+<script type="text/javascript" src="HorizontalTiltShiftShader.js"></script>
+<script type="text/javascript" src="VerticalTiltShiftShader.js"></script>
+<script type="text/javascript" src="EffectComposer.js"></script>
+<script type="text/javascript" src="MaskPass.js"></script>
+<script type="text/javascript" src="RenderPass.js"></script>
+<script type="text/javascript" src="ShaderPass.js"></script>
+<script type="text/javascript" src="CopyShader.js"></script>
+<script type="text/javascript" src="OrbitControls.js"></script>
+<script type="text/javascript" src="TweenMax.min.js"></script>
+<script type="text/javascript" src="dat.gui.min.js"></script>
+<script type="text/javascript" src="engine.js"></script>
+
+
+</body>
+</html>

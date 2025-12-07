@@ -1,0 +1,180 @@
+<!doctype html>
+<html>
+<head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+<meta charset="UTF-8">
+<meta http-equiv="Content-Language" content="ja">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<meta http-equiv="Content-Script-Type" content="text/javascript">
+<meta http-equiv="imagetoolbar" content="no">
+<meta http-equiv="cleartype" content="on">
+<meta name="format-detection" content="telephone=no">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=yes, viewport-fit=cover">
+<meta name="keywords" content="">
+<meta name="description" content="">
+<link rel="apple-touch-icon-precomposed" sizes="120x120" href="http://nulldesign.jp/metrogram3d/shared/img/120x120.png">
+<link href="http://fonts.googleapis.com/css?family=EB+Garamond" rel="stylesheet" type="text/css">
+<link href="shared/css/reset.css" rel="stylesheet" type="text/css" media="all">
+<link href="shared/css/style.css" rel="stylesheet" type="text/css" media="all">
+<title>nulldesign.study</title>
+</head>
+<body>
+<div id="container">
+<div id="siteHead">
+<h1>nulldesign.study</h1>
+<h2>Creative Coding....</h2>
+<!--/ siteHead --></div>
+<div id="siteBody">
+<div id="webglView"><!--/ webglView --></div>
+<!--/ siteBody --></div>
+<div id="siteFoot"><p>COPYRIGHT &copy; 2018 nulldesign.jp <br>ALL RIGHTS RESERVED.</p>
+<!--/ siteFoot --></div>
+<!--/ container --></div>
+
+
+
+<script type="x-shader/x-vertex" id="lambertVertexShader">
+#include <common>
+uniform float time;
+varying vec3 vPosition;
+varying vec3 vNormal;
+varying vec2 vUv;
+void main()
+{
+    vPosition = position;
+    vNormal = normal;
+    vUv = uv;
+    gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+}
+</script>
+<script type="x-shader/x-fragment" id="lambertFragmentShader">
+uniform float time;
+
+uniform vec3 planeColor;
+uniform vec3 lightPosition;
+uniform vec3 lightColor;
+uniform vec3 ambientColor;
+
+uniform vec3 fogColor;
+uniform float fogNear;
+uniform float fogFar;
+
+varying vec3 vPosition;
+varying vec3 vNormal;
+varying vec2 vUv;
+
+void main()
+{
+    vec4 viewLightPosition = viewMatrix * vec4( lightPosition, 0.0 );
+    vec3 N = normalize( vNormal );
+    vec3 L = normalize( viewLightPosition.xyz );
+    float dotNL = dot( N, L );
+    vec3 diffuse = planeColor * lightColor * max( dotNL, 0.0 );
+    vec3 ambient = planeColor * ambientColor;
+    gl_FragColor = vec4( diffuse + ambient, 1.0 );
+
+    //  FOG
+    #ifdef USE_FOG
+        #ifdef USE_LOGDEPTHBUF_EXT
+            float depth = gl_FragDepthEXT / gl_FragCoord.w;
+        #else
+            float depth = gl_FragCoord.z / gl_FragCoord.w;
+        #endif
+        float fogFactor = smoothstep( fogNear, fogFar, depth );
+        gl_FragColor.rgb = mix( gl_FragColor.rgb, fogColor, fogFactor );
+    #endif
+}
+</script>
+
+
+
+<script type="x-shader/x-vertex" id="phongVertexShader">
+#include <common>
+uniform float time;
+varying vec3 vPosition;
+varying vec3 vNormal;
+varying vec2 vUv;
+void main()
+{
+    vPosition = position;
+    vNormal = normal;
+    vUv = uv;
+    gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+}
+</script>
+<script type="x-shader/x-fragment" id="phongFragmentShader">
+uniform float time;
+
+uniform vec3 planeColor;
+uniform vec3 lightPosition;
+uniform vec3 lightColor;
+uniform vec3 ambientColor;
+
+uniform vec3 fogColor;
+uniform float fogNear;
+uniform float fogFar;
+
+varying vec3 vPosition;
+varying vec3 vNormal;
+varying vec2 vUv;
+
+void main()
+{
+    vec4 viewLightPosition = viewMatrix * vec4( lightPosition, 0.0 );
+    vec3 N = normalize( vNormal );
+    vec3 L = normalize( viewLightPosition.xyz );
+    float dotNL = dot( N, L );
+    vec3 diffuse = planeColor * lightColor * max( dotNL, 0.0 );
+    vec3 ambient = planeColor * ambientColor;
+
+    
+    vec3 light = normalize( lightPosition );
+    vec3 position = vPosition;
+    vec3 fnormal = normalize(vNormal);
+
+    float _diffuse = max(dot(light, fnormal), 0.0);
+    vec3 view = - normalize(position.xyz);
+    vec3 halfway = normalize(light + view);
+    float _specular = pow(max(dot(fnormal, halfway), 0.0), 64.0 );
+
+    gl_FragColor = vec4( diffuse * _diffuse + vec3( 1.0, 1.0, 1.0 ) * _specular + ambient, 1.0 );
+
+    //  FOG
+    #ifdef USE_FOG
+        #ifdef USE_LOGDEPTHBUF_EXT
+            float depth = gl_FragDepthEXT / gl_FragCoord.w;
+        #else
+            float depth = gl_FragCoord.z / gl_FragCoord.w;
+        #endif
+        float fogFactor = smoothstep( fogNear, fogFar, depth );
+        gl_FragColor.rgb = mix( gl_FragColor.rgb, fogColor, fogFactor );
+    #endif
+}
+</script>
+
+
+
+<script type="text/javascript" src="shared/js/jquery-3.3.1.min.js"></script>
+<script type="text/javascript" src="shared/js/three.min.js"></script>
+<script type="text/javascript" src="shared/js/GPUComputationRenderer.js"></script>
+<script type="text/javascript" src="shared/js/OrbitControls.js"></script>
+<script type="text/javascript" src="shared/js/world.js"></script>
+<script type="text/javascript" src="shared/js/CopyShader.js"></script>
+<script type="text/javascript" src="shared/js/EffectComposer.js"></script>
+<script type="text/javascript" src="shared/js/MaskPass.js"></script>
+<script type="text/javascript" src="shared/js/RenderPass.js"></script>
+<script type="text/javascript" src="shared/js/ShaderPass.js"></script>
+
+<script type="text/javascript" src="shared/js/NoiseShader.js"></script>
+<script type="text/javascript" src="shared/js/VignetteShader.js"></script>
+<script type="text/javascript" src="shared/js/InvertShader.js"></script>
+<script type="text/javascript" src="shared/js/LineShader.js"></script>
+<script type="text/javascript" src="shared/js/RGBNoiseShader.js"></script>
+<script type="text/javascript" src="shared/js/MonoShader.js"></script>
+<script type="text/javascript" src="shared/js/BlurShader.js"></script>
+<script type="text/javascript" src="shared/js/BackBufferShader.js"></script>
+
+<script type="text/javascript" src="shared/js/ConvolutionShader.js"></script>
+<script type="text/javascript" src="shared/js/BloomPass.js"></script>
+<script type="text/javascript" src="shared/js/engine.js"></script>
+</body>
+</html>

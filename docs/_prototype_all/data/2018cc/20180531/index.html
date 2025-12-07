@@ -1,0 +1,491 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Language" content="ja">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<meta http-equiv="Content-Script-Type" content="text/javascript">
+<meta http-equiv="imagetoolbar" content="no">
+<meta http-equiv="cleartype" content="on">
+<meta name="format-detection" content="telephone=no">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=yes, viewport-fit=cover">
+<meta name="keywords" content="">
+<meta name="description" content="">
+<link href="http://fonts.googleapis.com/css?family=EB+Garamond" rel="stylesheet" type="text/css">
+<link href="shared/css/reset.css" rel="stylesheet" type="text/css" media="all">
+<link href="shared/css/style.css" rel="stylesheet" type="text/css" media="all">
+<title>GLSL Shader</title>
+</head>
+<body>
+<div id="container">
+<div id="siteHead">
+<h1>GLSL Shader</h1>
+<h2>Training</h2>
+<!--/ siteHead --></div>
+<div id="siteBody">
+<div id="webglView"><!--/ webglView --></div>
+<!--/ siteBody --></div>
+<div id="siteFoot"><p>&copy; nulldesign.jp</p>
+<!--/ siteFoot --></div>
+<!--/ container --></div>
+
+<script type="x-shader/x-vertex" id="vertexshader">
+void main()
+{
+  gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+}
+</script>
+<script type="x-shader/x-fragment" id="fragmentshader">
+uniform float time;
+uniform vec2 mouse;
+uniform vec2 resolution;
+
+uniform sampler2D backbuffer;
+
+void main()
+{
+  vec2 uv = gl_FragCoord.xy / resolution.xy;
+  float d = distance( mouse.xy * resolution.xy, gl_FragCoord.xy );
+  d = 30.0 / d;
+  d = pow( d, 2.0 );
+  vec4 b = texture2D( backbuffer, uv );
+
+        b *= 0.32;
+        b += texture2D(backbuffer, (gl_FragCoord.xy + vec2(-1.0,  1.0)) / resolution.xy ) * 0.04;
+        b += texture2D(backbuffer, (gl_FragCoord.xy + vec2( 0.0,  1.0)) / resolution.xy ) * 0.04;
+        b += texture2D(backbuffer, (gl_FragCoord.xy + vec2( 1.0,  1.0)) / resolution.xy ) * 0.04;
+        b += texture2D(backbuffer, (gl_FragCoord.xy + vec2(-1.0,  0.0)) / resolution.xy ) * 0.04;
+        b += texture2D(backbuffer, (gl_FragCoord.xy + vec2( 1.0,  0.0)) / resolution.xy ) * 0.04;
+        b += texture2D(backbuffer, (gl_FragCoord.xy + vec2(-1.0, -1.0)) / resolution.xy ) * 0.04;
+        b += texture2D(backbuffer, (gl_FragCoord.xy + vec2( 0.0, -1.0)) / resolution.xy ) * 0.04;
+        b += texture2D(backbuffer, (gl_FragCoord.xy + vec2( 1.0, -1.0)) / resolution.xy ) * 0.04;
+        b += texture2D(backbuffer, (gl_FragCoord.xy + vec2(-2.0,  2.0)) / resolution.xy ) * 0.02;
+        b += texture2D(backbuffer, (gl_FragCoord.xy + vec2(-1.0,  2.0)) / resolution.xy ) * 0.02;
+        b += texture2D(backbuffer, (gl_FragCoord.xy + vec2( 0.0,  2.0)) / resolution.xy ) * 0.02;
+        b += texture2D(backbuffer, (gl_FragCoord.xy + vec2( 1.0,  2.0)) / resolution.xy ) * 0.02;
+        b += texture2D(backbuffer, (gl_FragCoord.xy + vec2( 2.0,  2.0)) / resolution.xy ) * 0.02;
+        b += texture2D(backbuffer, (gl_FragCoord.xy + vec2(-2.0,  1.0)) / resolution.xy ) * 0.02;
+        b += texture2D(backbuffer, (gl_FragCoord.xy + vec2( 2.0,  1.0)) / resolution.xy ) * 0.02;
+        b += texture2D(backbuffer, (gl_FragCoord.xy + vec2(-2.0,  0.0)) / resolution.xy ) * 0.02;
+        b += texture2D(backbuffer, (gl_FragCoord.xy + vec2( 2.0,  0.0)) / resolution.xy ) * 0.02;
+        b += texture2D(backbuffer, (gl_FragCoord.xy + vec2(-2.0, -1.0)) / resolution.xy ) * 0.02;
+        b += texture2D(backbuffer, (gl_FragCoord.xy + vec2( 2.0, -1.0)) / resolution.xy ) * 0.02;
+        b += texture2D(backbuffer, (gl_FragCoord.xy + vec2(-2.0, -2.0)) / resolution.xy ) * 0.02;
+        b += texture2D(backbuffer, (gl_FragCoord.xy + vec2(-1.0, -2.0)) / resolution.xy ) * 0.02;
+        b += texture2D(backbuffer, (gl_FragCoord.xy + vec2( 0.0, -2.0)) / resolution.xy ) * 0.02;
+        b += texture2D(backbuffer, (gl_FragCoord.xy + vec2( 1.0, -2.0)) / resolution.xy ) * 0.02;
+        b += texture2D(backbuffer, (gl_FragCoord.xy + vec2( 2.0, -2.0)) / resolution.xy ) * 0.02;
+
+  gl_FragColor = b * 0.99;
+}
+</script>
+
+<!-- Fragment shader for protoplanet's position -->
+<script id="computeShaderPosition" type="x-shader/x-fragment">
+            // 現在の位置情報を決定する
+            #define delta ( 1.0 / 60.0 )
+            void main() {
+                vec2 uv = gl_FragCoord.xy / resolution.xy;
+                vec4 tmpPos = texture2D( texturePosition, uv );
+                vec3 pos = tmpPos.xyz;
+                vec4 tmpVel = texture2D( textureVelocity, uv );
+                // velが移動する方向(もう一つ下のcomputeShaderVelocityを参照)
+                vec3 vel = tmpVel.xyz;
+
+                // 移動する方向に速度を掛け合わせた数値を現在地に加える。
+                pos += vel * delta;
+
+
+
+                if( length( pos ) < 50.0 )
+                {
+                  pos = normalize( pos ) * 50.0;
+                }
+
+                gl_FragColor = vec4( pos, 1.0 );
+            }
+        </script>
+
+<!-- Fragment shader for protoplanet's velocity -->
+<script id="computeShaderVelocity" type="x-shader/x-fragment">
+
+            // 移動方向についていろいろ計算できるシェーダー。
+            // 今回はなにもしてない。
+            // ここでVelのx y zについて情報を上書きすると、それに応じて移動方向が変わる
+            #include <common>
+
+
+uniform float time;
+
+float random(vec2 p){
+    return fract(sin(dot(p ,vec2(12.9898,78.233))) * 43758.5453);
+}
+
+float noise2(vec2 st)
+{
+    vec2 p = floor(st);
+    return random(p);
+}
+
+float noise3(vec2 st)
+{
+    vec2 p = floor(st);
+    return random(p + vec2(time,0.0));
+}
+
+float valueNoise(vec2 st)
+{
+    vec2 p = floor(st);
+    vec2 f = fract(st);
+
+    float v00 = random( p + vec2( 0, 0 ) );
+    float v10 = random( p + vec2( 1, 0 ) );
+    float v01 = random( p + vec2( 0, 1 ) );
+    float v11 = random( p + vec2( 1, 1 ) );
+
+    vec2 u = f * f * (3.0 - 2.0 * f);
+
+    float v0010 = mix(v00, v10, u.x);
+    float v0111 = mix(v01, v11, u.x);
+    return mix(v0010, v0111, u.y);
+}
+
+vec2 random2(vec2 st){
+       vec2 _st = vec2( dot(st,vec2(127.1,311.7)),
+                      dot(st,vec2(269.5,183.3)));
+       return -1.0 + 2.0 * fract( sin(_st) * 43758.5453123 );
+   }
+
+float perlinNoise(vec2 st)
+{
+    vec2 p = floor(st);
+    vec2 f = fract(st);
+    vec2 u = f*f*(3.0-2.0*f);
+
+    vec2 v00 = random2( p + vec2(0,0) );
+    vec2 v10 = random2( p + vec2(1,0) );
+    vec2 v01 = random2( p + vec2(0,1) );
+    vec2 v11 = random2( p + vec2(1,1) );
+
+    return mix( mix( dot( v00, f - vec2(0,0) ), dot( v10, f - vec2(1,0) ), u.x ),
+                 mix( dot( v01, f - vec2(0,1) ), dot( v11, f - vec2(1,1) ), u.x ),
+                 u.y ) + 0.5;
+}
+
+float fBm (vec2 st)
+{
+    float f = 0.0;
+    vec2 q = st;
+
+    f += 0.5000 * perlinNoise( q ); q = q*2.01;
+    f += 0.2500 * perlinNoise( q ); q = q*2.02;
+    f += 0.1250 * perlinNoise( q ); q = q*2.03;
+    f += 0.0625 * perlinNoise( q ); q = q*2.01;
+
+    return f;
+}
+
+
+            void main() {
+                vec2 uv = gl_FragCoord.xy / resolution.xy;
+                float idParticle = uv.y * resolution.x + uv.x;
+                vec4 tmpVel = texture2D( textureVelocity, uv );
+
+//                vec3 vel = tmpVel.xyz;
+                vec4 tmpPos = texture2D( texturePosition, uv );
+
+
+                float _size = 0.01;
+                float _ax = fBm( tmpPos.yz * _size + time ) - 0.5;
+                float _ay = fBm( tmpPos.zx * _size + time ) - 0.5;
+                float _az = fBm( tmpPos.xy * _size + time ) - 0.5;
+                vec3 vel = tmpVel.xyz + vec3( _ax, _ay, _az );
+
+                vel *= 0.999;
+
+                float d = length( tmpPos.xyz );
+                vel -= tmpPos.xyz / d * 0.25;
+
+                gl_FragColor = vec4( vel.xyz, 1.0 );
+            }
+        </script>
+
+<!-- Particles vertex shader -->
+<script type="x-shader/x-vertex" id="particleVertexShader">
+
+            #include <common>
+            uniform sampler2D texturePosition;
+            uniform float cameraConstant;
+            uniform float density;
+            varying vec4 vColor;
+            varying vec2 vUv;
+            uniform float radius;
+
+
+
+            void main() {
+                vec4 posTemp = texture2D( texturePosition, uv );
+                vec3 pos = posTemp.xyz;
+                vColor = vec4( 0.1, 0.6, 0.9, 1.0 );
+
+                // ポイントのサイズを決定
+                vec4 mvPosition = modelViewMatrix * vec4( pos, 1.0 );
+                gl_PointSize = 0.5 * cameraConstant / ( - mvPosition.z );
+
+                // uv情報の引き渡し
+                vUv = uv;
+
+                // 変換して格納
+                gl_Position = projectionMatrix * mvPosition;
+            }
+        </script>
+
+<!-- Particles fragment shader -->
+<script type="x-shader/x-fragment" id="particleFragmentShader">
+            // VertexShaderから受け取った色を格納するだけ。
+            varying vec4 vColor;
+            void main() {
+
+                // 丸い形に色をぬるための計算
+                float f = length( gl_PointCoord - vec2( 0.5, 0.5 ) );
+                if ( f > 0.1 ) {
+                    discard;
+                }
+                gl_FragColor = vColor;
+            }
+        </script>
+<script type="text/javascript" src="shared/js/jquery-3.3.1.min.js"></script>
+<script type="text/javascript" src="shared/js/three.min.js"></script>
+<script type="text/javascript" src="shared/js/OrbitControls.js"></script>
+<script type="text/javascript" src="shared/js/GPUComputationRenderer.js"></script>
+<script type="text/javascript" src="shared/js/world.js"></script>
+<!-- <script type="text/javascript" src="shared/js/engine.js"></script> -->
+<script type="text/javascript">
+window.onload = function(){
+
+  var _world,_plane;
+  var _gpuCompute, _velocityVariable, _positionVariable, _positionUniforms, _velocityUniforms, _particleUniforms, _effectController;
+  var geometry;
+  var WIDTH,PARTICLES;
+  WIDTH = 512;
+  PARTICLES = WIDTH * WIDTH;
+
+  init();
+  initComputeRenderer();
+  initPosition();
+  start();
+
+  function init(){
+    _world = new world('webglView');
+    _plane = createPlane();
+    _world.add( _plane );
+    _world.controls.autoRotate = false;
+    //_world.controls.enabled = false;
+
+    _plane.position.z -= 100;
+
+    _plane.scale.x = window.innerWidth;
+    _plane.scale.y = window.innerHeight;
+
+    window.addEventListener( 'resize', function(){
+      _plane.scale.x = window.innerWidth;
+      _plane.scale.y = window.innerHeight;
+
+      _plane.material.uniforms.resolution.value.x = window.innerWidth;
+      _plane.material.uniforms.resolution.value.y = window.innerHeight;
+    })
+
+    window.addEventListener( 'mousemove', function( e ){
+      _plane.material.uniforms.mouse.value.x = e.pageX / window.innerWidth;
+      _plane.material.uniforms.mouse.value.y = ( window.innerHeight - e.pageY ) / window.innerHeight;
+      e.preventDefault();
+    });
+
+    window.addEventListener( 'touchmove', function( e ){
+      _plane.material.uniforms.mouse.value.x = e.touches[0].pageX / window.innerWidth;
+      _plane.material.uniforms.mouse.value.y = ( window.innerHeight - e.touches[0].pageY ) / window.innerHeight;
+      e.preventDefault();
+    });
+
+  }
+
+  function initComputeRenderer(){
+
+    PARTICLES = WIDTH * WIDTH;
+
+    // gpgpuオブジェクトのインスタンスを格納
+    _gpuCompute = new GPUComputationRenderer( WIDTH, WIDTH, _world.renderer );
+
+    // 今回はパーティクルの位置情報と、移動方向を保存するテクスチャを2つ用意します
+    var dtPosition = _gpuCompute.createTexture();
+    var dtVelocity = _gpuCompute.createTexture();
+
+    // テクスチャにGPUで計算するために初期情報を埋めていく
+    fillTextures( dtPosition, dtVelocity );
+
+    // shaderプログラムのアタッチ
+    _velocityVariable = _gpuCompute.addVariable( "textureVelocity", document.getElementById( 'computeShaderVelocity' ).textContent, dtVelocity );
+    _positionVariable = _gpuCompute.addVariable( "texturePosition", document.getElementById( 'computeShaderPosition' ).textContent, dtPosition );
+
+    // 一連の関係性を構築するためのおまじない
+    _gpuCompute.setVariableDependencies( _velocityVariable, [ _positionVariable, _velocityVariable ] );
+    _gpuCompute.setVariableDependencies( _positionVariable, [ _positionVariable, _velocityVariable ] );
+
+
+    // uniform変数を登録したい場合は以下のように作る
+    /*
+    positionUniforms = positionVariable.material.uniforms;
+    velocityUniforms = velocityVariable.material.uniforms;
+
+    velocityUniforms.time = { value: 0.0 };
+    positionUniforms.time = { ValueB: 0.0 };
+    ***********************************
+    たとえば、上でコメントアウトしているeffectControllerオブジェクトのtimeを
+    わたしてあげれば、effectController.timeを更新すればuniform変数も変わったり、ということができる
+    velocityUniforms.time = { value: effectController.time };
+    ************************************
+    */
+
+
+    _velocityUniforms = _velocityVariable.material.uniforms;
+    _velocityUniforms.time = { value: 0.0 };
+
+    // error処理
+    var error = _gpuCompute.init();
+    if ( error !== null ) {
+        console.error( error );
+    }
+  }
+
+  function initPosition() {
+
+      // 最終的に計算された結果を反映するためのオブジェクト。
+      // 位置情報はShader側(texturePosition, textureVelocity)
+      // で決定されるので、以下のように適当にうめちゃってOK
+
+      geometry = new THREE.BufferGeometry();
+      var positions = new Float32Array( PARTICLES * 3 );
+      var p = 0;
+      for ( var i = 0; i < PARTICLES; i++ ) {
+          positions[ p++ ] = 0;
+          positions[ p++ ] = 0;
+          positions[ p++ ] = 0;
+      }
+
+      // uv情報の決定。テクスチャから情報を取り出すときに必要
+      var uvs = new Float32Array( PARTICLES * 2 );
+      p = 0;
+      for ( var j = 0; j < WIDTH; j++ ) {
+          for ( var i = 0; i < WIDTH; i++ ) {
+              uvs[ p++ ] = i / ( WIDTH - 1 );
+              uvs[ p++ ] = j / ( WIDTH - 1 );
+          }
+      }
+
+      // attributeをgeometryに登録する
+      geometry.addAttribute( 'position', new THREE.BufferAttribute( positions, 3 ) );
+      geometry.addAttribute( 'uv', new THREE.BufferAttribute( uvs, 2 ) );
+
+
+      // uniform変数をオブジェクトで定義
+      // 今回はカメラをマウスでいじれるように、計算に必要な情報もわたす。
+      _particleUniforms = {
+          texturePosition: { value: null },
+          textureVelocity: { value: null },
+          cameraConstant: { value: getCameraConstant( _world.camera ) }
+      };
+
+
+
+      // Shaderマテリアル これはパーティクルそのものの描写に必要なシェーダー
+      var material = new THREE.ShaderMaterial( {
+          uniforms:       _particleUniforms,
+          vertexShader:   document.getElementById( 'particleVertexShader' ).textContent,
+          fragmentShader: document.getElementById( 'particleFragmentShader' ).textContent,
+          blending: THREE.AdditiveBlending,
+          transparent: true
+      });
+      material.extensions.drawBuffers = true;
+      var particles = new THREE.Points( geometry, material );
+      particles.matrixAutoUpdate = false;
+      particles.updateMatrix();
+
+      // パーティクルをシーンに追加
+      _world.add( particles );
+  }
+
+
+  function fillTextures( texturePosition, textureVelocity ) {
+
+      // textureのイメージデータをいったん取り出す
+      var posArray = texturePosition.image.data;
+      var velArray = textureVelocity.image.data;
+
+      // パーティクルの初期の位置は、ランダムなXZに平面おく。
+      // 板状の正方形が描かれる
+
+      for ( var k = 0, kl = posArray.length; k < kl; k += 4 ) {
+          // Position
+          var x, y, z;
+          x = Math.random()*500-250;
+          z = Math.random()*500-250;
+          y = 0;
+          // posArrayの実態は一次元配列なので
+          // x,y,z,wの順番に埋めていく。
+          // wは今回は使用しないが、配列の順番などを埋めておくといろいろ使えて便利
+          posArray[ k + 0 ] = x;
+          posArray[ k + 1 ] = y;
+          posArray[ k + 2 ] = z;
+          posArray[ k + 3 ] = 0;
+
+          // 移動する方向はとりあえずランダムに決めてみる。
+          // これでランダムな方向にとぶパーティクルが出来上がるはず。
+          velArray[ k + 0 ] = Math.random()*2-1;
+          velArray[ k + 1 ] = Math.random()*2-1;
+          velArray[ k + 2 ] = Math.random()*2-1;
+          velArray[ k + 3 ] = Math.random()*2-1;
+      }
+  }
+  function getCameraConstant( camera ) {
+      return window.innerHeight / ( Math.tan( THREE.Math.DEG2RAD * 0.5 * camera.fov ) / camera.zoom ) * 1.0;
+  }
+
+  function start(){
+    loop( 0 );
+  }
+
+  function loop( _stepTime ){
+    window.requestAnimationFrame( loop );
+    _plane.material.uniforms.time.value = _stepTime * 0.001;
+    _gpuCompute.compute();
+
+    _velocityUniforms.time = { value: _stepTime * 0.001 };
+
+    // 計算した結果が格納されたテクスチャをレンダリング用のシェーダーに渡す
+    _particleUniforms.texturePosition.value = _gpuCompute.getCurrentRenderTarget( _positionVariable ).texture;
+    _particleUniforms.textureVelocity.value = _gpuCompute.getCurrentRenderTarget( _velocityVariable ).texture;
+  }
+
+  function createPlane(){
+      var _uniforms = {
+        'time': {value:0},
+        'mouse': {value: new THREE.Vector2()  },
+        'resolution': {value: new THREE.Vector2( window.innerWidth, window.innerHeight )  },
+        'backbuffer': {value: _world.bufferTexture}
+      };
+
+      var _material = new THREE.ShaderMaterial({
+        uniforms: _uniforms,
+        vertexShader:   document.getElementById( 'vertexshader' ).textContent,
+        fragmentShader: document.getElementById( 'fragmentshader' ).textContent,
+        transparent: true
+      });
+
+      var _geometry = new THREE.PlaneGeometry(1,1,1,1);
+
+      return new THREE.Mesh(_geometry,_material);
+  }
+}
+</script>
+</body>
+</html>

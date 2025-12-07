@@ -1,0 +1,217 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Language" content="ja">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<meta http-equiv="Content-Script-Type" content="text/javascript">
+<meta http-equiv="imagetoolbar" content="no">
+<meta http-equiv="cleartype" content="on">
+<meta name="format-detection" content="telephone=no">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=yes, viewport-fit=cover">
+<link href="https://fonts.googleapis.com/css?family=EB+Garamond" rel="stylesheet" type="text/css">
+<link href="shared/css/reset.css" rel="stylesheet" type="text/css" media="all">
+<link href="shared/css/style.css" rel="stylesheet" type="text/css" media="all">
+<meta name="keywords" content="">
+<meta name="description" content="">
+<style>
+#nav{
+  position: fixed;
+  right: 0;
+  top: 0;
+  width: 460px;
+  height: 100%;
+  background: rgba(0,0,0,0.8);
+  color: #FFF;
+  text-align: left;
+  border: 1px solid #000;
+  font-family: 'EB Garamond', serif !important;
+  font-size: 125%;
+  box-shadow: 0 0 16px rgba(0,0,0,0.8);
+}
+#nav a{
+  color: #FFF;
+  text-decoration: none;
+  opacity: 0.6;
+}
+
+#nav a:hover{
+  opacity: 1.0;
+}
+
+#nav h1,
+#nav h2{
+  margin-top: 2em;
+  font-weight: bold;
+}
+
+#nav h1:first-child{
+  margin-top: 0em;
+}
+#nav li{
+  padding-left: 32px;
+  font-size: 80%;
+  font-family: Arial;
+}
+#navInner{
+  padding: 32px;
+}
+
+#hoge{
+  position: fixed;
+  z-index: 1000;
+  right: 32px;
+  top: 32px;
+  cursor: pointer;
+}
+
+section li{
+  display: inline-block;
+  margin-right: 10px;
+}
+
+</style>
+<title>DEMO</title>
+
+</head>
+<body>
+<div id="container">
+<div id="siteHead">
+<h1>SVG Checker</h1>
+<h2>Beautiful icons.</h2>
+<!--/ siteHead --></div>
+<!--/ container --></div>
+
+<script type="text/javascript" src="shared/js/stats.min.js"></script>
+<script type="text/javascript" src="shared/js/jquery-3.3.1.min.js"></script>
+<script type="text/javascript" src="shared/js/three.min.js"></script>
+<script type="text/javascript" src="shared/js/SVGLoader.js"></script>
+<script type="text/javascript" src="shared/js/OrbitControls.js"></script>
+<script type="text/javascript" src="shared/js/SplineCurve.js"></script>
+<script type="text/javascript" src="shared/js/shaderLib/CopyShader.js"></script>
+<script type="text/javascript" src="shared/js/shaderLib/EffectComposer.js"></script>
+<script type="text/javascript" src="shared/js/shaderLib/MaskPass.js"></script>
+<script type="text/javascript" src="shared/js/shaderLib/RenderPass.js"></script>
+<script type="text/javascript" src="shared/js/shaderLib/ShaderPass.js"></script>
+<script type="text/javascript" src="shared/js/shader/FilmShader.js"></script>
+<script type="text/javascript" src="shared/js/shader/HorizontalTiltShiftShader.js"></script>
+<script type="text/javascript" src="shared/js/shader/VerticalTiltShiftShader.js"></script>
+<script type="text/javascript" src="shared/js/shader/VignetteShader.js"></script>
+<script type="text/javascript" src="shared/js/shader/RGBShiftShader.js"></script>
+<script type="text/javascript" src="shared/js/shader/HueSaturationShader.js"></script>
+<script type="text/javascript" src="shared/js/shader/BloomShader.js"></script>
+<script type="text/javascript" src="shared/js/shader/InvertShader.js"></script>
+<script type="text/javascript" src="shared/js/shader/MonoShader.js"></script>
+<script type="text/javascript" src="shared/js/libs.js"></script>
+<script type="text/javascript" src="shared/js/world.js"></script>
+
+
+
+<script type="text/javascript">
+
+
+window.onload = function()
+{
+  var style="color:white;background-color:#484848;padding: 3px 6px;";
+  window.console.log("%cSkyNet - v1.0.0" , style);
+
+  var _world = new world('container');
+  _world.camera.position.set( 0, 50, 0 );
+  //_world.renderer.setPixelRatio( window.devicePixelRatio );
+  var _svgs = [];
+
+  
+  _loop(0);
+  function _loop( _time ){
+    window.requestAnimationFrame( _loop );
+  };
+
+var _list00 = ['ico00.svg','ico01.svg','ico02.svg','ico03.svg','ico04.svg','ico05.svg','ico06.svg','ico07.svg','ico08.svg','ico09.svg','ico10.svg','ico11.svg','ico12.svg','ico13.svg','ico14.svg','ico15.svg','ico16.svg','ico17.svg','ico18.svg','ico19.svg','ico20.svg','ico21.svg','ico22.svg','ico23.svg','ico24.svg','ico25.svg','ico26.svg','ico27.svg','ico28.svg','ico29.svg','ico30.svg','ico31.svg','ico32.svg','ico33.svg','ico34.svg','ico35.svg','ico36.svg','ico37.svg','ico38.svg','ico39.svg','ico40.svg','ico41.svg','ico42.svg','ico43.svg','ico44.svg','ico45.svg','ico46.svg','ico47.svg','ico48.svg'];
+var _list01 = ['ico00.svg','ico01.svg','ico02.svg','ico03.svg','ico04.svg','ico05.svg','ico06.svg','ico07.svg','ico08.svg','ico09.svg','ico10.svg','ico11.svg','ico12.svg','ico13.svg','ico14.svg','ico15.svg','ico16.svg','ico17.svg','ico18.svg','ico19.svg','ico20.svg','ico21.svg','ico22.svg','ico23.svg','ico24.svg','ico25.svg','ico26.svg','ico27.svg','ico28.svg','ico29.svg','ico30.svg','ico31.svg','ico32.svg','ico33.svg','ico34.svg','ico35.svg','ico36.svg','ico37.svg','ico38.svg','ico39.svg','ico40.svg','ico41.svg','ico42.svg','ico43.svg','ico44.svg','ico45.svg','ico46.svg','ico47.svg','ico48.svg'];
+
+var _result0 = [];
+var _result1 = [];
+
+_loopLoader01();
+
+function _loopLoader01()
+{
+  if( _list00.length )
+  {
+    var _file = _list00.shift();
+
+    //  Load Map
+    var guiData = {
+      currentURL: 'shared/img/icons/' + _file,
+      drawFillShapes: true,
+      drawStrokes: true,
+      fillShapesWireframe: false,
+      strokesWireframe: false
+    }
+
+
+    loadSVG( guiData, function( _mesh ){
+      _world.add( _mesh );
+
+      //_mesh.rotation.x = Math.PI * 0.5;
+
+      var _grid = 5;
+      var _no = _result0.length;
+      _mesh.position.x = ( _no % 7 - 3 ) * _grid;
+      _mesh.position.z = ~~( _no / 7 - 3 ) * _grid;
+      _result0.push( _mesh );
+      setTimeout( _loopLoader01, 1 )
+
+    });
+
+  } else {
+      setTimeout( _loopLoader02, 1 )
+  }
+}
+
+function _loopLoader02()
+{
+  if( _list01.length )
+  {
+    var _file = _list01.shift();
+
+    //  Load Map
+    var guiData = {
+      currentURL: 'shared/img/icons2/' + _file,
+      drawFillShapes: true,
+      drawStrokes: true,
+      fillShapesWireframe: false,
+      strokesWireframe: false
+    }
+
+
+    loadSVG( guiData, function( _mesh ){
+      _world.add( _mesh );
+
+      // for( var i = 0; i < _mesh.children.length; i++ )
+      // {
+      //   var _child = _mesh.children[i];
+      //   _child.material.transparent = true;
+      //   _child.material.opacity = 0.5;
+      // }
+
+      var _grid = 5;
+      var _no = _result1.length;
+      _mesh.position.x = ( _no % 7 - 3 ) * _grid;
+      _mesh.position.z = ~~( _no / 7 - 3 ) * _grid;
+      _mesh.position.y = 3;
+      _result1.push( _mesh );
+      setTimeout( _loopLoader02, 1 )
+
+    });
+
+  }
+}
+
+
+
+}
+
+</script>
+</body>
+</html>

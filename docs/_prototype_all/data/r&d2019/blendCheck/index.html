@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
+<title>Color.Shader</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<link rel="stylesheet" type="text/css" href="assets/css/style.css" media="all">
+<script type="x-shader/x-vertex" id="vertexshader">
+uniform vec2 resolution;
+uniform vec2 mouse;
+uniform vec2 scroll;
+uniform float time;
+varying vec2 vUv;
+
+void main()
+{
+    vUv = uv;
+	gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+}
+</script>
+<script type="x-shader/x-fragment" id="fragmentshader">
+	highp float;
+
+uniform vec2 resolution;
+uniform vec2 mouse;
+uniform vec2 scroll;
+uniform float time;
+
+varying vec2 vUv;
+
+float random(vec2 p){
+    return fract(sin(dot(p ,vec2(12.9898,78.233))) * 43758.5453);
+}
+
+float noise2(vec2 st)
+{
+    vec2 p = floor(st);
+    return random(p);
+}
+
+float noise3(vec2 st)
+{
+    vec2 p = floor(st);
+    return random(p + vec2(time,0.0));
+}
+
+float valueNoise(vec2 st)
+{
+    vec2 p = floor(st);
+    vec2 f = fract(st);
+
+    float v00 = random( p + vec2( 0, 0 ) );
+    float v10 = random( p + vec2( 1, 0 ) );
+    float v01 = random( p + vec2( 0, 1 ) );
+    float v11 = random( p + vec2( 1, 1 ) );
+
+    vec2 u = f * f * (3.0 - 2.0 * f);
+
+    float v0010 = mix(v00, v10, u.x);
+    float v0111 = mix(v01, v11, u.x);
+    return mix(v0010, v0111, u.y);
+}
+
+vec2 random2(vec2 st){
+   vec2 _st = vec2( dot(st,vec2(127.1,311.7)),
+                  dot(st,vec2(269.5,183.3)));
+   return -1.0 + 2.0 * fract( sin(_st) * 43758.5453123 );
+}
+
+float perlinNoise(vec2 st)
+{
+    vec2 p = floor(st);
+    vec2 f = fract(st);
+    vec2 u = f*f*(3.0-2.0*f);
+
+    vec2 v00 = random2( p + vec2(0,0) );
+    vec2 v10 = random2( p + vec2(1,0) );
+    vec2 v01 = random2( p + vec2(0,1) );
+    vec2 v11 = random2( p + vec2(1,1) );
+
+    return mix( mix( dot( v00, f - vec2(0,0) ), dot( v10, f - vec2(1,0) ), u.x ),
+                 mix( dot( v01, f - vec2(0,1) ), dot( v11, f - vec2(1,1) ), u.x ),
+                 u.y ) + 0.5;
+}
+
+vec3 hash( vec3 p )
+{
+    p = vec3( dot(p,vec3(127.1,311.7, 74.7)),
+              dot(p,vec3(269.5,183.3,246.1)),
+              dot(p,vec3(113.5,271.9,124.6)));
+
+    return -1.0 + 2.0*fract(sin(p)*43758.5453123);
+}
+
+float noise( in vec3 p )
+{
+    vec3 i = floor( p );
+    vec3 f = fract( p );
+
+    vec3 u = f*f*(3.0-2.0*f);
+
+    return mix( mix( mix( dot( hash( i + vec3(0.0,0.0,0.0) ), f - vec3(0.0,0.0,0.0) ), 
+                          dot( hash( i + vec3(1.0,0.0,0.0) ), f - vec3(1.0,0.0,0.0) ), u.x),
+                     mix( dot( hash( i + vec3(0.0,1.0,0.0) ), f - vec3(0.0,1.0,0.0) ), 
+                          dot( hash( i + vec3(1.0,1.0,0.0) ), f - vec3(1.0,1.0,0.0) ), u.x), u.y),
+                mix( mix( dot( hash( i + vec3(0.0,0.0,1.0) ), f - vec3(0.0,0.0,1.0) ), 
+                          dot( hash( i + vec3(1.0,0.0,1.0) ), f - vec3(1.0,0.0,1.0) ), u.x),
+                     mix( dot( hash( i + vec3(0.0,1.0,1.0) ), f - vec3(0.0,1.0,1.0) ), 
+                          dot( hash( i + vec3(1.0,1.0,1.0) ), f - vec3(1.0,1.0,1.0) ), u.x), u.y), u.z );
+}
+float fbm( vec3 p )
+{
+    return noise(p*.06125)*.5 + noise(p*.125)*.25 + noise(p*.25)*.125 + noise(p*.4)*.2;
+}
+
+float easeInOutExpo(float t,float b,float c,float d)
+{
+    if (t==0.0) return b;
+    if (t==d) return b+c;
+    if ((t/=d/2.0) < 1.0) return c/2.0 * pow(2.0, 10.0 * (t - 1.0)) + b - c * 0.0005;
+    return c/2.0 * 1.0005 * (- pow(2.0, -10.0 * --t) + 2.0) + b;
+}
+
+void main()
+{
+    vec2 st = vUv;
+    st = (gl_FragCoord.xy - 0.5 * resolution.xy) / min( resolution.x, resolution.y );
+
+    float _range = 0.4;
+
+    float _dist0 = length( vec2( -0.1, -0.1 ) - st );
+    float _opacity0 = 1.0 - smoothstep( 0.245, 0.25, _dist0 );
+    vec3 _color0 = vec3( 0.9, 0.1, 0.1 ) * _opacity0;
+
+    float _dist1 = length( vec2( 0.1, -0.1 ) - st );
+    float _opacity1 = 1.0 - smoothstep( 0.245, 0.25, _dist1 );
+    vec3 _color1 = vec3( 0.1, 0.1, 0.9 ) * _opacity1;
+
+    float _dist2 = length( vec2( 0.0, 0.1 ) - st );
+    float _opacity2 = 1.0 - smoothstep( 0.245, 0.25, _dist2 );
+    vec3 _color2 = vec3( 0.1, 0.9, 0.1 ) * _opacity2;
+
+    //  基本  
+    vec3 _color = _color0 + _color1 + _color2;
+    _color = min( _color, vec3(1.0 ) );
+
+    //  加算色
+    gl_FragColor = vec4( _color, 1.0 );
+
+    //  減算色
+
+
+    if( mouse.x / resolution.x < vUv.x )
+    {
+        gl_FragColor = vec4( 1.0 - _color, 1.0 );  
+    }
+    
+    
+
+}
+</script>
+
+</head>
+<body>
+<h1 style="font-weight: normal; margin: 32px; padding: 0; line-height; 1;">Color.Shader</h1>
+<script type="text/javascript" src="assets/js/three.min.js"></script>
+<script type="text/javascript" src="assets/js/engine.js"></script>
+</body>
+</html>

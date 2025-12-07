@@ -1,0 +1,296 @@
+<!doctype>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=yes">
+<meta name="keywords" content="">
+<meta name="description" content="TOKYO">
+<title>webgl sample</title>
+<style>
+html,body{height:100%;overflow:hidden;}
+body{
+	margin: 0;
+	padding: 0;
+	background: #000;
+}
+#container{
+	width: 100%;
+	height: 100%;
+}
+#counter{
+	position: fixed;
+	left: 32;
+	top: 32;
+	color: #FFF;
+	font-family: Arial;
+	z-index: 100;
+}
+</style>
+</head>
+<body>
+<p id="counter"></p>
+<div id="container"></div>
+<script src="../js/jquery-2.1.1.min.js"></script>
+<script src="../js/Detector.js"></script>
+<script src="../js/stats.min.js"></script>
+<script src="../js/three.min.js"></script>
+
+<script type="text/javascript">
+(function(){
+	var container
+	var camera
+	var scene
+	var renderer
+	var stats
+	var _mouse = {x:$( window ).height() * 0.5,y:$( window ).width() * 0.5};
+	var _data
+
+	//	
+	if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
+
+
+	var _files = [
+		'a1.json',
+		'a2.json',
+		'a3.json',
+		'a4.json',
+		'a5.json',
+		'b1.json',
+		'b2.json',
+		'b3.json',
+		'b4.json',
+		'b5.json',
+		'c1.json',
+		'c2.json',
+		'c3.json',
+		'c4.json',
+		'c5.json',
+		'd1.json',
+		'd2.json',
+		'd3.json',
+		'd4.json',
+		'd5.json',
+		'e1.json',
+		'e2.json',
+		'e3.json',
+		'e4.json',
+		'e5.json'
+	];
+
+	_data = [];
+	loadfiles();
+	function loadfiles()
+	{
+		console.log( _files.length )
+		if( _files.length )
+		{
+			var _url = _files.pop();
+			$.ajax({
+				url: _url,
+				type: 'GET',
+				dataType: 'JSON',
+				success: function( _json )
+				{
+					var len = _json.length;
+					while( len )
+					{
+						len--;
+						var _dat = _json.pop();
+						var _x = Math.round( ( _dat.lng - 139.5 ) / 0.001 );
+						var _y = Math.round( ( _dat.lat - 35.4 ) / 0.001 );
+						var _y = Math.round( ( _dat.lng - 139.5 ) / 0.001 );
+						var _x = Math.round( ( _dat.lat - 35.5 ) / 0.001 );
+						var _val = _dat.elev * 1;
+					
+						//	console.log( _x, _y );
+
+						if( !_data[_x] )
+						{
+							_data[_x] = [];
+						}
+
+						_data[_x][_y] = _val;
+					}
+
+					loadfiles();
+				},
+				error : function()
+				{
+					console.log('err');
+					loadfiles();
+				}
+			});
+		} else {
+			init();
+			createObject();
+			createStats();
+			animate();
+
+			window.addEventListener( 'resize', onWindowResize, false );
+			$( window ).on( 'mousemove', _onMouseMove );
+			$( window ).on( 'touchmove', _onTouchMove );
+		}
+	}
+
+
+
+	function onWindowResize()
+	{
+		camera.aspect = window.innerWidth / window.innerHeight;
+		renderer.setSize( window.innerWidth, window.innerHeight );
+	}
+
+	function _onMouseMove(e)
+	{
+		_mouse.x = e.originalEvent.pageX;
+		_mouse.y = e.originalEvent.pageY;
+	}
+	function _onTouchMove(e)
+	{
+		e.preventDefault();
+		_mouse.x = e.originalEvent.touches[0].pageX;
+		_mouse.y = e.originalEvent.touches[0].pageY;
+	}
+
+	function init()
+	{
+		var len = _data.length;
+		console.log( len )
+		var max = 0;
+		while( len )
+		{
+			len--;
+			max = max<_data[len].length?_data[len].length:max;
+		}
+		console.log( max );
+		//	器
+		container = document.getElementById('container');
+
+		//	カメラ
+		var _width = window.innerWidth;
+		var _height = window.innerHeight;
+		camera = new THREE.PerspectiveCamera( 50, _width / _height, 1, 5500 );
+		camera.position.x = 0;
+		camera.position.y = 0;
+		camera.position.z = 200;
+
+		//	カメラフォーカス	
+		var _focus = new THREE.Vector3();
+		_focus.set( 0, 0, 0 );
+		camera.lookAt( _focus );
+
+		//	シーン
+		scene = new THREE.Scene();
+		scene.fog = new THREE.Fog( 0x050505, 2000, 5500 );
+
+		//	環境光（最小限の光的なの。適度に暗い方が質感が出る
+		scene.add( new THREE.AmbientLight( 0x404040 ) );
+
+		//	光
+		light = new THREE.DirectionalLight( 0xffffff );
+		light.position.set( 1, 1, 0 );
+		scene.add( light );
+
+		light = new THREE.SpotLight(0xFFFFFF);
+		light.position.set(0, 400, 160);
+		light.distance = 1200;
+		light.intensity = 1;
+		scene.add( light );
+
+		//	renderer
+		renderer = new THREE.WebGLRenderer( { antialias: false } );
+		renderer.setClearColor( scene.fog.color, 1 );
+		renderer.setSize( window.innerWidth, window.innerHeight );
+
+		renderer.gammaInput = true;
+		renderer.gammaOutput = true;
+
+		container.appendChild( renderer.domElement );
+	}
+
+	function createObject()
+	{
+		var geometry = new THREE.PlaneGeometry( 4000, 5070, 400, 507 );
+		//var material = new THREE.MeshBasicMaterial({color: 0xcccccc,side: THREE.DoubleSide, wireframe: true});
+		//	var material = new THREE.MeshBasicMaterial({color: 0xcccccc,side: THREE.DoubleSide});
+		//var material = new THREE.MeshPhongMaterial({shading: THREE.NoShading, side: THREE.DoubleSide, color: 0xCCCCCC, wireframe:false});
+		var material = new THREE.MeshPhongMaterial({side: THREE.DoubleSide, color: 0xCCCCCC, wireframe:false});
+		material.emissive.set(0x333333);
+		material.shininess = 256;
+
+		var mesh = new THREE.Mesh( geometry, material );
+		mesh.rotation.x = THREE.Math.degToRad( -90 );
+		scene.add( mesh );
+
+		console.log( geometry.vertices.length )
+
+		var _count = 0;
+		var len0 = _data.length;
+		for( var i = 0; i < len0; i++ )
+		{
+			if( _data[i] )
+			{
+				var len1 = _data[i].length;
+				for( var j = 0; j < len1; j++ )
+				{
+					var _p = _data[i][j];
+					if( _p )
+					{
+						geometry.vertices[_count].z = _p;
+					}
+					
+					_count++;
+				}
+			}
+		}
+
+		geometry.computeFaceNormals();
+		geometry.computeVertexNormals();
+
+
+		var geometry = new THREE.IcosahedronGeometry( 32, 1 )
+		var material = new THREE.MeshLambertMaterial({shading: THREE.NoShading, side: THREE.DoubleSide, color: 0xCC0000, wireframe:false});
+		material.emissive.set(0x333333);
+		material.shininess = 256;
+		var sphere = new THREE.Mesh(geometry, material);
+		//sphere.position.x = 139.7617618;
+		//sphere.position.z = 35.6749353;
+		sphere.position.y = 32
+		scene.add(sphere);
+	}
+
+	function createStats()
+	{
+		stats = new Stats();
+		stats.domElement.style.position = 'fixed';
+		stats.domElement.style.left = "0px";
+		stats.domElement.style.top = '0px';
+		container.appendChild( stats.domElement );
+	}
+
+	function animate()
+	{
+		requestAnimationFrame( animate );
+		render();
+
+		stats.update();
+	}
+
+	function render()
+	{
+		var _hh = $( window ).height() * 0.5;
+		var _hw = $( window ).width() * 0.5;
+		var _cx = ( _hw - _mouse.x ) / _hw * Math.PI * 0.5;
+		var _cy = ( _hh - _mouse.y ) / _hh * Math.PI * 0.5;
+		camera.position.x = Math.sin( _cx ) * 3000;
+		camera.position.y = Math.sin( _cy ) * 500 + 600;
+		camera.position.z = 300;
+		camera.lookAt( scene.position );
+
+		renderer.render( scene, camera );
+	}
+
+})();
+</script>
+</body>
+</html>

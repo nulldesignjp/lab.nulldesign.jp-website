@@ -1,0 +1,18 @@
+/*
+	style.css
+*/
+html,body{height:100%;overflow:hidden;}
+body{
+    margin: 0;
+    padding: 0;
+    background: #000;
+    color: #FFF;
+    font-size: 12px;
+    font-family: Arial;
+    background: no-repeat 50% 50% url(../img/logo_hackist.png) #000;
+}
+#container{
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+}

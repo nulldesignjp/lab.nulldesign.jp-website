@@ -1,0 +1,295 @@
+<!doctype>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=yes">
+<meta name="keywords" content="">
+<meta name="description" content="THREE.js MATERIAL-BASIC">
+<title>webgl sample</title>
+<style>
+html,body{height:100%;overflow:hidden;}
+body{
+	margin: 0;
+	padding: 0;
+	background: #000;
+}
+#container{
+	width: 100%;
+	height: 100%;
+}
+#counter{
+	position: fixed;
+	left: 32;
+	top: 32;
+	color: #FFF;
+	font-family: Arial;
+	z-index: 100;
+}
+</style>
+</head>
+<body>
+<p id="counter"></p>
+<div id="container"></div>
+<script src="../js/jquery-2.1.1.min.js"></script>
+<script src="../js/Detector.js"></script>
+<script src="../js/stats.min.js"></script>
+<script src="../js/three.min.js"></script>
+<script type="text/javascript">
+(function(){
+	var container
+	var camera
+	var scene
+	var light
+	var renderer
+	var stats
+	var mouse = {x:$( window ).height() * 0.5,y:$( window ).width() * 0.5};
+
+	var lod;
+
+	//	
+	if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
+
+	init();
+	createObject();
+	createAxis();
+	createStats();
+	animate();
+
+	window.addEventListener( 'resize', onWindowResize, false );
+	$( window ).on( 'mousemove', _onMouseMove );
+	$( window ).on( 'touchmove', _onTouchMove );
+
+	function onWindowResize()
+	{
+		camera.aspect = window.innerWidth / window.innerHeight;
+		camera.updateProjectionMatrix();
+		renderer.setSize( window.innerWidth, window.innerHeight );
+	}
+
+	function _onMouseMove(e)
+	{
+		mouse.x = e.originalEvent.pageX;
+		mouse.y = e.originalEvent.pageY;
+	}
+	function _onTouchMove(e)
+	{
+		e.preventDefault();
+		mouse.x = e.originalEvent.touches[0].pageX;
+		mouse.y = e.originalEvent.touches[0].pageY;
+	}
+
+	function init()
+	{
+		//	器
+		container = document.getElementById('container');
+
+		//	カメラ
+		var _width = window.innerWidth;
+		var _height = window.innerHeight;
+		camera = new THREE.PerspectiveCamera( 50, _width / _height, 1, 1000 );
+		camera.position.y = 100;
+
+		//	カメラフォーカス	
+		var _focus = new THREE.Vector3();
+		_focus.set( 0, 0, 0 );
+		camera.lookAt( _focus );
+
+		//	シーン
+		scene = new THREE.Scene();
+		scene.fog = new THREE.Fog( 0x050505, 100, 1000 );
+
+		//	環境光（最小限の光的なの。適度に暗い方が質感が出る
+		scene.add( new THREE.AmbientLight( 0x050505 ) );
+
+		//	光
+		light = new THREE.DirectionalLight( 0xCCCCCC );
+		light.position.set( 1, 1, 0 );
+		light.intensity = 2;
+		scene.add( light );
+
+		light = new THREE.SpotLight(0x999999);
+		scene.add( light );
+
+		light.position.set(0, 400, 160);
+		light.distance = 1600;
+		light.intensity = 1;
+
+		light.castShadow = true;
+		light.shadowDarkness = 0.5;
+		light.shadowMapWidth = 1024;	//default: 512
+		light.shadowMapHeight = 1024;
+
+		//	renderer
+		renderer = new THREE.WebGLRenderer( { antialias: false } );
+		renderer.setClearColor( scene.fog.color, 1 );
+		renderer.setSize( window.innerWidth, window.innerHeight );
+
+		renderer.gammaInput = true;
+		renderer.gammaOutput = true;
+
+		container.appendChild( renderer.domElement );
+
+
+	}
+
+	function createAxis()
+	{
+		var _axis = new THREE.AxisHelper(100);
+		scene.add(_axis);
+
+		//
+		var _arrow = new THREE.ArrowHelper( new THREE.Vector3(1,1,1).normalize(), new THREE.Vector3(0,0,0), 70, 0xFF00FF );
+		scene.add(_arrow);
+	}
+
+	function createObject()
+	{
+		//	PLANE
+		//var geometry = new THREE.PlaneBufferGeometry( 512,512,8,8);
+		var geometry = new THREE.PlaneGeometry( 1600, 1600, 16, 16 );
+		var material = new THREE.MeshBasicMaterial({color: 0x666666, wireframe:true});
+		//material.emissive.set(0x333333);
+		//material.shininess = 256;
+		var _plane = new THREE.Mesh(geometry, material);
+		_plane.rotation.x = THREE.Math.degToRad( -90 );
+		scene.add(_plane);
+
+		//
+		var _obj = createObject3D();
+		_obj.position.set(0,0,0);
+		_obj.material = new THREE.MeshNormalMaterial();
+
+		//	opacity
+		var _obj = createObject3D();
+		_obj.position.set(100,0,0);
+		_obj.material = new THREE.MeshNormalMaterial({transparent:true,opacity:0.5});
+
+		//	MATERIAL - BASIC
+		var _obj = createObject3D();
+		_obj.position.set(200,0,200);
+		_obj.material = new THREE.MeshNormalMaterial({transparent:true,blending: THREE.NoBlending});
+		//
+		var _obj = createObject3D();
+		_obj.position.set(200,0,100);
+		_obj.material = new THREE.MeshNormalMaterial({transparent:true,blending: THREE.NormalBlending});
+		//
+		var _obj = createObject3D();
+		_obj.position.set(200,0,0);
+		_obj.material = new THREE.MeshNormalMaterial({transparent:true,blending: THREE.AdditiveBlending});
+		//
+		var _obj = createObject3D();
+		_obj.position.set(200,0,-100);
+		_obj.material = new THREE.MeshNormalMaterial({transparent:true,blending: THREE.SubtractiveBlending});
+		//
+		var _obj = createObject3D();
+		_obj.position.set(200,0,-200);
+		_obj.material = new THREE.MeshNormalMaterial({transparent:true,blending: THREE.MultiplyBlending});
+		_obj.transparent = true;
+		_obj.opacity = 1.0;
+		_obj.blending = THREE.MultiplyBlending;
+
+		//	BASIC 任意の発行色を指定する事ができる材質オブジェクトを生成するクラス
+		var _obj = createObject3D();
+		_obj.position.set(-200,0,-200);
+		_obj.material = new THREE.MeshBasicMaterial({color:0xFF0000});
+		_obj.fog = true;
+
+		var _obj = createObject3D();
+		_obj.position.set(-200,0,-100);
+		_obj.material = new THREE.MeshBasicMaterial({color:0xFF0000,wireframe:true});
+
+
+
+		//	triangle
+		var geometry = new THREE.Geometry();
+		geometry.vertices[0] = new THREE.Vector3( 100, 0, 0 );
+		geometry.vertices[1] = new THREE.Vector3( 0, 100, 0 );
+		geometry.vertices[2] = new THREE.Vector3( 0, 0, 100 );
+
+		var colors = new Array();
+		colors[0] = new THREE.Color( 0xFF0000 );
+		colors[1] = new THREE.Color( 0x00FF00 );
+		colors[2] = new THREE.Color( 0x0000FF );
+
+		geometry.faces[0] = new THREE.Face3( 0,1,2, null, colors );
+
+		var material = new THREE.MeshBasicMaterial({color:0xFFFFFF,vertexColors: THREE.VertexColors});
+
+		var triangle = new THREE.Mesh( geometry, material );
+		scene.add(triangle);
+		triangle.transparent = true;
+		triangle.blending = THREE.AdditiveBlending;
+		triangle.side = THREE.DoubleSide;
+
+
+		var geometry = [
+			[	new THREE.IcosahedronGeometry(30,4), 100	],
+			[	new THREE.IcosahedronGeometry(30,3), 200	],
+			[	new THREE.IcosahedronGeometry(30,2), 300	],
+			[	new THREE.IcosahedronGeometry(30,1), 400	],
+			[	new THREE.IcosahedronGeometry(30,0), 500	]
+		];
+
+		var material = new THREE.MeshBasicMaterial({color:0xFF0000,wireframe:true});
+
+		lod = new THREE.LOD();
+		for( var i = 0; i < geometry.length; i++ )
+		{
+			var mesh = new THREE.Mesh( geometry[i][0], material );
+			lod.addLevel( mesh, geometry[i][1] );
+		}
+			lod.position.z = 200;
+			scene.add( lod );
+
+
+	}
+
+	function createObject3D()
+	{
+		var geometry = new THREE.OctahedronGeometry( 30, 0 );
+		var material = new THREE.MeshBasicMaterial({shading:THREE.NoShading, side:THREE.DoubleSide});
+		var _object3d = new THREE.Mesh( geometry, material );
+		_object3d.position.set( 0, 0, 0 )
+		scene.add( _object3d );
+		return _object3d;
+
+	}
+
+	function createStats()
+	{
+		stats = new Stats();
+		stats.domElement.style.position = 'fixed';
+		stats.domElement.style.left = "0px";
+		stats.domElement.style.top = '0px';
+		container.appendChild( stats.domElement );
+	}	
+
+	function animate()
+	{
+		requestAnimationFrame( animate );
+		render();
+
+		stats.update();
+	}
+
+	function render()
+	{
+		var _hh = $( window ).height() * 0.5;
+		var _hw = $( window ).width() * 0.5;
+		var _cx = ( _hw - mouse.x ) / _hw * Math.PI * 0.5;
+		var _cy = ( _hh - mouse.y ) / _hh * Math.PI * 0.5;
+		camera.position.x = Math.sin( _cx ) * 900;
+		camera.position.y = Math.sin( _cy ) * 400;
+		camera.position.z = 350;
+		camera.lookAt( scene.position );
+
+		lod.update( camera );
+
+		renderer.render( scene, camera );
+
+	}
+
+})();
+</script>
+</body>
+</html>

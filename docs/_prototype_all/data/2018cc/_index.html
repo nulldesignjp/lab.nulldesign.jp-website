@@ -1,0 +1,113 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Language" content="ja">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<meta http-equiv="Content-Script-Type" content="text/javascript">
+<meta http-equiv="imagetoolbar" content="no">
+<meta http-equiv="cleartype" content="on">
+<meta name="format-detection" content="telephone=no">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=yes, viewport-fit=cover">
+<meta name="keywords" content="">
+<meta name="description" content="">
+<link href="http://fonts.googleapis.com/css?family=EB+Garamond" rel="stylesheet" type="text/css">
+<link href="shared/css/reset.css" rel="stylesheet" type="text/css" media="all">
+<link href="shared/css/style.css" rel="stylesheet" type="text/css" media="all">
+<style>
+html,
+body{
+	overflow: hidden;
+}
+iframe{
+	position: fixed;
+	left: 50%;
+	top: 50%;
+	margin: -240px 0 0 -480px;
+	width: 960px;
+	height: 480px;
+	overflow: hidden;
+	border: 1px solid #999;
+
+	-webkit-box-sizing: content-box;
+	-moz-box-sizing: content-box;
+	box-sizing: content-box;
+}
+
+#anchorDiv{
+	position: fixed;
+	left: 50%;
+	top: 50%;
+	margin: 260px 0 0 -480px;
+	padding: 5px 10px;
+	width: 960px;
+	text-align: left;
+	background: rgba(255,255,255,0.8);
+}
+
+#anchorDiv a{
+	display: inline-block;
+	font-family: Arial;
+	font-size: 12px;
+	margin-right: 5px;
+	text-decoration: none;
+}
+
+</style>
+<title>GLSL Shader</title>
+</head>
+<body>
+<iframe src="index.html" id="iframe"></iframe>
+<script type="text/javascript" src="shared/js/jquery-3.3.1.min.js"></script>
+<script type="text/javascript" src="shared/js/html2canvas.min.js"></script>
+
+<script type="text/javascript">
+	//	https://thebookofshaders.com/11/?lan=jp
+let _files = ["20180515","20180516","20180517","20180518","20180519","20180520","20180521","20180522","20180523","20180524","20180525","20180526","20180527","20180531","20180608","20180610","20180611","20180611_","20180612","20180613","20180614","20180615","20180618","20180619","20180620","20180621","20180622","20180623","20180625","20180626","20180627","20180628","20180629","20180630","20180701","20180702","20180703","20180704","20180705","20180706","20180709","20180710","20180711","20180712","20180713","20180717","20180725"];
+
+
+
+
+var _hash = location.hash;
+if( _hash )
+{
+	_hash = _hash.replace('#','');
+	$('#iframe').attr('src', './' + _hash + '/index.html');
+} else {
+	$('#iframe').attr('src', './' + _files[_files.length - 1] + '/index.html' );
+}
+
+let _div = $('<div>').attr('id','anchorDiv');
+$('body').append( _div );
+var len = _files.length;
+for( var i = 0; i < len; i++ )
+{
+	var _a = $('<a>');
+	_a.text(_files[i]).attr( 'href', _files[i] );
+	_a.on('click', function(e){
+		newPage( $(this).attr('href') );
+		return false;
+	})
+	_div.append( _a );
+}
+
+function newPage( _key )
+{
+	$('#iframe').attr('src', './' + _key + '/index.html' );
+	location.hash = _key;
+}
+
+
+
+window.addEventListener( 'keydown', function( e ){
+	if( e.keyCode == 13 ){
+		var ifrmDoc = $('#iframe')[0].contentWindow.document;
+		var _url = $('canvas', ifrmDoc)[0].toDataURL('image/jpeg');
+		window.open( _url, 'blank');
+	}
+});
+
+</script>
+
+</body>
+</html>

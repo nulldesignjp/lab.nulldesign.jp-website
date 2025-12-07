@@ -1,0 +1,259 @@
+<!DOCTYPE HTML>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=yes">
+<meta name="keywords" content="">
+<meta name="description" content="">
+<title>audio</title>
+
+</head>
+<body>
+<div id="container">
+<h1>WebAudioAPI</h1>
+<p id="info"></p>
+<p>時間領域の波形描画</p>
+<canvas id="canvas">CANVAS非対応って話</canvas>
+<p>周波数領域の波形描画</p>
+<canvas id="canvas2">CANVAS非対応って話</canvas>
+<p>Get data for drawing spectrum (dB)</p>
+<canvas id="canvas3">CANVAS非対応って話</canvas>
+
+
+</div>
+<script type="text/javascript">
+
+(function(){
+
+	window.moveTo( 0, 0 );
+	window.resizeTo( 1280, 1024 );
+
+	var _fps = 60;
+	var _canvas = document.getElementById('canvas');
+	var _ctx = _canvas.getContext('2d');
+	var _canvas2 = document.getElementById('canvas2');
+	var _ctx2 = _canvas2.getContext('2d');
+	var _canvas3 = document.getElementById('canvas3');
+	var _ctx3 = _canvas3.getContext('2d');
+
+	_canvas.width = 640;
+	_canvas2.width = 640;
+	_canvas3.width = 640;
+
+	//	WebAudioAPI
+	//	http://curtaincall.weblike.jp/portfolio-web-sounder/webaudioapi-visualization/draw-wave
+	window.AudioContext = window.AudioContext || window.webkitAudioContext;
+	try
+	{
+		// Create the instance of AudioContext
+		var context = new AudioContext();
+	} catch (error) {
+		alert(error.message + ' : Please use Chrome or Safari.');
+		return;
+	}
+ 
+
+	//	AudioContext インスタンスの生成
+	var context = new AudioContext();
+
+	//	AnalyserNode インスタンスの生成
+	var analyser = context.createAnalyser();
+	//	http://curtaincall.weblike.jp/portfolio-web-sounder/webaudioapi-visualization/demos/demo-03
+	//	fftSize: 高速フーリエ変換のデータサイズ	2048
+	//	frequencyBinCount: fftSizeプロパティの1 / 2の値
+	//	minDecibels: getByteFrequencyDataメソッドで取得可能なデシベルの下限
+	//	maxDecibels: getByteFrequencyDataメソッドで取得可能なデシベルの上限
+	//	smoothingTimeConstant: 周波数領域の波形 (振幅スペクトル) 描画に関連するプパティ
+	//	getByteTimeDomainData(array): 時間領域の波形データを取得するメソッド
+	//	getByteFrequencyData(array): 周波数領域の波形データ (振幅スペクトル) を取得するメソッド
+	//	getFloatFrequencyData(array): 周波数領域の波形データ (振幅スペクトル) をデシベル単位で取得するメソッド
+
+
+	analyser.fftSize = 2048	//	デフォルト値	2の乗数で最大2048
+
+	//	OscillatorNode インスタンスの生成	（波形生成オブジェクト)	
+	var oscillator = context.createOscillator();
+	//	音の高さの指定
+	var min = oscillator.frequency.minValue || 0;
+	var max = oscillator.frequency.maxValue || 100000;
+	oscillator.frequency.value = 440;
+
+	var min = oscillator.detune.minValue || -4800;
+	var max = oscillator.detune.maxValue ||  4800;
+	oscillator.detune.value = 0;
+
+	//	example
+        var type      = oscillator.type;
+        var frequency = oscillator.frequency.value;
+        var detune    = oscillator.detune.value;
+
+	// for legacy browsers(基本的にこの3項目はいらん気がするけど、よくわかってないので一応書いとく)
+	//	http://curtaincall.weblike.jp/portfolio-web-sounder/webaudioapi-visualization/demos/demo-05
+	oscillator.start = oscillator.start || oscillator.noteOn;
+	oscillator.stop  = oscillator.stop  || oscillator.noteOff;
+	context.createGain = context.createGain || context.createGainNode;
+
+	// Create the instance of GainNode
+	var gain = context.createGain();
+	var min = gain.gain.minValue || 0;
+	var max = gain.gain.maxValue || 1;
+	gain.gain.value = 0.75;
+
+	// OscillatorNode (Input) -> AnalyserNode (Visualization) -> AudioDestinationNode (Output);
+	//oscillator.connect(analyser);	//	謎	接続関係はちゃんと勉強すること。複数接続の可能性もあるので
+	oscillator.connect(gain)
+	gain.connect(analyser);
+	analyser.connect(context.destination);
+
+	oscillator.start(0);
+
+	//
+	// var isStop = false;
+	// document.body.addEventListener('mouseup',function(e){
+	// 	isStop = !isStop;
+	// 	if( isStop )
+	// 	{
+	// 		oscillator.stop(0);
+	// 	} else {
+	// 		oscillator.start(0);
+	// 	}
+	// });
+	
+	document.body.addEventListener('mousemove',function(e){
+		oscillator.frequency.value = e.pageX * 0.5 + 1;
+	});
+
+	var period = 1 / context.sampleRate;
+
+	// Frequency Resolution
+	var fsDivN = context.sampleRate / analyser.fftSize;
+
+	// This value is the number of samples during 500 Hz
+	var n500Hz = Math.floor(500 / fsDivN);
+
+	var _intervalKey = setInterval(function(){
+		//	時間領域の波形描画
+		var array = new Uint8Array( analyser.fftSize );
+		analyser.getByteTimeDomainData( array );
+
+		//	波形データは, 0 ～ 255, つまり, 符号なし整数 (unsigned int) 1バイトの範囲で配列に格納されます. 振幅が1で考えると, 1が255, 0 (無音) が128, -1が0に対応しています. この値の関係に基づいて, Canvasに描画します.
+
+		var _w = _canvas.width;
+		var _h = _canvas.height;
+
+		_ctx.beginPath();
+		_ctx.clearRect( 0, 0, _w, _h );
+
+		var len = array.length;
+		for (var i = 0; i < len; i++ )
+		{
+			var x = ( i / len ) * _w;
+			var y = ( 1 - ( array[i] / 255 ) ) * _h;
+
+			if (i === 0)
+			{
+				_ctx.moveTo(x, y);
+			} else {
+				_ctx.lineTo(x, y);
+			}
+
+			//	drawTIME
+			var sec  = i * period;             // index -> time
+			var msec = sec * Math.pow(10, 3);  // sec -> msec
+
+			// 5 msec ?
+			if( (msec % 5) === 0)
+			{
+				var text = Math.round(msec) + ' msec';
+				// Draw grid (X)
+				_ctx.fillRect( x, 0, 1, _h);
+				// Draw text (X)
+				_ctx.fillText(text, x, _h);
+			}
+		}
+
+
+
+		_ctx.moveTo(0, _h * 0.5);
+		_ctx.lineTo(_w, _h * 0.5);
+		_ctx.stroke();
+
+
+
+
+		//	周波数領域の波形描画
+		var spectrums = new Uint8Array( analyser.frequencyBinCount );
+		analyser.getByteFrequencyData( spectrums );
+
+		var _w = _canvas2.width;
+		var _h = _canvas2.height;
+
+		var len = spectrums.length;
+
+		_ctx2.beginPath();
+		_ctx2.clearRect( 0, 0, _w, _h );
+
+		for (var i = 0; i < len; i++ )
+		{
+			var x = ( i / len ) * _w;
+			var y = ( 1 - ( spectrums[i] / 255 ) ) * _h;
+
+			if( i === 0 )
+			{
+				_ctx2.moveTo(x, y);
+			} else {
+				_ctx2.lineTo(x, y);
+			}
+
+			// 500 Hz ?
+			if ((i % n500Hz) === 0)
+			{
+				var f    = Math.floor(500 * (i / n500Hz));  // index -> frequency
+				var text = (f < 1000) ? (f + ' Hz') : ((f / 1000) + ' kHz');
+				// Draw grid (X)
+				_ctx2.fillRect(x, 0, 1, _h );
+				// Draw text (X)
+				_ctx2.fillText(text, x, _h );
+	        }
+		}
+
+		_ctx2.stroke();
+
+
+
+
+
+
+		// Get data for drawing spectrum (dB)
+		var range = analyser.maxDecibels - analyser.minDecibels;  // 70 dB
+		var spectrums = new Float32Array(analyser.frequencyBinCount);
+		analyser.getFloatFrequencyData(spectrums);
+
+		var _w = _canvas3.width;
+		var _h = _canvas3.height;
+
+		var len = spectrums.length;
+
+		_ctx3.beginPath();
+		_ctx3.clearRect( 0, 0, _w, _h );
+		for (var i = 0; i < len; i++)
+		{
+			var x = (i / len) * _w;
+			var y = (-1 * ((spectrums[i] - analyser.maxDecibels) / range)) * _h;
+			if (i === 0)
+			{
+				_ctx3.moveTo(x, y);
+			} else {
+				_ctx3.lineTo(x, y);
+			}
+		}
+		_ctx3.stroke();
+
+	},100/_fps);
+
+})();
+</script>
+</body>
+</html>
+

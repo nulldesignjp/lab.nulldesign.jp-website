@@ -1,0 +1,246 @@
+/*
+	style.css
+*/
+
+*{
+	-webkit-tap-highlight-color: rgba(0,0,0,0);
+	-webkit-tap-highlight-color: transparent;
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-webkit-text-size-adjust: none;
+	/*	box-sizing: border-box;	*/
+	box-sizing: border-box;
+}
+*:not{
+	-webkit-user-select: none;
+}
+html,
+body{
+	height: 100%;
+	overflow: hidden;
+}
+
+body{
+	margin: 0;
+	padding: 0;
+	text-align: center;
+	font-size: 100%;
+	font-family: Georgia, "ＭＳ Ｐ明朝", "MS PMincho", "ヒラギノ明朝 Pro W3", "Hiragino Mincho Pro", serif;
+	font-family: 'EB Garamond', serif !important;
+	color: #FFF;
+	background-color: #000;
+}
+
+h1,h2,h3,h4,h5,h6{
+	font-weight: normal;
+}
+
+#container{
+	height: 100%;
+	text-align: left;
+}
+
+#siteBody{
+	opacity: 0;
+}
+
+#siteBody.open{
+	-webkit-animation: fadein01 3.0s ease 0s;
+	-moz-animation: fadein01 3.0s ease 0s;
+	opacity: 1.0;
+}
+@-webkit-keyframes fadein01 {
+	0% {	opacity: 0.0;	}
+	100% {	opacity: 1.0;	}
+}
+@-moz-keyframes fadein01 {
+	0% {	opacity: 0.0;	}
+	100% {	opacity: 1.0;	}
+}
+
+#siteHead,
+#siteBody,
+#siteFoot{
+	position: fixed;
+}
+
+#siteHead{
+	left: 0;
+	top: 0;
+	z-index: 10;
+	padding: 16px;
+	font-size: 24px;
+	text-shadow: 0 0 4px #000; 
+}
+#siteHead h2{
+	margin-top: 5px;
+	font-size: 12px;
+	font-family: Arial;
+}
+#siteHead p#FPS{
+	margin-top: 5px;
+	font-size: 12px;
+	font-family: Arial;
+}
+#siteBody{
+	left: 0;
+	top: 0;
+	z-index: 0;
+
+	width: 100%;
+	height: 100%;
+}
+
+#siteFoot{
+	left: 0;
+	bottom: 0;
+	z-index: 5;
+	width: 100%;
+}
+
+#siteFoot p{
+	margin: 0;
+	padding: 16px;
+	line-height: 1;
+	font-size: 12px;
+	text-shadow: 0 0 4px #000;
+	font-family: Arial;
+}
+
+#siteFoot p br{	display: none;	}
+body.sp #siteFoot p br{	display: inline;	}
+
+#timer{
+	opacity: 0.8;
+	margin: 0;
+	padding: 0;
+	line-height: 1.0;
+}
+
+#stationInfo{
+	position: fixed;
+	left: 16px;
+	bottom: 48px;
+	opacity: 0.8;
+	margin: 0;
+	padding: 0;
+	line-height: 1.0;
+	font-size: 48px;
+	text-shadow: 0 0 4px #000;  
+
+}
+
+	#stren{
+		font-size: 20px;
+	}
+	#strst{
+		font-size: 20px;
+	}
+	body.sp #strst{
+		display: none;
+	}
+
+#stationInfo p{
+	font-size: 32px;
+}
+
+body.sp #stationInfo span{
+	display: block;
+}
+
+
+body.sp img{
+	zoom: 0.5;
+}
+body.sp canvas{
+	zoom: 0.5;
+}
+
+canvas{
+	position: fixed;
+	left: 0;
+	top: 0;
+}
+
+/*
+	effect
+*/
+.progressArea00{
+	position: fixed;
+	left: 0;
+	top: 0;
+	z-index: 1000;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0,0,0,0.8);
+}
+.loading{
+	width: 100%;
+	height: 100%;
+	background-repeat: no-repeat;
+	background-position: 50% 50%;
+	background-image: url(../img/txt_initialize01.png);
+	-webkit-animation: brink00 0.1s ease 0s infinite alternate;
+	-moz-animation: brink00 0.1s ease 0s infinite alternate;
+}
+@-webkit-keyframes brink00 {
+	0% {	opacity: 1.0;	}
+	100% {	opacity: 0.6;	}
+}
+@-webkit-keyframes moz {
+	0% {	opacity: 1.0;	}
+	100% {	opacity: 0.6;	}
+}
+.fadeOut{
+	-webkit-animation: fadeOut00 1.0s ease 0s;
+	-moz-animation: fadeOut00 1.0s ease 0s;
+	opacity: 0.0;
+}
+@-webkit-keyframes fadeOut00 {
+	0% {	opacity: 1.0;	}
+	100% {	opacity: 0.0;	}
+}
+@-moz-keyframes fadeOut00 {
+	0% {	opacity: 1.0;	}
+	100% {	opacity: 0.0;	}
+}
+.fadeIn{
+	-webkit-animation: fadeIn00 1.0s ease 0s;
+	-moz-animation: fadeIn00 1.0s ease 0s;
+	opacity: 1.0 !important;
+}
+@-webkit-keyframes fadeIn00 {
+	0% {	opacity: 0.0;	}
+	100% {	opacity: 1.0;	}
+}
+@-moz-keyframes fadeIn00 {
+	0% {	opacity: 0.0;	}
+	100% {	opacity: 1.0;	}
+}
+
+#siteHead a{
+	color: #CCC;
+	text-decoration: none;
+	font-size: 14px;
+}
+
+#siteHead ul{
+	position: fixed;
+	right: 16px;
+	top: 16px;
+}
+
+.cell{
+	position: fixed;
+	left: -9999px;
+	top: -9999px;
+}
+
+.cell a{
+	display: block;
+	width: 100%;
+	height: 100%;
+	color: #FFF;
+	text-decoration: none;
+	background-color: rgba(0,0,255,0.15);
+}

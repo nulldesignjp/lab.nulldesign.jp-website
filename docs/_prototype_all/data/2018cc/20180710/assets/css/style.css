@@ -1,0 +1,150 @@
+/*
+	style.css
+*/
+
+/*
+*{
+	-webkit-tap-highlight-color: rgba(0,0,0,0);
+	-webkit-tap-highlight-color: transparent;
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-webkit-text-size-adjust: none;
+	box-sizing: border-box;
+}
+*:not{
+	-webkit-user-select: none;
+}
+*/
+html,
+body{
+	height: 100%;
+}
+
+body{
+	margin: 0;
+	padding: 0;
+	text-align: center;
+	font-size: 100%;
+	font-family: 'EB Garamond', Garamond, Georgia, serif !important;
+	color: #000;
+	background-color: #FFF;
+
+	border-top: 3px double #000;
+}
+
+h1,h2,h3,h4,h5,h6{
+	font-weight: normal;
+}
+
+#container{
+	height: 100%;
+	text-align: left;
+}
+
+#container.open,
+#siteBody.open{
+	-webkit-animation: fadein01 3.0s ease 0s;
+	-moz-animation: fadein01 3.0s ease 0s;
+	opacity: 1.0;
+}
+@-webkit-keyframes fadein01 {
+	0% {	opacity: 0.0;	}
+	100% {	opacity: 1.0;	}
+}
+@-moz-keyframes fadein01 {
+	0% {	opacity: 0.0;	}
+	100% {	opacity: 1.0;	}
+}
+
+#webglView{
+	position: fixed;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	z-index: -1;
+}
+
+#layout01{
+	display: table;
+}
+#layout02{
+	clear: both !important;
+	margin-top: 1em;
+}
+
+#siteHead,
+#siteBody,
+#siteFoot{
+  font-size: 2em;
+  padding-top: 2em;
+  padding-left: 96px;
+  padding-right: 96px;
+}
+
+#siteFoot{
+  padding-bottom: 2em;
+}
+
+#profile,
+#contents,
+#sns{
+	display: table-cell;
+	vertical-align: top;
+	margin-top: 1em;
+	margin-right: 1em;
+	padding: 0 1em;
+	min-width: 160px;
+	border-left: 1px solid #999;
+}
+
+#profile{
+	margin-top: 0;
+	padding-left: 0;
+	border: none;
+}
+
+p,
+ul{
+  font-size: 0.55em;
+  line-height: 1.25;
+}
+a{
+  color: #999;
+  text-decoration: none;
+}
+a:hover{
+  color: #666;
+}
+	
+
+
+@media screen and (max-width: 480px) {
+
+	#siteHead,
+	#siteBody,
+	#siteFoot{
+	  font-size: 2em;
+	  padding-top: 1em;
+	  padding-left: 32px;
+	  padding-right: 32px;
+	}
+
+	#profile,
+	#contents,
+	#sns{
+		display: block;
+		padding: 0;
+		border: none;
+	}
+
+	#layout01{
+		display: block;
+	}
+
+	#awards ul,
+	#siteFoot p{
+		font-size: 0.35em;
+	}
+
+}

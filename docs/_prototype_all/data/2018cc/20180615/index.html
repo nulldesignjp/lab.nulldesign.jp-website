@@ -1,0 +1,194 @@
+<!doctype html>
+<html>
+<head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+<meta charset="UTF-8">
+<meta http-equiv="Content-Language" content="ja">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<meta http-equiv="Content-Script-Type" content="text/javascript">
+<meta http-equiv="imagetoolbar" content="no">
+<meta http-equiv="cleartype" content="on">
+<meta name="format-detection" content="telephone=no">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=yes, viewport-fit=cover">
+<meta name="keywords" content="">
+<meta name="description" content="">
+<link rel="apple-touch-icon-precomposed" sizes="120x120" href="http://nulldesign.jp/metrogram3d/shared/img/120x120.png">
+<link href="http://fonts.googleapis.com/css?family=EB+Garamond" rel="stylesheet" type="text/css">
+<link href="shared/css/reset.css" rel="stylesheet" type="text/css" media="all">
+<link href="shared/css/style.css" rel="stylesheet" type="text/css" media="all">
+<title>Draw</title>
+</head>
+<body>
+<div id="container">
+<div id="siteHead">
+<h1>WebGL</h1>
+<h2>GLSL</h2>
+<!--/ siteHead --></div>
+<div id="siteBody">
+<div id="webglView"><!--/ webglView --></div>
+<!--/ siteBody --></div>
+<div id="siteFoot"><p>COPYRIGHT &copy; 2018 nulldesign.jp <br>ALL RIGHTS RESERVED.</p>
+<!--/ siteFoot --></div>
+<!--/ container --></div>
+
+
+<script type="x-shader/x-fragment" id="computeShaderPosition">
+//  現在の位置情報
+#define delta 1.0 / 60.0
+void main(){
+    vec2 uv = gl_FragCoord.xy / resolution.xy;
+    vec4 tmpPos = texture2D( texturePosition, uv );
+    vec3 pos = tmpPos.xyz;
+    vec4 tmpVel = texture2D( textureVelocity, uv );
+    vec3 vel = tmpVel.xyz;
+
+    pos += vel * delta;
+
+    gl_FragColor = vec4( pos, 1.0 );
+}
+</script>
+
+<script type="x-shader/x-fragment" id="computeShaderVelocity">
+//  速度情報
+#include <common>
+
+//const float PI = 3.14159265;
+
+uniform float time;
+
+vec2 random2(vec2 st){
+       vec2 _st = vec2( dot(st,vec2(127.1,311.7)),
+                      dot(st,vec2(269.5,183.3)));
+       return -1.0 + 2.0 * fract( sin(_st) * 43758.5453123 );
+   }
+
+float perlinNoise(vec2 st)
+{
+    vec2 p = floor(st);
+    vec2 f = fract(st);
+    vec2 u = f*f*(3.0-2.0*f);
+
+    vec2 v00 = random2( p + vec2(0,0) );
+    vec2 v10 = random2( p + vec2(1,0) );
+    vec2 v01 = random2( p + vec2(0,1) );
+    vec2 v11 = random2( p + vec2(1,1) );
+
+    return mix( mix( dot( v00, f - vec2(0,0) ), dot( v10, f - vec2(1,0) ), u.x ),
+                 mix( dot( v01, f - vec2(0,1) ), dot( v11, f - vec2(1,1) ), u.x ),
+                 u.y ) + 0.5;
+}
+
+float fBm (vec2 st)
+{
+    float f = 0.0;
+    vec2 q = st;
+
+    f += 0.5000 * perlinNoise( q ); q = q*2.01;
+    f += 0.2500 * perlinNoise( q ); q = q*2.02;
+    f += 0.1250 * perlinNoise( q ); q = q*2.03;
+    f += 0.0625 * perlinNoise( q ); q = q*2.01;
+
+    return f;
+}
+
+void main(){
+    vec2 uv = gl_FragCoord.xy / resolution.xy;
+    float idParticle = uv.y * resolution.x + uv.x;
+    vec4 tmpPos = texture2D( texturePosition, uv );
+    vec4 tmpVel = texture2D( textureVelocity, uv );
+    vec3 vel = tmpVel.xyz;
+
+    float _timeScale = 0.4;
+    float _fieldScale = 0.02;
+    float _power = 8.0;
+
+    vel.x = vel.x + ( perlinNoise( tmpPos.yz * _fieldScale + vec2( time * _timeScale, 0.0 ) ) - 0.5 ) * _power;
+    vel.y = vel.y + ( perlinNoise( tmpPos.zx * _fieldScale + vec2( time * _timeScale, 10.0 ) ) - 0.5 ) * _power;
+    vel.z = vel.z + ( perlinNoise( tmpPos.xy * _fieldScale + vec2( time * _timeScale, 20.0 ) ) - 0.5 ) * _power;
+
+    vel *= 0.98;
+    vel = vel - tmpPos.xyz * 0.02;
+
+    gl_FragColor = vec4( vel, 1.0 );
+}
+</script>
+
+
+<script type="x-shader/x-vertex" id="vertexshader">
+
+#include <common>
+uniform sampler2D texturePosition;
+uniform float cameraConstant;
+uniform float density;
+//varying vec4 vColor;
+ varying vec2 vUv;
+
+uniform float radius;
+
+void main()
+{
+    vec4 posTemp = texture2D( texturePosition, uv );
+    vec3 pos = posTemp.xyz;
+    //  vColor = vec4( 0.1, 0.6, 0.9, 1.0 );
+
+    vec4 mvPosition = modelViewMatrix * vec4( pos, 1.0 );
+    gl_PointSize = 0.5 * cameraConstant / ( - mvPosition.z ) * 2.0;
+
+    vUv = uv;
+
+	gl_Position = projectionMatrix * mvPosition;
+}
+</script>
+<script type="x-shader/x-fragment" id="fragmentshader">
+uniform float time;
+uniform vec3 fogColor;
+uniform float fogNear;
+uniform float fogFar;
+
+//varying vec4 vColor;
+varying vec2 vUv;
+
+void main()
+{
+  	float f = length( gl_PointCoord - vec2( 0.5, 0.5 ) );
+    if( f > 0.1 )
+    {
+        discard;
+    }
+    //    gl_FragColor = vec4( 0.1, 0.6, 0.9, 1.0 );
+  	gl_FragColor = vec4(vUv,0.5+0.5*sin(time),1.0);
+
+    //  FOG
+    #ifdef USE_FOG
+        #ifdef USE_LOGDEPTHBUF_EXT
+            float depth = gl_FragDepthEXT / gl_FragCoord.w;
+        #else
+            float depth = gl_FragCoord.z / gl_FragCoord.w;
+        #endif
+        float fogFactor = smoothstep( fogNear, fogFar, depth );
+        gl_FragColor.rgb = mix( gl_FragColor.rgb, fogColor, fogFactor );
+    #endif
+
+}
+</script>
+<script type="text/javascript" src="shared/js/jquery-3.3.1.min.js"></script>
+<script type="text/javascript" src="shared/js/three.min.js"></script>
+<script type="text/javascript" src="shared/js/GPUComputationRenderer.js"></script>
+<script type="text/javascript" src="shared/js/OrbitControls.js"></script>
+<script type="text/javascript" src="shared/js/world.js"></script>
+<script type="text/javascript" src="shared/js/CopyShader.js"></script>
+<script type="text/javascript" src="shared/js/EffectComposer.js"></script>
+<script type="text/javascript" src="shared/js/MaskPass.js"></script>
+<script type="text/javascript" src="shared/js/RenderPass.js"></script>
+<script type="text/javascript" src="shared/js/ShaderPass.js"></script>
+
+<script type="text/javascript" src="shared/js/NoiseShader.js"></script>
+<script type="text/javascript" src="shared/js/VignetteShader.js"></script>
+<script type="text/javascript" src="shared/js/InvertShader.js"></script>
+<script type="text/javascript" src="shared/js/LineShader.js"></script>
+<script type="text/javascript" src="shared/js/MonoShader.js"></script>
+
+<script type="text/javascript" src="shared/js/engine.js"></script>
+</body>
+</html>
+</body>
+</html>

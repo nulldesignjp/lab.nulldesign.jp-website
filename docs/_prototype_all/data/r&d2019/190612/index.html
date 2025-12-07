@@ -1,0 +1,581 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Language" content="ja">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<meta http-equiv="Content-Script-Type" content="text/javascript">
+<meta http-equiv="imagetoolbar" content="no">
+<meta http-equiv="cleartype" content="on">
+<meta name="format-detection" content="telephone=no">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=yes, viewport-fit=cover">
+<link href="https://fonts.googleapis.com/css?family=EB+Garamond" rel="stylesheet" type="text/css">
+<link href="shared/css/reset.css" rel="stylesheet" type="text/css" media="all">
+<link href="shared/css/style.css" rel="stylesheet" type="text/css" media="all">
+<meta name="keywords" content="">
+<meta name="description" content="">
+<style>
+#nav{
+  position: fixed;
+  right: 0;
+  top: 0;
+  width: 460px;
+  height: 100%;
+  background: rgba(0,0,0,0.8);
+  color: #FFF;
+  text-align: left;
+  border: 1px solid #000;
+  font-family: 'EB Garamond', serif !important;
+  font-size: 125%;
+  box-shadow: 0 0 16px rgba(0,0,0,0.8);
+}
+#nav a{
+  color: #FFF;
+  text-decoration: none;
+  opacity: 0.6;
+}
+
+#nav a:hover{
+  opacity: 1.0;
+}
+
+#nav h1,
+#nav h2{
+  margin-top: 2em;
+  font-weight: bold;
+}
+
+#nav h1:first-child{
+  margin-top: 0em;
+}
+#nav li{
+  padding-left: 32px;
+  font-size: 80%;
+  font-family: Arial;
+}
+#navInner{
+  padding: 32px;
+}
+
+#hoge{
+  position: fixed;
+  z-index: 1000;
+  right: 32px;
+  top: 32px;
+  cursor: pointer;
+}
+
+section li{
+  display: inline-block;
+  margin-right: 10px;
+}
+
+</style>
+<title>DEMO</title>
+
+</head>
+<body>
+<div id="container">
+<div id="siteHead">
+<h1>Custom UI Sample</h1>
+<h2>Beautiful icons.</h2>
+<!--/ siteHead --></div>
+<!--/ container --></div>
+
+
+<div id="nav">
+<div id="navInner">
+<img src="icon.svg" width="32" height="32" id="hoge">
+
+<h1>Contents Information</h1>
+<ul>
+<li><a href="javascript:void(0);">About This Contents.</a></li>
+<li><a href="javascript:void(0);">Credits And Notes.</a></li>
+</ul>
+
+<h1>Site Setting</h1>
+<section>
+<ul>
+<!--
+<li><a href="javascript:void(0);">TimeLapse</a></li>
+<li><a href="javascript:void(0);">RealTime</a></li>
+-->
+<li>
+  <div class="simpleToggleBotton">
+  <input type="checkbox" name="toggle1" class="mobileToggle" id="toggle1" checked>
+  <label for="toggle1" class="txt">TimeLapse</label>
+  <label for="toggle1" class="toggleView" onclick=""><span></span></label>
+  <label for="toggle1" class="txt">RealTime</label>
+  </div>
+</li>
+</ul>
+</section>
+<ul>
+<li>
+<input type="RANGE" name="slider01" class="NDSlider" id="slider01"></li>
+</ul>
+<h2>CameraMode</h2>
+<section>
+<ul>
+<li><a href="javascript:void(0);">Auto[ RANDOM ]</a></li>
+<li><a href="javascript:void(0);">Stay Airport</a></li>
+<li><a href="javascript:void(0);">Stay AirPlane</a></li>
+</ul>
+</section>
+
+<style>
+.simpleToggleBotton{
+  margin: 1em 0;
+  display: table;
+}
+
+.toggleView,
+.toggleView label{
+  display: table-cell;
+  vertical-align: middle;
+  line-height: 1;
+  margin: 0;
+  padding: 0;
+}
+
+.toggleView{
+  display: inline-block;
+  margin: 0 20px;
+  width: 80px;
+  height: 40px;
+  border-radius: 40px;
+  background: #080808;
+  border: 1px solid #333;
+  box-shadow: 0 0 4px rgba(0,0,0,0.4) inset;
+}
+
+.txt{
+  display: inline-block;
+  min-width:100px !important;
+}
+
+.toggleView span{
+  margin: 2px;
+  width: 34px;
+  height: 34px;
+  background: #FFF;
+  box-shadow: 0 0 8px rgba(0,0,0,0.4);
+  border-radius: 40px;
+  display: inline-block;
+}
+
+input.mobileToggle{
+  position: fixed;
+  top: -9999px;
+  left: -9999px;
+}
+
+input[type="checkbox"]:checked + label {
+  -webkit-animation: toggleOut01 0.25s ease 0s;
+  opacity: 0.4;
+}
+
+input[type="checkbox"]:checked + label + label {
+  background: #333 !important;
+}
+
+input[type="checkbox"]:checked + label + label + label {
+  -webkit-animation: toggleIn01 0.25s ease 0s;
+  opacity: 1.0;
+}
+
+
+
+input[type="checkbox"] + label {
+  -webkit-animation: toggleIn01 0.25s ease 0s;
+  opacity: 1.0;
+}
+input[type="checkbox"] + label + label {
+  background: #080808 !important;
+}
+input[type="checkbox"] + label + label + label {
+  -webkit-animation: toggleOut01 0.25s ease 0s;
+  opacity: 0.4;
+}
+
+
+
+input[type="checkbox"] + label + label span {
+  -webkit-animation: toggleOutAnime01 0.25s ease 0s;
+  margin-left: 2px;
+}
+
+input[type="checkbox"]:checked + label + label span {
+  -webkit-animation: toggleInAnime01 0.25s ease 0s;
+  margin-left: -webkit-calc( 100% - 36px );
+}
+
+
+
+
+@-webkit-keyframes toggleIn01 {
+  0% {  opacity: 0.4; }
+  100% {  opacity: 1.0; }
+}
+@-webkit-keyframes toggleOut01 {
+  0% {  opacity: 1.0; }
+  100% {  opacity: 0.4; }
+}
+
+
+@-webkit-keyframes toggleInAnime01 {
+  0% {  margin-left: 2px; }
+  100% {  margin-left: -webkit-calc( 100% - 36px ); }
+}
+@-webkit-keyframes toggleOutAnime01 {
+  0% {  margin-left: -webkit-calc( 100% - 36px ); }
+  100% {  margin-left: 2px; }
+}
+
+
+
+input[type=range].NDSlider {
+  -webkit-appearance: none;
+  width: 100%;
+  margin: 16px 0;
+}
+input[type=range].NDSlider:focus {
+  outline: none;
+}
+input[type=range].NDSlider::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 2px;
+  cursor: pointer;
+  box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+  background: rgba(0, 0, 0, 0.65);
+  border-radius: 0px;
+  border: 0px solid #010101;
+}
+input[type=range].NDSlider::-webkit-slider-thumb {
+  /*
+  box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.49), 0px 0px 0px rgba(13, 13, 13, 0.49);
+  border: 0px solid rgba(16, 16, 16, 0.8);
+  */
+  height: 34px;
+  width: 34px;
+  border-radius: 16px;
+  background: #ffffff;
+  cursor: pointer;
+  -webkit-appearance: none;
+  margin-top: -16px;
+}
+input[type=range].NDSlider:focus::-webkit-slider-runnable-track {
+  background: rgba(128, 128, 128, 0.65);
+}
+input[type=range].NDSlider::-moz-range-track {
+  width: 100%;
+  height: 2.4px;
+  cursor: pointer;
+  box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+  background: rgba(0, 0, 0, 0.65);
+  border-radius: 0px;
+  border: 0px solid #010101;
+}
+input[type=range].NDSlider::-moz-range-thumb {
+  box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.49), 0px 0px 0px rgba(13, 13, 13, 0.49);
+  border: 2px solid rgba(16, 16, 16, 0.8);
+  height: 32px;
+  width: 32px;
+  border-radius: 16px;
+  background: #ffffff;
+  cursor: pointer;
+}
+input[type=range].NDSlider::-ms-track {
+  width: 100%;
+  height: 2.4px;
+  cursor: pointer;
+  background: transparent;
+  border-color: transparent;
+  color: transparent;
+}
+input[type=range].NDSlider::-ms-fill-lower {
+  background: rgba(0, 0, 0, 0.65);
+  border: 0px solid #010101;
+  border-radius: 0px;
+  box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+}
+input[type=range].NDSlider::-ms-fill-upper {
+  background: rgba(0, 0, 0, 0.65);
+  border: 0px solid #010101;
+  border-radius: 0px;
+  box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+}
+input[type=range].NDSlider::-ms-thumb {
+  box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.49), 0px 0px 0px rgba(13, 13, 13, 0.49);
+  border: 2px solid rgba(16, 16, 16, 0.8);
+  height: 32px;
+  width: 32px;
+  border-radius: 16px;
+  background: #ffffff;
+  cursor: pointer;
+  height: 2.4px;
+}
+input[type=range].NDSlider:focus::-ms-fill-lower {
+  background: rgba(0, 0, 0, 0.65);
+}
+input[type=range].NDSlider:focus::-ms-fill-upper {
+  background: rgba(128, 128, 128, 0.65);
+}
+
+
+</style>
+
+<h2>DarkMode</h2>
+<section>
+  <div class="simpleToggleBotton">
+  <input type="checkbox" name="toggle2" class="mobileToggle" id="toggle2">
+  <label for="toggle2" class="txt">Dark</label>
+  <label for="toggle2" class="toggleView" onclick=""><span></span></label>
+  <label for="toggle2" class="txt">Light</label>
+  <!-- /simpleToggleBotton --></div>
+</section>
+
+<!--/ navInner --></div>
+<!--/ nav --></div>
+
+
+
+<script type="text/javascript" src="shared/js/stats.min.js"></script>
+<script type="text/javascript" src="shared/js/jquery-3.3.1.min.js"></script>
+<script type="text/javascript" src="shared/js/three.min.js"></script>
+<script type="text/javascript" src="shared/js/SVGLoader.js"></script>
+<script type="text/javascript" src="shared/js/OrbitControls.js"></script>
+<script type="text/javascript" src="shared/js/SplineCurve.js"></script>
+<script type="text/javascript" src="shared/js/shaderLib/CopyShader.js"></script>
+<script type="text/javascript" src="shared/js/shaderLib/EffectComposer.js"></script>
+<script type="text/javascript" src="shared/js/shaderLib/MaskPass.js"></script>
+<script type="text/javascript" src="shared/js/shaderLib/RenderPass.js"></script>
+<script type="text/javascript" src="shared/js/shaderLib/ShaderPass.js"></script>
+<script type="text/javascript" src="shared/js/shader/FilmShader.js"></script>
+<script type="text/javascript" src="shared/js/shader/HorizontalTiltShiftShader.js"></script>
+<script type="text/javascript" src="shared/js/shader/VerticalTiltShiftShader.js"></script>
+<script type="text/javascript" src="shared/js/shader/VignetteShader.js"></script>
+<script type="text/javascript" src="shared/js/shader/RGBShiftShader.js"></script>
+<script type="text/javascript" src="shared/js/shader/HueSaturationShader.js"></script>
+<script type="text/javascript" src="shared/js/shader/BloomShader.js"></script>
+<script type="text/javascript" src="shared/js/shader/InvertShader.js"></script>
+<script type="text/javascript" src="shared/js/shader/MonoShader.js"></script>
+<script type="text/javascript" src="shared/js/world.js"></script>
+
+
+
+<script type="text/javascript">
+
+
+$('#hoge').bind('click', function(){
+  var _x = Math.floor( Math.random() * 460 );
+  $('#nav').css({
+    'right': - _x + 'px'
+  });
+})
+
+
+
+window.onload = function()
+{
+  var style="color:white;background-color:#484848;padding: 3px 6px;";
+  window.console.log("%cSkyNet - v1.0.0" , style);
+
+  var _world = new world('container');
+  _world.camera.position.set( 0, 300, 1000 );
+  _world.renderer.setPixelRatio( window.devicePixelRatio );
+  var _svg;
+
+
+
+
+  //  stats
+  var _stats = new Stats();
+  $('#container').append( _stats.dom );
+  $( _stats.dom ).css({
+    'top':'inherit',
+    'bottom':'0px'
+  })
+  
+  _loop(0);
+  function _loop( _time ){
+
+    _time /= 1000;
+
+    _stats.update();
+    window.requestAnimationFrame( _loop );
+  };
+
+
+  // var _grid = new THREE.GridHelper( 1000, 10 )
+  // _world.add( _grid )
+
+
+
+    //  Load Map
+    var guiData = {
+      currentURL: '00 SVG/sign.svg',
+      drawFillShapes: true,
+      drawStrokes: true,
+      fillShapesWireframe: false,
+      strokesWireframe: false
+    }
+
+    loadSVG( guiData, function( _mesh ){
+      _world.add( _mesh );
+
+      _svg = _mesh;
+
+      _svg.rotation.x = Math.PI;
+
+      //_svg.position.x = - 1920 * 0.5;
+      //_svg.position.y = 1080 * 0.5;
+
+      _svg.position.x *= 0.5;
+      _svg.position.y *= 0.5;
+
+
+
+
+
+
+      for( var i = 0; i < 32; i++ ){
+        var __svg = _svg.clone();
+        __svg.position.z = - ( i - 16 ) * 160.0;
+        _world.add( __svg );
+
+        __svg.rotation.z = Math.floor( Math.random() * 4.0 ) / 4.0 * Math.PI * 2.0;
+
+        var _children = __svg.children;
+        //console.log( _children)
+        var len = _children.length;
+        for( var j = 0; j < len; j++ )
+        {
+          _children[j].material.transparent = true;
+          _children[j].material.opacity = 1.0 - i * 0.025;
+        }
+
+      }
+    });
+
+
+/*
+*/
+
+    function loadSVG( guiData, _callback ) {
+
+      var url = guiData.currentURL;
+      _callback = _callback==undefined?function(w){}:_callback;
+
+      var loader = new THREE.SVGLoader();
+      loader.load( url, function ( data ) {
+
+        var paths = data.paths;
+
+        var group = new THREE.Group();
+
+        var _scale = 1.0;
+
+            var _geometry = new THREE.Geometry();
+            //  var material = new THREE.MeshBasicMaterial( {
+            var _material = new THREE.MeshStandardMaterial( {
+              //color: new THREE.Color().setStyle( fillColor ),
+              color: 0xFFFFFF,
+              // opacity: path.userData.style.fillOpacity,
+              // transparent: path.userData.style.fillOpacity < 1,
+              side: THREE.DoubleSide,
+              //depthWrite: false,
+              //wireframe: guiData.fillShapesWireframe
+              roughness: 0.4,
+              metalness: 0.6,
+              emissive: 0x000000
+            } );
+
+
+
+        for ( var i = 0; i < paths.length; i ++ ) {
+
+          var path = paths[ i ];
+
+          var fillColor = path.userData.style.fill;
+          if ( guiData.drawFillShapes && fillColor !== undefined && fillColor !== 'none') {
+
+            var shapes = path.toShapes( true );
+
+            for ( var j = 0; j < shapes.length; j ++ ) {
+
+              var shape = shapes[ j ];
+
+              var geometry = new THREE.ShapeBufferGeometry( shape );
+              geometry.scale( _scale, _scale, _scale )
+
+              var mesh = new THREE.Mesh( geometry );
+
+
+
+              geometry = new THREE.Geometry().fromBufferGeometry( geometry );
+
+              var _matrix = new THREE.Matrix4();
+
+              //_matrix.makeRotationAxis ( new THREE.Vector3(0,0,1), Math.random() * Math.PI * 2.0 );
+              // _matrix.makeTranslation(
+              //   mesh.position.x,
+              //   mesh.position.y,
+              //   mesh.position.z
+              // );
+
+              _geometry.merge( geometry, _matrix );
+ 
+
+            }
+
+          }
+
+          // var strokeColor = path.userData.style.stroke;
+
+          // if ( guiData.drawStrokes && strokeColor !== undefined && strokeColor !== 'none' ) {
+
+          //   var material = new THREE.MeshBasicMaterial( {
+          //     color: new THREE.Color().setStyle( strokeColor ),
+          //     opacity: path.userData.style.strokeOpacity,
+          //     transparent: path.userData.style.strokeOpacity < 1,
+          //     side: THREE.DoubleSide,
+          //     //depthWrite: false,
+          //     depthTest: false,
+          //     wireframe: guiData.strokesWireframe
+          //   } );
+
+          //   for ( var j = 0, jl = path.subPaths.length; j < jl; j ++ ) {
+
+          //     subPath = path.subPaths[ j ];
+
+          //     var geometry = THREE.SVGLoader.pointsToStroke( subPath.getPoints(), path.userData.style );
+
+          //     if ( geometry ) {
+
+          //       var mesh = new THREE.Mesh( geometry, material );
+
+          //       group.add( mesh );
+
+          //     }
+
+          //   }
+
+          // }
+
+        }
+
+        var mesh = new THREE.Mesh( _geometry, _material );
+        _callback( mesh );
+
+      } );
+
+    }
+
+
+
+}
+
+</script>
+</body>
+</html>

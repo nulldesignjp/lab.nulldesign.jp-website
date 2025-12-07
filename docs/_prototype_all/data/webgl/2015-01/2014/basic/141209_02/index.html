@@ -1,0 +1,188 @@
+<!doctype>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=yes">
+<meta name="keywords" content="">
+<meta name="description" content="IcosahedronGeometry,MeshPhongMaterial,THREE.ImageUtils.loadTexture,Earth">
+<title>webgl sample</title>
+<style>
+html,body{height:100%;overflow:hidden;}
+body{
+	margin: 0;
+	padding: 0;
+	background: #000;
+}
+#container{
+	width: 100%;
+	height: 100%;
+}
+#counter{
+	position: fixed;
+	left: 32;
+	top: 32;
+	color: #FFF;
+	font-family: Arial;
+	z-index: 100;
+}
+</style>
+</head>
+<body>
+<p id="counter"></p>
+<div id="container"></div>
+<script src="../js/jquery-2.1.1.min.js"></script>
+<script src="../js/Detector.js"></script>
+<script src="../js/stats.min.js"></script>
+<script src="../js/three.min.js"></script>
+<script type="text/javascript">
+(function(){
+	var container
+	var camera
+	var scene
+	var renderer
+	var mesh
+	var stats
+
+	//	
+	if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
+
+	//
+	init();
+
+	//
+	//createObject();
+	var map;
+	THREE.ImageUtils.loadTexture( '../img/earth_atmos_2048.jpg', null, function(e){
+		map = e;
+		createObject();
+	} );
+
+	//	stats
+	createStats();
+
+	//
+	animate();
+
+	window.addEventListener( 'resize', onWindowResize, false );
+
+	function onWindowResize()
+	{
+		camera.aspect = window.innerWidth / window.innerHeight;
+		camera.updateProjectionMatrix();
+		renderer.setSize( window.innerWidth, window.innerHeight );
+	}
+
+	function init()
+	{
+		//	器
+		container = document.getElementById('container');
+
+		//	カメラ
+		var _width = window.innerWidth;
+		var _height = window.innerHeight;
+		camera = new THREE.PerspectiveCamera( 50, _width / _height, 1, 3500 );
+		camera.position.y = 100;
+
+		//	カメラフォーカス	
+		var _focus = new THREE.Vector3();
+		_focus.set( 0, 0, 0 );
+		camera.lookAt( _focus );
+
+		//	シーン
+		//	http://threejs.org/docs/#Reference/Scenes/Scene
+		scene = new THREE.Scene();
+		scene.fog = new THREE.Fog( 0x050505, 2000, 3500 );
+
+		//	環境光（最小限の光的なの。適度に暗い方が質感が出る
+		//scene.add( new THREE.AmbientLight( 0x404040 ) );
+
+		//	光
+		light = new THREE.DirectionalLight( 0xffffff );
+		light.position.set( 1, 1, 0 );
+		scene.add( light );
+
+
+		light = new THREE.SpotLight(0xFFFFFF);
+		scene.add( light );
+
+		light.position.set(0, 400, 160);
+		light.distance = 1200;
+		light.intensity = 1;
+
+		light.castShadow = true;
+		light.shadowDarkness = 0.5;
+		light.shadowMapWidth = 1024;	//default: 512
+		light.shadowMapHeight = 1024;
+
+		//	renderer
+		createRenderer();
+
+
+	}
+
+	function createObject()
+	{
+		var _d = Math.floor( Math.random() * 3 ) + 1;
+		var geometry = new THREE.IcosahedronGeometry( 64, _d )
+		var material = new THREE.MeshPhongMaterial({shading: THREE.NoShading, side: THREE.DoubleSide, color: 0xCCCCCC, map: map, wireframe:false});
+		material.emissive.set(0x333333);
+		material.shininess = 60;
+		var sphere = new THREE.Mesh(geometry, material);
+		scene.add(sphere);
+
+	}
+
+	function createStats()
+	{
+		stats = new Stats();
+		stats.domElement.style.position = 'fixed';
+		stats.domElement.style.left = "0px";
+		stats.domElement.style.top = '0px';
+		container.appendChild( stats.domElement );
+	}	
+
+	function createRenderer()
+	{
+		renderer = new THREE.WebGLRenderer( { antialias: false } );
+		renderer.setClearColor( scene.fog.color, 1 );
+		renderer.setSize( window.innerWidth, window.innerHeight );
+
+		renderer.gammaInput = true;
+		renderer.gammaOutput = true;
+
+		container.appendChild( renderer.domElement );
+	}
+
+	function animate()
+	{
+		requestAnimationFrame( animate );
+		render();
+
+		stats.update();
+	}
+
+	function render()
+	{
+		var timer = Date.now() * 0.0001;
+		camera.position.x = Math.cos( timer ) * 200;
+		camera.position.z = Math.sin( timer ) * 200;
+		camera.lookAt( scene.position );
+
+		/*
+
+		for ( var i = 0, l = scene.children.length; i < l; i ++ )
+		{
+			var object = scene.children[ i ];
+			object.rotation.x = timer * 5;
+			object.rotation.y = timer * 2.5;
+		}
+
+		*/
+
+		renderer.render( scene, camera );
+	}
+
+})();
+</script>
+</body>
+</html>

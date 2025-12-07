@@ -1,0 +1,265 @@
+<!doctype>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=yes">
+<meta name="keywords" content="">
+<meta name="description" content="CLASS, TrackBallControls">
+<title>webgl sample</title>
+<style>
+html,body{height:100%;overflow:hidden;}
+body{
+	margin: 0;
+	padding: 0;
+	background: #000;
+}
+#container{
+	width: 100%;
+	height: 100%;
+}
+</style>
+</head>
+<body>
+<div id="container"></div>
+<script src="../js/jquery-2.1.1.min.js"></script>
+<script src="../js/Tweener.js"></script>
+<script src="../js/stats.min.js"></script>
+<script src="../js/three.min.js"></script><!--/ v70 -->
+<script src="../js/controls/TrackballControls.js"></script>
+<script type="text/javascript">
+window.addEventListener("load", function (){
+
+	if( !istWorld.Main.isSupportedWebgl )
+	{
+		alert('no webgl.');
+		return;
+	}
+
+	//	world
+	var _dom = document.getElementById('container');
+	var _world = new istWorld.Main( _dom );
+	var mouse = istWorld.Main.mouse;
+
+	//	object	[IcosahedronGeometry]
+	var _mesh = createObject();
+	_world.scene.add( _mesh );
+
+	//	light
+	_world.scene.add( new THREE.AmbientLight( 0x181818 ) );
+	var light = new THREE.DirectionalLight( 0x999999 );
+	light.position.set( 1, 1, 1 );
+	light.intensity = 1;
+	_world.scene.add( light );
+	var light = new THREE.DirectionalLight( 0x999999 );
+	light.position.set( 0, 1, 0 );
+	light.intensity = 1;
+	_world.scene.add( light );
+	var light = new THREE.DirectionalLight( 0x999999 );
+	light.position.set( 1, -1, 0 );
+	light.intensity = 0.5;
+	_world.scene.add( light );
+
+	//	TrackballControls
+	var _trackBall = new istWorld.Controls( _world.camera, _dom );
+
+	//	start
+	createStats();
+	animate();
+
+	//	events
+	window.addEventListener( 'resize', onWindowResize, false );
+	$( window ).on( 'mousemove', _onMouseMove );
+	$( window ).on( 'touchmove', _onTouchMove );
+
+
+	//	method
+	function createStats()
+	{
+		stats = new Stats();
+		stats.domElement.style.position = 'fixed';
+		stats.domElement.style.left = "0px";
+		stats.domElement.style.top = '0px';
+		container.appendChild( stats.domElement );
+	}
+	function animate()
+	{
+		stats.update();
+		_trackBall.update();
+
+		requestAnimationFrame( animate );
+		loop();
+	}
+	function loop()
+	{
+		var _time = Date.now() * 0.001;
+	}
+
+	function createObject()
+	{
+		var geometry = new THREE.IcosahedronGeometry(80,1);
+		var material = new THREE.MeshLambertMaterial({shading:THREE.NoShading});
+		var mesh = new THREE.Mesh(geometry, material);
+		return mesh;
+	}
+
+	//	Handler
+	function onWindowResize()
+	{
+		_world.camera.aspect = window.innerWidth / window.innerHeight;
+		_world.camera.updateProjectionMatrix();
+		_world.renderer.setSize( window.innerWidth, window.innerHeight );
+
+		_trackBall.handleResize();
+
+		istWorld.Main.resolution = {x:window.innerWidth,y:window.innerHeight};
+	}
+
+	function _onMouseMove(e)
+	{
+		e.preventDefault();
+		mouse.x = e.originalEvent.pageX;
+		mouse.y = e.originalEvent.pageY;
+	}
+	function _onTouchMove(e)
+	{
+		e.preventDefault();
+		mouse.x = e.originalEvent.touches[0].pageX;
+		mouse.y = e.originalEvent.touches[0].pageY;
+	}
+
+});
+
+/**
+*	custom class
+*	v 70
+*
+*
+*/
+var istWorld;
+(function(istWorld){
+	var main = (function(){
+		function main( _dom )
+		{
+			//	props
+			this.scene;
+			this.camera;
+			this.focus;
+			this.renderer;
+
+			//	init
+			this.init3D( _dom );
+			this.animate();
+		}
+
+		//	Mouse
+		main.mouse = {x:window.innerWidth*0.5,y:window.innerHeight*0.5};
+
+		//	resolution
+		main.resolution = {x:window.innerWidth,y:window.innerHeight}
+
+		//	is enable WebGL?[boolean]
+		main.isSupportedWebgl = function () {
+            try {
+                var canvas = document.createElement("canvas");
+                return !!window["WebGLRenderingContext"] && (canvas.getContext("webgl") || canvas.getContext("experimental-webgl"));
+            }
+            catch (e) {
+                return false;
+            }
+        };
+        main.ZERO = new THREE.Vector3(0, 0, 0);
+        //main.PROJECTOR = new THREE.Projector();
+
+		main.prototype = {
+			init3D	:	function( _dom )
+			{
+				var _width = window.innerWidth;
+				var _height = window.innerHeight;
+
+				//	カメラ
+				this.camera = new THREE.PerspectiveCamera( 50, _width / _height, 0.1, 2000 );
+				this.camera.position.z = 1000;
+
+				//	カメラフォーカス	
+				this.focus = new THREE.Vector3();
+				this.focus.set( 0, 0, 0 );
+				this.camera.lookAt( focus );
+
+				//	SCENE
+				this.scene = new THREE.Scene();
+				this.scene.fog = new THREE.Fog( 0x181818, 1000, 2000 );
+
+				//	renderer
+				this.renderer = new THREE.WebGLRenderer( { antialias: false } );
+				this.renderer.setClearColor( this.scene.fog.color, 1 );
+				this.renderer.setSize( window.innerWidth, window.innerHeight );
+				this.renderer.gammaInput = true;
+				this.renderer.gammaOutput = true;
+
+				_dom.appendChild( this.renderer.domElement );
+			},
+			animate	:	function()
+			{
+				//requestAnimationFrame( this.animate );
+				//this.render();
+				var _this = this;
+				setInterval(function(){
+					_this.render();
+				},1000/60);
+			},
+			render	:	function()
+			{
+				var _this = this;
+				_this.camera.lookAt( _this.focus );
+				_this.renderer.render( _this.scene, _this.camera );
+			}
+		}
+
+		return main;
+	})();
+	istWorld.Main = main;
+
+	var controls = (function(){
+		function main( _camera, _dom )
+		{
+			this.init(_camera,_dom);
+		}
+
+		main.prototype = {
+			init	:	function(_camera,_dom)
+			{
+				this.trackBall = new THREE.TrackballControls( _camera, _dom );
+				this.trackBall.screen.width = _dom.clientWidth;
+				this.trackBall.screen.height = _dom.clientHeight;
+				this.trackBall.screen.offsetLeft = _dom.getBoundingClientRect().left;
+				this.trackBall.screen.offsetTop = _dom.getBoundingClientRect().top;
+				this.trackBall.noRotate = false;
+				this.trackBall.rotateSpeed = 2.0;
+				this.trackBall.noZoom = false;
+				this.trackBall.zoomSpeed = 1.0;
+				this.trackBall.noPan = false;
+				this.trackBall.panSpeed = 1.0;
+				this.trackBall.target = new THREE.Vector3( 0, 0, 0 );
+				this.trackBall.staticMoving = true;
+				this.trackBall.dynamicDampingFactor = 0.3;
+			},
+			update	:	function()
+			{
+				this.trackBall.update();
+			},
+			handleResize	:	function()
+			{
+				this.trackBall.handleResize();
+			}
+		}
+
+		return main;
+	})();
+	istWorld.Controls = controls;
+})(istWorld||(istWorld={}));
+
+
+
+</script>
+</body>
+</html>

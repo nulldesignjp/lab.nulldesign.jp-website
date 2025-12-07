@@ -1,0 +1,196 @@
+<!doctype>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=yes">
+<meta name="keywords" content="">
+<meta name="description" content="CLASS">
+<title>webgl sample</title>
+<style>
+html,body{height:100%;overflow:hidden;}
+body{
+	margin: 0;
+	padding: 0;
+	background: #000;
+}
+#container{
+	width: 100%;
+	height: 100%;
+}
+</style>
+</head>
+<body>
+<div id="container"></div>
+<script src="../js/jquery-2.1.1.min.js"></script>
+<script src="../js/Detector.js"></script>
+<script src="../js/three.min.js"></script>
+<script src="world3d.js"></script>
+<script type="x-shader/x-vertex" id="vertexshader">
+uniform float amplitude;
+uniform float scale;
+attribute float size;
+attribute vec3 customColor;
+varying vec3 vColor;
+void main()
+{
+	vColor = customColor;
+	vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
+	gl_PointSize = size * scale;
+	//gl_PointSize = size * ( 300.0 / length( mvPosition.xyz ) ) * scale * 10.0;
+	gl_Position = projectionMatrix * mvPosition;
+}
+</script>
+<script type="x-shader/x-fragment" id="fragmentshader">
+uniform vec3 color;
+uniform sampler2D texture;
+void main()
+{
+	gl_FragColor = vec4( color * vColor, 1.0 );
+	//gl_FragColor = gl_FragColor * texture2D( texture, gl_PointCoord );
+}
+</script>
+<script type="text/javascript">
+(function(){
+
+	var _clist = [];
+
+	var _dom = document.getElementById('container');
+	var _t = new world3d.three( _dom );
+
+	//_t.scene.fog.far = 800;
+	//_t.scene.fog.near = 200;
+
+	_t.camera.position.set( 0, 1500, 0 )
+
+	var _geometry = new THREE.PlaneGeometry( 500, 500, 10, 10 );
+	var _material = new THREE.MeshLambertMaterial({transparent:true,opacity:0.4});
+	var _mesh = new THREE.Mesh( _geometry, _material );
+	_t.scene.add( _mesh );
+	_mesh.rotation.x = - Math.PI * 0.5;
+	_mesh.position.set( 0, -250, 0 );
+
+	var _geometry = new THREE.PlaneGeometry( 500, 500, 10, 10 );
+	var _material = new THREE.MeshPhongMaterial({transparent:true,opacity:0.4});
+	var _mesh = new THREE.Mesh( _geometry, _material );
+	_t.scene.add( _mesh );
+	_mesh.rotation.x = Math.PI * 0.5;
+	_mesh.position.set( 0, 250, 0 );
+
+	var _p = new THREE.PointLight( 0x99ccff, 1, 1000 );
+	_p.position.set( 0, 0, 0 );
+	_t.scene.add( _p );
+
+	var _p = new THREE.PointLight( 0x006699, 3, 200 );
+	_t.scene.add( _p );
+
+	var _geometry = new THREE.Geometry();
+	_geometry.vertices.push( new THREE.Vector3( 100, 100, 0　) );
+	_geometry.vertices.push( new THREE.Vector3( -100, -100, 100) );
+	var _material = new THREE.LineBasicMaterial({linewidth:1,color: 0x0099CC});
+	var _mesh = new THREE.Line( _geometry, _material );
+	_t.scene.add( _mesh );
+
+	var _vx = Math.random() * 10 - 5;
+	var _vy = Math.random() * 10 - 5;
+	var _vz = Math.random() * 10 - 5;
+	var _speed = 5;
+	_vx *= _speed;
+	_vy *= _speed;
+	_vz *= _speed;
+
+	var _p0 = new THREE.Vector3( 0, 0, 0 );
+	var _p1 = new THREE.Vector3( 0, 0, 0 );
+
+
+
+
+	var _geometry = new THREE.Geometry();
+	for( var i = 0; i < 1000; i++ )
+	{
+		_geometry.vertices.push( new THREE.Vector3( Math.random()*500-250, Math.random()*500-250, Math.random()*500-250 ) );
+	}
+	var _material = new THREE.PointCloudMaterial({size:10});
+	var _particle = new THREE.PointCloud( _geometry, _material );
+	_t.scene.add( _particle );
+
+	setInterval(function(){
+		_p1.x = _p0.x;
+		_p1.y = _p0.y;
+		_p1.z = _p0.z;
+		_p0.x += _vx;
+		_p0.y += _vy;
+		_p0.z += _vz;
+
+		var _hit = false;
+		if( _p0.x < -250 )
+		{
+			_p0.x = -250;
+			_vx *= -1;
+			_hit = true;
+
+		} else if( _p0.x > 250 )
+		{
+			_p0.x = 250;
+			_vx *= -1;
+			_hit = true;
+		}
+		if( _p0.y < -250 )
+		{
+			_p0.y = -250;
+			_vy *= -1;
+			_hit = true;
+		} else if( _p0.y > 250 )
+		{
+			_p0.y = 250;
+			_vy *= -1;
+			_hit = true;
+		}
+		if( _p0.z < -250 )
+		{
+			_p0.z = -250;
+			_vz *= -1;
+			_hit = true;
+		} else if( _p0.z > 250 )
+		{
+			_p0.z = 250;
+			_vz *= -1;
+			_hit = true;
+		}
+		_geometry.vertices[0] = _p0;
+		_geometry.vertices[1] = _p1;
+		_geometry.verticesNeedUpdate = true;
+
+		_p.position.x = _p1.x;
+		_p.position.y = _p1.y;
+		_p.position.z = _p1.z;
+
+		if( _hit )
+		{
+			var geometry = new THREE.IcosahedronGeometry(Math.random() * 40 + 10,0);
+			var material = new THREE.MeshLambertMaterial({shading:THREE.NoShading});
+			var mesh = new THREE.Mesh(geometry, material);
+			mesh.position.set( _p1.x, _p1.y, _p1.z );
+			mesh.rotation.set( Math.random()*Math.PI,Math.random()*Math.PI,Math.random()*Math.PI);
+			_t.scene.add( mesh );
+			_clist.push( mesh );
+
+			if( _clist.length > 100 )
+			{
+				mesh = _clist.shift();
+				_t.scene.remove( mesh );
+				mesh.material.dispose();
+				mesh.geometry.dispose();
+				mesh = null;
+			}
+		}
+
+		var _rad = world3d.time * 0.0001;
+		var _x = Math.cos( _rad ) * 1200;
+		var _z = Math.sin( _rad ) * 1200;
+		_t.camera.position.set( _x, 0, _z );
+	},1000/60);
+
+})();
+</script>
+</body>
+</html>

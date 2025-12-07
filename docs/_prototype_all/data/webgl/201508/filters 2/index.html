@@ -1,0 +1,72 @@
+<!doctype>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=yes">
+<meta name="keywords" content="">
+<meta name="description" content="">
+<title>HACKist - WebGL Practice00</title>
+<style>
+html,body{overflow:hidden;}
+body{margin:0;padding:0;background:#000;}
+#buttons{position:fixed;left:12px;top:12px;padding:12px;background:rgba(255,255,255,0.6);font-family:Arial}
+#buttons h1{margin:0 0 12px 0;padding:0;line-height:1.0;font-weight:normal;font-size:24px;}
+#buttons ul{margin:0;padding:0;list-style-type:none;font-size:24px;}
+#save{display: none;}
+</style>
+</head>
+<body>
+<div id="container"></div>
+<div id="buttons">
+<h1>GLSL FILTERS</h1>
+<ul>
+<li><input type="checkbox" name="filters" id="btn01"><label for="btn01">RGBShift</label></input></li>
+<li><input type="checkbox" name="filters" id="btn02"><label for="btn02">Film</label></input></li>
+<li><input type="checkbox" name="filters" id="btn03"><label for="btn03">Focus</label></input></li>
+<li><input type="checkbox" name="filters" id="btn04"><label for="btn04">Hue and Saturetion</label></input></li>
+<li><input type="checkbox" name="filters" id="btn05"><label for="btn05">Bad TV</label></input></li>
+<li><input type="checkbox" name="filters" id="btn06"><label for="btn06">Glitch</label></input></li>
+<li><input type="checkbox" name="filters" id="btn07"><label for="btn07">Invert</label></input></li>
+<li><input type="checkbox" name="filters" id="btn08"><label for="btn08">Edge</label></input></li>
+<li><input type="checkbox" name="filters" id="btn09"><label for="btn09">Vignette</label></input></li>
+<li><input type="checkbox" name="filters" id="btn10"><label for="btn10">Noise</label></input></li>
+<li><input type="checkbox" name="filters" id="btn11"><label for="btn11">ToyCam</label></input></li>
+<li><input type="checkbox" name="filters" id="btn12"><label for="btn12">DotScreen</label></input></li>
+<li><input type="checkbox" name="filters" id="btn13"><label for="btn13">Edge2</label></input></li>
+<li><input type="checkbox" name="filters" id="btn14"><label for="btn14">Sepia</label></input></li>
+<li><input type="checkbox" name="filters" id="btn15"><label for="btn15">SoftFocus</label></input></li>
+</ul>
+<p><button id="save">SAVE IMAGE</button></p>
+</div>
+<script type="text/javascript" src="jquery-2.1.3.min.js"></script>
+<script type="text/javascript" src="libs/dat.gui.min.js"></script>
+<script type="text/javascript" src="three.min.js"></script>
+
+	<script src="js/postprocessing/EffectComposer.js"></script>
+	<script src="js/postprocessing/RenderPass.js"></script>
+	<script src="js/postprocessing/MaskPass.js"></script>
+	<script src="js/postprocessing/ShaderPass.js"></script>
+
+		<script src="js/shaders/CopyShader.js"></script>
+		<script src="js/shaders/DotScreenShader.js"></script>
+		<script src="js/shaders/RGBShiftShader.js"></script>
+		<script src="js/shaders/DigitalGlitch.js"></script>
+		<script src="js/shaders/FilmShader.js"></script>
+		<script src="js/shaders/EdgeShader.js"></script> -->
+		<script src="js/shaders/EdgeShader2.js"></script>
+		<script src="js/shaders/FocusShader.js"></script>
+		<script src="js/shaders/VignetteShader.js"></script>
+		<script src="js/shaders/HueSaturationShader.js"></script>
+		<script src="js/shaders/BlendShader.js"></script>
+		<script src="js/shaders/SepiaShader.js"></script>
+		<script src="BadTVShader.js"></script>
+		<script src="InvertShader.js"></script>
+		<script src="NoiseShader.js"></script>
+		<script src="ToyCamShader.js"></script>
+		<script src="SoftFocusShader.js"></script>
+
+
+
+<script type="text/javascript" src="engine.js"></script>
+</body>
+</html>

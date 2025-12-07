@@ -1,0 +1,162 @@
+<!doctype>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=yes">
+<meta name="keywords" content="template,shader,geometry,color">
+<meta name="description" content="">
+<title>webgl sample</title>
+<style>
+html,body{height:100%;overflow:hidden;}
+body{margin:0;padding:0;background:#000;color:#FFF;font-size:12px;font-family:Georgia;}
+#container{width:100%;height:100%;}
+canvas{position:fixed;left:0;top:0;}
+h1,p{margin:0;padding:0;line-height:1;position:fixed;z-index:100;font-size:1em;}
+h1{left:32px;top:32px;font-weight:normal;}
+p{left:32px;bottom:32px;}
+</style>
+</head>
+<body>
+<h1>150413</h1>
+<div id="container"></div>
+<script src="../js/jquery-2.1.3.min.js"></script>
+<script src="../js/Detector.js"></script>
+<script src="../js/perlin-noise-simplex.js"></script>
+<script src="../js/r71/three.min.js"></script>
+<script src="../js/world3d.js"></script>
+<script type="x-shader/x-vertex" id="vertexshader">
+
+//
+varying vec3 vUv;
+
+void main()
+{
+	vUv = position.xyz;
+	gl_Position = projectionMatrix * modelViewMatrix * vec4( position * 2.0, 1.0 );
+}
+</script>
+<script type="x-shader/x-fragment" id="fragmentshader">
+uniform float time;
+uniform vec2 mouse;
+uniform vec2 resolution;
+
+//
+varying vec3 vUv;
+
+const int   oct  = 8;
+const float per  = 0.5;
+const float PI   = 3.1415926;
+const float cCorners = 1.0 / 16.0;
+const float cSides   = 1.0 / 8.0;
+const float cCenter  = 1.0 / 4.0;
+
+// 補間関数
+float interpolate(float a, float b, float x){
+    float f = (1.0 - cos(x * PI)) * 0.5;
+    return a * (1.0 - f) + b * f;
+}
+
+// 乱数生成
+float rnd(vec2 p){
+    return fract(sin(dot(p ,vec2(12.9898,78.233))) * 43758.5453);
+}
+
+// 補間乱数
+float irnd(vec2 p){
+    vec2 i = floor(p);
+    vec2 f = fract(p);
+    vec4 v = vec4(rnd(vec2(i.x,       i.y      )),
+                  rnd(vec2(i.x + 1.0, i.y      )),
+                  rnd(vec2(i.x,       i.y + 1.0)),
+                  rnd(vec2(i.x + 1.0, i.y + 1.0)));
+    return interpolate(interpolate(v.x, v.y, f.x), interpolate(v.z, v.w, f.x), f.y);
+}
+
+// ノイズ生成
+float noise(vec2 p){
+    float t = 0.0;
+    for(int i = 0; i < oct; i++){
+        float freq = pow(2.0, float(i));
+        float amp  = pow(per, float(oct - i));
+        t += irnd(vec2(p.x / freq, p.y / freq)) * amp;
+    }
+    return t;
+}
+
+// シームレスノイズ生成
+float snoise(vec2 p, vec2 q, vec2 r){
+    return noise(vec2(p.x,       p.y      )) *        q.x  *        q.y  +
+           noise(vec2(p.x,       p.y + r.y)) *        q.x  * (1.0 - q.y) +
+           noise(vec2(p.x + r.x, p.y      )) * (1.0 - q.x) *        q.y  +
+           noise(vec2(p.x + r.x, p.y + r.y)) * (1.0 - q.x) * (1.0 - q.y);
+}
+
+void main()
+{
+	vec3 p = vUv * 0.02;
+	float r = p.x;
+	float g = p.y;
+	float b = p.z;
+	gl_FragColor = vec4( r, g, b, 1.0 );
+}
+</script>
+
+<script type="text/javascript">
+(function(){
+
+	//	perlinNoise
+	var _perlinNoise = new SimplexNoise();
+	var _value = _perlinNoise.noise( 0, 0 );
+
+	//	uniforms
+	var uniforms = {
+		time: { type: "f", value: 1.0 },
+		resolution: { type: "v2", value: new THREE.Vector2() },
+		mouse: { type: "v2", value: new THREE.Vector2() }
+	};
+	uniforms.time.value = 0.0;
+	uniforms.resolution.value.x = window.innerWidth;
+	uniforms.resolution.value.y = window.innerHeight;
+	uniforms.mouse.value.x = 0;
+	uniforms.mouse.value.y = 0;
+
+	var _vertexShader = document.getElementById('vertexshader').textContent;
+	var _fragmentShader = document.getElementById('fragmentshader').textContent;
+
+	var _world = new world3d.three( document.getElementById('container') );
+
+	var geometry = new THREE.BoxGeometry(100,100,100,3,3,3);
+	//	var material = new THREE.MeshNormalMaterial();
+	var material = new THREE.ShaderMaterial({
+		uniform: uniforms,
+		vertexShader: _vertexShader,
+		fragmentShader: _fragmentShader,
+		shading: THREE.FlatShading
+	});
+	var mesh = new THREE.Mesh( geometry, material );
+	_world.scene.add( mesh );
+	mesh.position.x = -200;
+
+
+
+	var geometry = new THREE.SphereGeometry( 50, 8, 6 );
+	var _mesh = new THREE.Mesh( geometry, material );
+	_world.scene.add( _mesh );
+	_mesh.position.x = 200;
+
+	_world.engine = function(){
+		mesh.rotation.x += 0.01;
+		mesh.rotation.y += 0.01;
+		mesh.rotation.z += 0.01;
+		_mesh.rotation.x += 0.01;
+		_mesh.rotation.y += 0.01;
+		_mesh.rotation.z += 0.01;
+	}
+
+	setInterval(function(){
+		uniforms.time.value += 0.05;
+	},1000/60);
+})();
+</script>
+</body>
+</html>

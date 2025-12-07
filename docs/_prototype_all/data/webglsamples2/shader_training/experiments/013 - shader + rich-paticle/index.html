@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0">
+<meta name="description" content="shader + paticle [ photo shushu test ]">
+<meta name="keywords" content="">
+<title>shader</title>
+<style>
+html,body{height: 100%;overflow: hidden;}
+body{margin: 0; padding: 0; background: #000;cursor: none;}
+#cval,#cval2,#cval3{position: fixed;left: 32px;top:32px;z-index:100;color:#FFF;font-size:10px;font-family: Arial;background:rgba(0,0,0,0.6);padding: 3px;}
+#cval2{top: 48px;}
+#cval3{top: 64px;}
+</style>
+</head>
+<body>
+<div id="container"></div>
+<div id="cval">recreation</div>
+<div id="cval2">-</div>
+<script type="text/javascript" src="jquery-2.2.3.min.js"></script>
+<script type="text/javascript" src="perlin-noise-simplex.js"></script>
+<script type="text/javascript" src="three.min.js"></script>
+<script type="text/javascript" src="TweenMax.min.js"></script>
+<script type="text/javascript" src="OrbitControls.js"></script>
+<script type="text/javascript" src="engine.js"></script>
+<script type="x-shader/x-vertex" id="vertexshader">
+	uniform vec2 resolution;
+	uniform float time;
+	uniform vec3 camera;
+	uniform float near;
+	uniform float far;
+	attribute float size;
+	varying vec3 pos;
+	varying float alpha;
+
+	// float rand(vec2 co){
+	// 	//	これを実数の少数部を求める組み込み関数 fract()
+ //    	return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);
+	// }
+
+	void main()
+	{
+		pos = position;
+
+		float d = distance( camera, pos );
+
+		gl_PointSize = size;
+		alpha = 1.0;
+
+		if( d <= near )
+		{
+			gl_PointSize = 0.0;
+			alpha = 0.0;
+		} else if( d >= far )
+		{
+			gl_PointSize = 1.0;
+			alpha = 1.0;
+		} else {
+			alpha = ( d - near ) / ( far - near );
+			gl_PointSize = size / ( alpha * alpha ) * 0.1;
+		};
+
+		gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+	}
+</script>
+<script type="x-shader/x-fragment" id="fragmentshader">
+	uniform sampler2D texture;
+	varying vec3 pos;
+	varying float alpha;
+	void main()
+	{
+		gl_FragColor = texture2D( texture, gl_PointCoord ) * vec4( 1.0, 1.0, 1.0, alpha );
+	}
+</script>
+
+
+</body>
+</html>

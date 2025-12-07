@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="ja-JP">
+<head>
+<title>webgl sample</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+<meta name="keywords" content="r74 mp3 three.js">
+<meta name="description" content="">
+<link rel="stylesheet" type="text/css" href="css/style.css" media="all">
+<style>
+body{
+	font-family: Georgia;
+}
+#header{
+	position: fixed;
+	left: 32px;
+	top: 32px;
+	color: #FFF;
+}
+#header p{
+	margin-top: 0;
+}
+#status{
+	margin-top: 10px;
+	font-size: 12px;
+	font-variant: Arial;
+}
+#status p{
+	margin-top: 3px;
+	margin-bottom: 0;
+}
+</style>
+</head>
+<body>
+<div id="header">
+<p>WebAudioAPI</p>
+<p>mp3 fileuploader with three.js</p>
+<form>
+<input type="file" name="audio">
+</form>
+<div id="status">
+<p>TITLE: <span id="title"></span></p>
+<p>CURRENT: <span id="current"></span></p>
+<p>DURATION: <span id="total"></span></p>
+<p>FILTER<span id="filter"></span></p>
+</div>
+</div>
+<div id="webglView"></div>
+<script type="x-shader/x-vertex" id="vertexshader"></script>
+<script type="x-shader/x-fragment" id="fragmentshader"></script>
+<script type="text/javascript" src="libs/jquery-2.1.4.min.js"></script>
+<script type="text/javascript" src="libs/three.min.js"></script>
+<script type="text/javascript" src="libs/OrbitControls.js"></script>
+<script type="text/javascript" src="libs/world.js"></script>
+<script type="text/javascript" src="libs.js"></script> 
+<script type="text/javascript" src="engine.js"></script> 
+</body>
+</html>

@@ -1,0 +1,163 @@
+<!doctype html>
+<html>
+<head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+<meta charset="UTF-8">
+<meta http-equiv="Content-Language" content="ja">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<meta http-equiv="Content-Script-Type" content="text/javascript">
+<meta http-equiv="imagetoolbar" content="no">
+<meta http-equiv="cleartype" content="on">
+<meta name="format-detection" content="telephone=no">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=yes, viewport-fit=cover">
+<meta name="keywords" content="">
+<meta name="description" content="">
+<link rel="apple-touch-icon-precomposed" sizes="120x120" href="http://nulldesign.jp/metrogram3d/shared/img/120x120.png">
+<link href="http://fonts.googleapis.com/css?family=EB+Garamond" rel="stylesheet" type="text/css">
+<link href="shared/css/reset.css" rel="stylesheet" type="text/css" media="all">
+<link href="shared/css/style.css" rel="stylesheet" type="text/css" media="all">
+<title>nulldesign.study</title>
+<script type="x-shader/x-vertex" id="vertexShader">
+varying vec2 vUv;
+void main()
+{
+    vUv = uv;
+    gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+}
+</script>
+<script type="x-shader/x-fragment" id="fragmentShader">
+uniform float time;
+uniform vec2 resolution;
+uniform sampler2D texture;
+varying vec2 vUv;
+
+float random(vec2 c){
+return fract(sin(dot(c.xy ,vec2(12.9898,78.233))) * 43758.5453);
+}
+
+void main()
+{
+    float _offset = random( vec2( vUv.y * resolution.y * 0.01, time * 10000.0 ) );
+    _offset = ( _offset - 0.5 ) * 32.0;
+    _offset = 0.0;
+    float _range = 16.0;
+    float r = texture2D( texture, vUv + vec2( sin( time ) * _range + _offset, 0.0 ) / resolution ).r;
+    float g = texture2D( texture, vUv + vec2( cos( time ) * _range + _offset, 0.0 ) / resolution ).g;
+    float b = texture2D( texture, vUv + vec2( cos( time ) * sin( time ) * _range + _offset, 0.0 ) / resolution ).b;
+
+    gl_FragColor = vec4( r, g, b, 1.0 );
+}
+</script>
+
+<script type="x-shader/x-vertex" id="imgVertexShader">
+uniform float time;
+varying vec2 vUv;
+varying vec3 vPosition;
+void main()
+{
+    vUv = uv;
+    vPosition = position;
+
+    vec3 pos = position;
+    //pos.y += sin( pos.x / 320.0 * 3.1416 * 0.5 + 3.1416 * 0.5 ) * 100.0 * ( sin( time ) * 0.5 + 0.5 );
+    //pos.x -= sin( pos.y / 320.0 * 3.1416 * 0.5 + 3.1416 * 0.5 ) * 100.0 * ( sin( time ) * 0.5 + 0.5 );
+    vec3 newPos = pos;
+
+    gl_Position = projectionMatrix * modelViewMatrix * vec4( newPos, 1.0 );
+}
+</script>
+<script type="x-shader/x-fragment" id="imgFragmentShader">
+uniform float time;
+uniform vec2 resolution;
+uniform sampler2D texture;
+
+varying vec2 vUv;
+varying vec3 vPosition;
+
+float random(vec2 c){
+    return fract(sin(dot(c.xy ,vec2(12.9898,78.233))) * 43758.5453);
+}
+
+float noise (in vec2 st) {
+    vec2 i = floor(st);
+    vec2 f = fract(st);
+
+    // Four corners in 2D of a tile
+    float a = random(i);
+    float b = random(i + vec2(1.0, 0.0));
+    float c = random(i + vec2(0.0, 1.0));
+    float d = random(i + vec2(1.0, 1.0));
+
+    // Smooth Interpolation
+
+    // Cubic Hermine Curve.  Same as SmoothStep()
+    vec2 u = f*f*(3.0-2.0*f);
+    // u = smoothstep(0.,1.,f);
+
+    // Mix 4 coorners porcentages
+    return mix(a, b, u.x) +
+            (c - a)* u.y * (1.0 - u.x) +
+            (d - b) * u.x * u.y;
+}
+
+void main()
+{
+    float _field = 0.005;
+    float _timeScale = 1.0;
+
+    float _t = ( noise( vPosition.xy * _field + vec2( time * _timeScale, 10.0 ) ) - 0.5 ) * 16.0;
+    float _r = ( noise( vPosition.xy * _field + vec2( 0.0, time * _timeScale ) ) - 0.5 ) * 2.0;
+
+    float _x = cos( _t ) * _r;
+    float _y = sin( _t ) * _r;
+
+    float _range = 16.0;
+    float _rangeMin = 8.0;
+    float r = texture2D( texture, vUv + ( vec2( sin( time ), 0.0 ) * _range + vec2( _x, _y ) * _rangeMin ) / resolution ).r;
+    float g = texture2D( texture, vUv + ( vec2( cos( time ), 0.0 ) * _range + vec2( _x, _y ) * _rangeMin ) / resolution ).g;
+    float b = texture2D( texture, vUv + ( vec2( sin( time ), 0.0 ) * _range + vec2( _x, _y ) * _rangeMin ) / resolution ).b;
+
+    r = ( r - 0.5 ) * 1.25 + 0.5;
+    g = ( g - 0.5 ) * 1.25 + 0.5;
+    b = ( b - 0.5 ) * 1.25 + 0.5;
+
+    gl_FragColor = vec4( r, g, b, 1.0 );
+}
+</script>
+
+</head>
+<body>
+<div id="container">
+<div id="siteHead">
+<h1>nulldesign.study</h1>
+<h2>Creative Coding....</h2>
+<!--/ siteHead --></div>
+<div id="siteBody">
+<div id="webglView"><!--/ webglView --></div>
+<!--/ siteBody --></div>
+<div id="siteFoot"><p>COPYRIGHT &copy; 2018 nulldesign.jp <br>ALL RIGHTS RESERVED.</p>
+<!--/ siteFoot --></div>
+<!--/ container --></div>
+
+<script type="text/javascript" src="shared/js/jquery-3.3.1.min.js"></script>
+<script type="text/javascript" src="shared/js/three.min.js"></script>
+<script type="text/javascript" src="shared/js/GPUComputationRenderer.js"></script>
+<script type="text/javascript" src="shared/js/OrbitControls.js"></script>
+<script type="text/javascript" src="shared/js/world.js"></script>
+<script type="text/javascript" src="shared/js/CopyShader.js"></script>
+<script type="text/javascript" src="shared/js/EffectComposer.js"></script>
+<script type="text/javascript" src="shared/js/MaskPass.js"></script>
+<script type="text/javascript" src="shared/js/RenderPass.js"></script>
+<script type="text/javascript" src="shared/js/ShaderPass.js"></script>
+
+<script type="text/javascript" src="shared/js/NoiseShader.js"></script>
+<script type="text/javascript" src="shared/js/VignetteShader.js"></script>
+<script type="text/javascript" src="shared/js/InvertShader.js"></script>
+<script type="text/javascript" src="shared/js/LineNoiseShader.js"></script>
+<script type="text/javascript" src="shared/js/RGBNoiseShader.js"></script>
+<script type="text/javascript" src="shared/js/MonoShader.js"></script>
+<script type="text/javascript" src="shared/js/BlurShader.js"></script>
+<script type="text/javascript" src="shared/js/BloomShader.js"></script>
+
+<script type="text/javascript" src="shared/js/engine.js"></script>
+</body>
+</html>

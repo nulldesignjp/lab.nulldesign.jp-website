@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0">
+<meta name="description" content="">
+<meta name="keywords" content="">
+<style>
+html,body{height: 100%; overflow: hidden;}
+body{margin: 0;padding: 0; background: #000;	}
+h1{position: fixed;top:32px;left:32px;z-index: 1080;color: #FFF;margin:0;
+padding:0;
+line-height:1;font-size: 16px;}
+#result{position: fixed;bottom:0;left:0;z-index: 1060;width: 100%;min-height: 200px;}
+button{position: fixed;left:50%;top:60%;margin: 0 0 0 -100px;width: 200px;height: auto;z-index: 1080;}
+</style>
+<title>Three.jsのMeshを.obj形式に書き出す変換プログラム</title>
+</head>
+<body>
+<div id="container"></div>
+<h1>Three.jsのMeshを.obj形式に書き出す変換プログラム</h1>
+<textarea id="result"></textarea>
+<script type="text/javascript" src="perlin-noise-simplex.js"></script>
+<script type="text/javascript" src="three.min.js"></script>
+<script type="text/javascript" src="ColladaLoader.js"></script>
+<script type="text/javascript" src="FBXLoader.js"></script>
+<script type="text/javascript" src="OBJLoader.js"></script>
+<script type="text/javascript" src="TDSLoader.js"></script>
+<script type="text/javascript" src="inflate.min.js"></script>
+<script type="text/javascript" src="OrbitControls.js"></script>
+<script type="text/javascript" src="engine.js"></script>
+</body>
+</html>

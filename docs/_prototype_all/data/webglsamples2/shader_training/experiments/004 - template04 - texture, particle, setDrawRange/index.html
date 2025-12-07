@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0">
+<meta name="description" content="template04 - texture, particle, setDrawRange">
+<meta name="keywords" content="">
+<title>shader</title>
+<style>
+html,body{height: 100%;overflow: hidden;}
+body{margin: 0; padding: 0; background: #000;}
+</style>
+</head>
+<body>
+<div id="container"></div>
+<script type="text/javascript" src="jquery-2.2.3.min.js"></script>
+<script type="text/javascript" src="three.min.js"></script>
+<script type="text/javascript" src="OrbitControls.js"></script>
+<script type="text/javascript" src="engine.js"></script>
+<script type="x-shader/x-vertex" id="vertexshader">
+	attribute float size;
+	attribute vec3 color;
+	varying vec3 col;
+	void main()
+	{
+		gl_PointSize = size;
+		col = color;
+		gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+	}
+</script>
+<script type="x-shader/x-fragment" id="fragmentshader">
+	uniform sampler2D texture;
+	varying vec3 col;
+
+	void main()
+	{
+		gl_FragColor = texture2D( texture, gl_PointCoord ) * vec4( col, 1.0 );
+	}
+</script>
+
+
+</body>
+</html>

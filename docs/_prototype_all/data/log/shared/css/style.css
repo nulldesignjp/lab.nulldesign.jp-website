@@ -1,0 +1,396 @@
+/*
+	style.css
+*/
+html,body{
+	height: 100%;
+}
+body{
+	margin: 0;
+	padding: 0;
+	font-family: 'EB Garamond', Georgia, "ＭＳ Ｐ明朝", "MS PMincho", "ヒラギノ明朝 Pro W3", "Hiragino Mincho Pro", serif;
+	font-size: 10px;
+	color: #000;
+	/*background-image: url(../img/bg.gif);*/
+	background-color: #FFF;
+	-webkit-text-size-adjust:none;
+}
+h1,h2,h3,h4,h5,h6{
+	font-weight: normal;
+}
+h1,h2,h3,h4,h5,h6,p,blockquote,
+ol,ul,li,dl,dt,dd,
+table,tr,th,td,
+form,input,textarea{
+	margin: 0;
+	padding: 0;
+	font-size: 1.0em;
+	line-height: 1.0;
+}
+
+a img{
+	border: none;
+}
+
+img{
+	border: none;
+	vertical-align: bottom;
+}
+
+*::selection {background: rgba(0,0,0,0)}
+*::-webkit-selection {background: rgba(0,0,0,0)}
+*::-moz-selection {background: rgba(0,0,0,0)}
+*::-o-selection {background: rgba(0,0,0,0)}
+*::-ms-selection {background: rgba(0,0,0,0)}
+
+#container{
+	margin: 0 auto;
+	height: 100%;
+	text-align: left;
+	z-index: 10;
+}
+
+#siteHead{
+	position: relative;
+	padding: 25px 20px 18px 20px;
+}
+
+#siteHead .fb-like{
+	position: absolute;
+	right: 20px;
+	top: 20px;
+	width: 100px;
+}
+
+	#siteID{
+		margin-left: -2px;
+		font-size: 3.6em;
+	}
+	#siteDescription{
+		margin-top: 10px;
+		font-size: 1.6em;
+	}
+
+#siteBody{
+	padding-right: 20px;
+}
+
+	.post{
+		float: left;
+		margin-top: 15px;
+		margin-left: 20px;
+		width: 280px;
+		/*
+			160 + 15 + 102 = 277;
+		*/
+		height: 277px;
+	}
+
+	.post:hover{
+		cursor: pointer;
+		filter: alpha(opacity=50);
+		-moz-opacity:0.5;
+		opacity: 0.5;
+	}
+
+	.post .impression{
+		width: 280px;
+		height: 160px;
+		overflow: hidden;
+	}
+	.post .impression img{
+		width: 100%;
+		height: auto;
+	}
+
+	.post .postmeta{
+		margin-top: 15px;
+		height: 102px !important;
+		height: 100px;
+		overflow: hidden;
+		font-family: Verdana;
+	}
+
+	.post .postmeta h2{
+		margin-bottom: 15px;
+	}
+
+	.post .postmeta p{
+		line-height: 13px;
+	}
+
+#detailWrapper{
+	width: 100%;
+	min-height: 100%;
+	background-color: rgba(0,0,0,0.96);
+	color: #FFF;
+	z-index: 100;
+	position: relative;
+}
+	#detailBlock{
+		color: #FFF;
+		padding-bottom: 160px;
+	}
+	#pseudoSiteHead{
+		padding: 25px 20px 18px 20px;
+	}
+	#pseudoSiteHead p#siteDetailTitle{
+		margin-left: -2px;
+		font-size: 3.6em;
+	}
+	#pseudoSiteHead p#siteDetailDescription{
+		margin-top: 10px;
+		font-size: 1.6em;
+	}
+
+	#infoDetailBlock{
+		overflow: hidden;
+	}
+
+	#pseudoSiteBody{
+		padding: 5px 20px 20px 20px;
+	}
+
+	#close{
+		position: absolute;
+		top: 20px;
+		right: 20px;
+	}
+	#close:hover{
+		cursor: pointer;
+		filter: alpha(opacity=50);
+		-moz-opacity:0.5;
+		opacity: 0.5;
+	}
+
+	#gototop01block{
+		padding-top: 110px;
+		padding-bottom: 20px;
+		width: 100%;
+		height: 30px;
+		text-align: right;
+	}
+
+	#gototop01{
+		display: none;
+	}
+
+	#gototop02{
+		position: absolute;
+		bottom: 20px;
+		right: 20px;
+	}
+	#gototop01:hover,
+	#gototop02:hover{
+		cursor: pointer;
+		filter: alpha(opacity=50);
+		-moz-opacity:0.5;
+		opacity: 0.5;
+	}
+
+	#postInfoBlock{
+		float: left;
+		width: 280px;
+	}
+	#impressionBlock{
+		margin-left: 320px;
+		overflow: hidden;
+	}
+
+	#impressionBlock ul{
+		min-height: 160px;
+	}
+
+	#impressionBlock img{
+		display: block;
+		width: 100%;
+		height: auto;
+	}
+
+
+	#thumbBlock{
+		margin-top: 1px;
+		margin-left: 320px;
+		overflow: hidden;
+	}
+	#thumbBlock img{
+		float: left;
+		display: block;
+		margin: 0 1px 1px 0;
+	}
+
+	img.retina,
+	canvas.retina{
+		zoom: 0.5;
+	}
+
+#SNSBlock{
+	margin: 20px 0;
+	padding: 0 20px;
+	display: none;
+}
+
+#siteFoot{
+	clear: both;
+	padding: 20px;
+	display: none;
+}
+#siteFoot p{
+	font-size: 1.4em;
+}
+
+
+
+
+
+
+
+
+
+.preload{
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	margin-left: -100px;
+	margin-top: -10px;
+}
+.preload p{
+	font-size: 1.4em;
+	margin-bottom: 3px;
+	color: #494949;
+}
+.preload canvas{
+	border: 1px solid #CCC;
+}
+#alert{
+	margin-left: 20px;
+}
+
+#alert p{
+	margin: 0.5em 0;
+	font-size: 1.4em;
+	line-height: 1.5;
+}
+#alert .ja{
+	margin: 3em 0;
+}
+
+#alert .ja p{
+	margin: 0.5em 0;
+	font-size: 1.2em;
+	line-height: 1.5;
+}
+
+#alert li{
+	margin: 5px 24px;
+	font-size: 1.2em;
+}
+
+#alert a{
+	text-decoration: none;
+	font-family: Verdana;
+	font-weight: bold;
+	color: #000;
+}
+#alert a:hover{
+	color: #C00;
+}
+
+@media screen and (min-width: 320px) and (max-width: 620px) {
+
+	.fb-like{
+		width: 280px;
+	}
+
+	#container,
+	#detailBlock{
+		margin: 0 auto;
+		width: 320px;
+	}
+
+	#postInfoBlock{
+		float: none;
+		width: 100%;
+	}
+	#impressionBlock{
+		margin: 10px 0 0 0;
+		width: 562px;
+		zoom: 0.5;
+	}
+	#thumbBlock{
+		margin: 2px 0;
+		width: 564px;
+		zoom: 0.5;
+	}
+}
+@media screen and (min-width: 620px) and (max-width: 920px) {
+	#container,
+	#detailBlock{
+		margin: 0 auto;
+		width: 620px;
+	}
+}
+@media screen and (min-width: 920px) and (max-width: 1220px) {
+	#container,
+	#detailBlock{
+		margin: 0 auto;
+		width: 920px;
+	}
+	#impressionBlock{	width: 561px;	}
+	#thumbBlock{	width: 562px;	}
+}
+@media screen and (min-width: 1220px) {
+	#container,
+	#detailBlock{
+		margin: 0 auto;
+		width: 1220px;
+	}
+	#impressionBlock{	width: 842px;	}
+	#thumbBlock{	width: 843px;	}
+}
+
+
+@media only screen and (-webkit-min-device-pixel-ratio: 2) {
+	#container,
+	#detailBlock{
+		margin: 0 auto;
+		width: 320px;
+	}
+
+	#siteID{
+		font-size: 1.8em;
+	}
+	#siteDescription{
+		margin-top: 5px;
+		font-size: 0.8em;
+	}
+	#pseudoSiteHead p#siteDetailTitle{
+		font-size: 1.8em;
+	}
+	#pseudoSiteHead p#siteDetailDescription{
+		margin-top: 5px;
+		font-size: 0.8em;
+	}
+
+	.preload canvas{	zoom: 0.5;	}
+	.postmeta canvas{	zoom: 0.5;	}
+	#infoDetailBlock canvas{	zoom: 0.5;	}
+	#postAnchor canvas{	zoom: 0.5;	}
+}
+
+
+
+
+
+/**/
+.clearfix:after {
+    content: "."; 
+    display: block; 
+    height: 0; 
+    clear: both; 
+    visibility: hidden;
+}
+.clearfix {display: inline-block;}
+/* Hides from IE-mac ﾂ･*/
+* html .clearfix {height: 1%;}
+.clearfix {display: block;}
+/* End hide from IE-mac */

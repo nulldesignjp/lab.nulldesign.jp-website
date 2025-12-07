@@ -1,0 +1,160 @@
+<!doctype html>
+<html>
+<head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+<meta charset="UTF-8">
+<meta http-equiv="Content-Language" content="ja">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<meta http-equiv="Content-Script-Type" content="text/javascript">
+<meta http-equiv="imagetoolbar" content="no">
+<meta http-equiv="cleartype" content="on">
+<meta name="format-detection" content="telephone=no">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=yes, viewport-fit=cover">
+<meta name="keywords" content="">
+<meta name="description" content="">
+<link rel="apple-touch-icon-precomposed" sizes="120x120" href="http://nulldesign.jp/metrogram3d/shared/img/120x120.png">
+<link href="http://fonts.googleapis.com/css?family=EB+Garamond" rel="stylesheet" type="text/css">
+<link href="shared/css/reset.css" rel="stylesheet" type="text/css" media="all">
+<link href="shared/css/style.css" rel="stylesheet" type="text/css" media="all">
+<title>Draw</title>
+</head>
+<body>
+<div id="container">
+<div id="siteHead">
+<h1>JoJo SAPIENS</h1>
+<h2>We Love JoJo.</h2>
+<!--/ siteHead --></div>
+<div id="siteBody">
+<div id="webglView"><!--/ webglView --></div>
+<!--/ siteBody --></div>
+<div id="siteFoot"><p>COPYRIGHT &copy; 2018 JoJo SAPIENS <br>ALL RIGHTS RESERVED.</p>
+<!--/ siteFoot --></div>
+<!--/ container --></div>
+<script type="x-shader/x-vertex" id="vertexshader">
+uniform float time;
+
+varying vec3 pos;
+
+float random (in vec2 st) {
+    return fract(sin(dot(st.xy,
+                         vec2(12.9898,78.233)))
+                 * 43758.5453123);
+}
+
+float noise (in vec2 st) {
+    vec2 i = floor(st);
+    vec2 f = fract(st);
+
+    // Four corners in 2D of a tile
+    float a = random(i);
+    float b = random(i + vec2(1.0, 0.0));
+    float c = random(i + vec2(0.0, 1.0));
+    float d = random(i + vec2(1.0, 1.0));
+
+    // Smooth Interpolation
+
+    // Cubic Hermine Curve.  Same as SmoothStep()
+    vec2 u = f*f*(3.0-2.0*f);
+    // u = smoothstep(0.,1.,f);
+
+    // Mix 4 coorners porcentages
+    return mix(a, b, u.x) +
+            (c - a)* u.y * (1.0 - u.x) +
+            (d - b) * u.x * u.y;
+}
+
+void main()
+{
+	pos = position;
+	pos.x += ( noise( position.yz * 10.0 + time * 1.0 ) - 0.5 ) * 0.05;
+	pos.y += ( noise( position.zx * 10.0 + time * 1.0 ) - 0.5 ) * 0.025;
+	pos.z += ( noise( position.xy * 10.0 + time * 1.0 ) - 0.5 ) * 0.0125;
+    pos *= 0.99;
+	gl_Position = projectionMatrix * modelViewMatrix * vec4( pos, 1.0 );
+}
+</script>
+<script type="x-shader/x-fragment" id="fragmentshader">
+uniform float time;
+uniform vec2 mouse;
+uniform vec2 resolution;
+
+varying vec3 pos;
+
+float random (in vec2 st) {
+    return fract(sin(dot(st.xy,
+                         vec2(12.9898,78.233)))
+                 * 43758.5453123);
+}
+
+float noise (in vec2 st) {
+    vec2 i = floor(st);
+    vec2 f = fract(st);
+
+    // Four corners in 2D of a tile
+    float a = random(i);
+    float b = random(i + vec2(1.0, 0.0));
+    float c = random(i + vec2(0.0, 1.0));
+    float d = random(i + vec2(1.0, 1.0));
+
+    // Smooth Interpolation
+
+    // Cubic Hermine Curve.  Same as SmoothStep()
+    vec2 u = f*f*(3.0-2.0*f);
+    // u = smoothstep(0.,1.,f);
+
+    // Mix 4 coorners porcentages
+    return mix(a, b, u.x) +
+            (c - a)* u.y * (1.0 - u.x) +
+            (d - b) * u.x * u.y;
+}
+
+mat2 rotate2d(float angle){
+    return mat2(cos(angle),-sin(angle),
+                sin(angle),cos(angle));
+}
+
+float lines(in vec2 pos, float b){
+    float scale = 10.0;
+    pos *= scale;
+    return smoothstep(0.0,
+                    .5+b*.5,
+                    abs((sin(pos.x*3.1415)+b*2.0))*.5);
+}
+
+void main()
+{
+  	vec2 uv = gl_FragCoord.xy / resolution.xy;
+  	gl_FragColor = vec4(uv,0.5+0.5*sin(time),1.0);
+  	float _l0 = lines(pos.xy * rotate2d( sin(time * 0.01) * 15.0 ) + time * 0.005,.0125); // draw lines
+  	//float _l1 = lines(pos.yz * rotate2d( sin(time * 0.02) * 15.0 ) + time * 0.015,.025); // draw lines
+  	//float _l2 = lines(pos.zx * rotate2d( cos(time * 0.012) * 30.0 ) + time * 0.02,.00725); // draw lines
+
+
+    float pattern = pos.x;
+
+    // Add noise
+    vec2 _pos = rotate2d( noise(pos.xy * 16.0+ time * 0.2) ) * pos.xy;
+
+    // Draw lines
+    pattern = lines(_pos.xy,.5);
+
+    pattern = pow( pattern, 2.0 );
+
+    gl_FragColor *= vec4( vec3(pattern), 1.0 );
+    gl_FragColor += vec4( 0.2, 0.2, 0.2, 1.0 );
+}
+</script>
+<script type="text/javascript" src="shared/js/jquery-3.3.1.min.js"></script>
+<script type="text/javascript" src="shared/js/three.min.js"></script>
+<script type="text/javascript" src="shared/js/SceneUtils.js"></script>
+<script type="text/javascript" src="shared/js/OrbitControls.js"></script>
+<script type="text/javascript" src="shared/js/world.js"></script>
+<script type="text/javascript" src="shared/js/OBJLoader.js"></script>
+<script type="text/javascript" src="shared/js/CopyShader.js"></script>
+<script type="text/javascript" src="shared/js/EffectComposer.js"></script>
+<script type="text/javascript" src="shared/js/MaskPass.js"></script>
+<script type="text/javascript" src="shared/js/RenderPass.js"></script>
+<script type="text/javascript" src="shared/js/ShaderPass.js"></script>
+<script type="text/javascript" src="shared/js/BadTVShader.js"></script>
+<script type="text/javascript" src="shared/js/engine.js"></script>
+</body>
+</html>

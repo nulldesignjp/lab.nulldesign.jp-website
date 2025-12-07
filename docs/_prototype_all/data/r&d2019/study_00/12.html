@@ -1,0 +1,488 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Language" content="ja">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<meta http-equiv="Content-Script-Type" content="text/javascript">
+<meta http-equiv="imagetoolbar" content="no">
+<meta http-equiv="cleartype" content="on">
+<meta name="format-detection" content="telephone=no">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=yes, viewport-fit=cover">
+<meta name="keywords" content="">
+<meta name="description" content="">
+<title>MMC DEMO</title>
+<style>
+html,
+body{
+	margin:0;
+	padding:0;
+}
+
+body{
+	background: #FFF;
+	text-align: center;
+}
+#siteHead{
+	width: 960px;
+	height: 80px;
+	margin: 0 auto;
+	text-align: left;
+}
+#siteBody{
+	width: 960px;
+	margin: 0 auto;
+	text-align: left;
+}
+#mainView{
+	width: 100%;
+	height: 540px;
+	background: #CCC;
+}
+
+</style>
+</head>
+<body>
+<div id="siteHead">
+<p id="status">MMC top view impression area.</p>
+<!--/ siteHead --></div>
+<div id="mainView"><!--/ mainView --></div>
+<div id="siteBody">
+<p>コンテンツエリア。ここにテキスト等が入ります。</p>
+<pre id="console">CONSOLE</pre>
+<!--/ siteBody --></div>
+<script type="text/javascript" src="three.min.js"></script>
+<script type="text/javascript" src="OrbitControls.js"></script>
+<script type="text/javascript" src="EffectComposers.js"></script>
+<script type="text/javascript" src="shaders.js"></script>
+<script type="text/javascript" src="world.js"></script>
+<script>
+
+
+// window.console.log = function(){/* NOP */};
+// window.console.debug = function(){/* NOP */};
+// window.console.info = function(){/* NOP */};
+window.console.warn = function(){/* NOP */};
+window.console.error = function(){/* NOP */};
+window.console.timeEnd = function(){/* NOP */};
+window.console.time = function(){/* NOP */};
+
+{
+	window.addEventListener( 'DOMContentLoaded', start );
+
+	//	prop
+	var _images = ["IMG_0207.JPG","IMG_0208.JPG","IMG_0209.JPG","IMG_0210.JPG","IMG_0211.JPG","IMG_0212.JPG","IMG_2030.JPG","IMG_2174.JPG","IMG_0206.JPG","IMG_2616.JPG","IMG_2588.JPG","IMG_2668.JPG","IMG_2709.JPG","IMG_3592.JPG","IMG_3329.JPG","IMG_3331.JPG","IMG_3334.JPG","IMG_3604.JPG","IMG_3656.JPG","IMG_3671.JPG","IMG_3736.JPG","IMG_3737.JPG","IMG_4485.JPG"];
+
+	//_images = ['IMG_2030.JPG','IMG_3329.JPG','IMG_2709.JPG','IMG_3331.JPG'];
+	_images = _images.concat( _images );
+
+	//	切り出し	
+	_images = _images.slice(0,16);
+
+	//	ランダム
+	var _images = shuffleAry( _images );
+
+	var _world, _dom;
+
+	var _clock,_time,_timeScale;
+	_time = 1.0;
+	_timeScale = 1.0;
+
+	//	489!	
+
+
+	var _textureList = [];
+	var _meshList = [];
+	var _intervalKey;
+	var _resizeIntervalkey;
+	var _mouse = new THREE.Vector2();
+		
+	function mainShader( len ){	
+
+		var _forString = '';
+
+
+		if( len > 1 )
+		{
+			for( var i = 0; i < len; i++ )
+			{
+				_forString += 
+				[
+					"if( _index == "+i+" )",
+					"{",
+
+
+					" _img = vec4(0.0, 0.0, 0.0, 1.0 );",
+					"float _dist = smoothstep( 0.1, 1.0, dist );",
+						"if( vUv.x <= 0.2 )",
+						"{",
+						"	_img = texture2D( tDiffuses["+i+"], mod( vUv + vec2( mod( sin( time * 0.0005 + floor( pos.x * 5.0 ) / 5.0 + randomSeed ) * 1.0, 1.0 ), 0.0 ) * _dist, 1.0 ) );",
+						"} else if( vUv.x <= 0.4 ) {",
+						"	_img = texture2D( tDiffuses["+i+"], mod( vUv + vec2( mod( sin( time * 0.0005 + floor( pos.x * 5.0 ) / 5.0 + randomSeed ) * 3.0, 1.0 ), 0.0 ) * _dist, 1.0 ) );",
+						"} else if( vUv.x <= 0.6 ) {",
+						"	_img = texture2D( tDiffuses["+i+"], mod( vUv + vec2( mod( sin( time * 0.0005 + floor( pos.x * 5.0 ) / 5.0 + randomSeed ) * 5.0, 1.0 ), 0.0 ) * _dist, 1.0 ) );",
+						"} else if( vUv.x <= 0.8 ) {",
+						"	_img = texture2D( tDiffuses["+i+"], mod( vUv + vec2( mod( sin( time * 0.0005 + floor( pos.x * 5.0 ) / 5.0 + randomSeed ) * 7.0, 1.0 ), 0.0 ) * _dist, 1.0 ) );",
+						"} else {",
+						"	_img = texture2D( tDiffuses["+i+"], mod( vUv + vec2( mod( sin( time * 0.0005 + floor( pos.x * 5.0 ) / 5.0 + randomSeed ) * 9.0, 1.0 ), 0.0 ) * _dist, 1.0 ) );",
+						"}",
+					"} else "
+
+
+
+
+
+
+				].join("\n")
+
+			}
+
+			_forString += "{}";
+
+		}
+
+		len = len==0?1:len;
+		var _mainShader = {
+			defines: {
+				LENGTH: len,
+				MAX_ITER: 3.0
+			},
+			uniforms: {
+				time: {	value: 1.0},
+				resolution: {value: new THREE.Vector2( window.innerWidth, window.innerHeight )	},
+				mouse: {value: new THREE.Vector2( 0.0, 0.0 )	},
+				tDiffuse: {value: null},
+				tDiffuses: {value: null},
+				dist: {value: 1.0},
+				randomSeed: {value: Math.random() * Math.PI * 2.0}
+			},
+			vertexShader: [
+				"uniform float time;",
+				"varying vec2 vUv;",
+				"varying vec4 pos;",
+				"void main() {",
+					"vUv = uv;",
+					// "vec3 myPos = position;",
+					// "myPos.x += time;",
+					// "myPos.x = mod( myPos.x, 100.0 );",
+					"pos = projectionMatrix * modelViewMatrix * vec4( mod(position,100.0), 1.0 );",
+					"gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );",
+				"}"
+			].join("\n"),
+			fragmentShader:[
+				"uniform float time;",
+				"uniform float dist;",
+				"uniform float randomSeed;",
+				"uniform vec2 resolution;",
+				"uniform sampler2D tDiffuse;",
+				"uniform sampler2D tDiffuses[LENGTH];",
+				"varying vec2 vUv;",
+				"varying vec4 pos;",
+				
+				"float random(vec2 p){",
+				"    return fract(sin(dot(p ,vec2(12.9898,78.233))) * 43758.5453);",
+				"}",
+				"",
+				"float noise2(vec2 st)",
+				"{",
+				"    vec2 p = floor(st);",
+				"    return random(p);",
+				"}",
+				"",
+				"float noise3(vec2 st)",
+				"{",
+				"    vec2 p = floor(st);",
+				"    return random(p + vec2(time,0.0));",
+				"}",
+				"",
+				"float valueNoise(vec2 st)",
+				"{",
+				"    vec2 p = floor(st);",
+				"    vec2 f = fract(st);",
+				"",
+				"    float v00 = random( p + vec2( 0, 0 ) );",
+				"    float v10 = random( p + vec2( 1, 0 ) );",
+				"    float v01 = random( p + vec2( 0, 1 ) );",
+				"    float v11 = random( p + vec2( 1, 1 ) );",
+				"",
+				"    vec2 u = f * f * (3.0 - 2.0 * f);",
+				"",
+				"    float v0010 = mix(v00, v10, u.x);",
+				"    float v0111 = mix(v01, v11, u.x);",
+				"    return mix(v0010, v0111, u.y);",
+				"}",
+				"",
+				"vec2 random2(vec2 st){",
+				"       vec2 _st = vec2( dot(st,vec2(127.1,311.7)),",
+				"                      dot(st,vec2(269.5,183.3)));",
+				"       return -1.0 + 2.0 * fract( sin(_st) * 43758.5453123 );",
+				"   }",
+				"",
+				"float perlinNoise(vec2 st)",
+				"{",
+				"    vec2 p = floor(st);",
+				"    vec2 f = fract(st);",
+				"    vec2 u = f*f*(3.0-2.0*f);",
+				"",
+				"    vec2 v00 = random2( p + vec2(0,0) );",
+				"    vec2 v10 = random2( p + vec2(1,0) );",
+				"    vec2 v01 = random2( p + vec2(0,1) );",
+				"    vec2 v11 = random2( p + vec2(1,1) );",
+				"",
+				"    return mix( mix( dot( v00, f - vec2(0,0) ), dot( v10, f - vec2(1,0) ), u.x ),",
+				"                 mix( dot( v01, f - vec2(0,1) ), dot( v11, f - vec2(1,1) ), u.x ),",
+				"                 u.y ) + 0.5;",
+				"}",
+				"",
+				"float fBm (vec2 st)",
+				"{",
+				"    float f = 0.0;",
+				"    vec2 q = st;",
+				"",
+				"    f += 0.5000 * perlinNoise( q ); q = q*2.01;",
+				"    f += 0.2500 * perlinNoise( q ); q = q*2.02;",
+				"    f += 0.1250 * perlinNoise( q ); q = q*2.03;",
+				"    f += 0.0625 * perlinNoise( q ); q = q*2.01;",
+				"",
+				"    return f;",
+				"}",
+				
+				"float Turb(vec2 p)",
+				"{",
+				"	float _time = time * 0.0001;",
+				"	vec2 i = p;",
+				"	float c = 0.35;",
+				"	float inten = 0.65;",
+				"	float r = length(p+vec2(sin(_time),sin(_time*0.433+2.))*3.);",
+				"	",
+				"	for (float n = 0.0; n < float(MAX_ITER); n++) {",
+				"		float t = r-_time * (1.0 - (1.9 / (n+1.)));",
+				"		      t = r-_time/(n+0.6);//r-_time * (1.0 + (0.5 / float(n+1.)));",
+				"		i -= p + vec2(",
+				"			cos(t - i.x-r) + sin(t + i.y),", 
+				"			sin(t - i.y) + cos(t + i.x)+r",
+				"		);",
+				"		c += 1.0/length(vec2(",
+				"			(sin(i.x+t)/inten),",
+				"			(cos(i.y+t)/inten)",
+				"			)",
+				"		);",
+				"	",
+				"	}",
+				"	c /= float(MAX_ITER);",
+				"	c = clamp(c,-1.0,1.0);",
+				"	return c;",
+				"	",
+				"}",
+	
+				"void main() {",
+					"vec2 uv = gl_FragCoord.xy / resolution.xy;",
+					//"vec2 uv = gl_FragCoord.xy/resolution.xy-.5;",
+					
+					// "vec2 uv = gl_FragCoord.xy/resolution.xy;",
+    	// 			"uv.x *= resolution.x/resolution.y;",
+					//"int _index = int(mod(time,float(LENGTH)));",
+					//"_deltaUV = mod( _deltaUV, 0.40 );",
+
+					//"uv = mod( uv * 10.0, 1.0 );",
+
+					// "float grid = 16.0;",
+					//"uv.x = floor( uv * 10.0 ) / 10.0;",
+					// "uv = floor( uv * resolution / grid ) / ( resolution / grid );",
+
+					"vec4 _img = texture2D( tDiffuses[1], vUv );",
+
+					// "vec2 _pos = pos.xy;",
+					// "_pos.xy = floor( _pos * 10.0 ) / 10.0;",
+					"int _index = int( mod( fBm( pos.xy * 0.15 + vec2( - time*0.00025, 0.0 ) + vec2( time * 0.000125, 10.0 ) ) * float(LENGTH) + float(mod(time/1000.,float(LENGTH))), float(LENGTH) ) );",
+
+					_forString,
+					
+					"gl_FragColor = _img;",
+		
+				"}"
+			].join("\n")
+		}
+		
+		this.prop = _mainShader;
+	}
+	
+	function start()
+	{
+		loadImage();
+		document.getElementById('status').innerHTML = 'top view impression area';
+	}
+
+	function loadImage()
+	{
+		if( _images.length )
+		{
+			var _img = _images.pop();
+			var _texture = new THREE.TextureLoader().load(
+				'images/' + _img, 
+				function( _texture )
+				{
+					_textureList.push( _texture );
+					setTimeout( loadImage, 1 );
+				},
+				undefined,
+				function( _error )
+				{
+					console.log('load image error.');
+					setTimeout( loadImage, 1 );
+				}
+			);
+		} else {
+			setTimeout( initialize, 1 );
+		}
+	}
+
+	function initialize()
+	{
+		_world = new world('mainView');
+		_world.camera.position.set( 0, 0, 100 )
+		_dom = _world.dom;
+
+		_clock = new THREE.Clock();
+		_time = Math.random() * 1000.0;
+		_timeScae = 1.0;
+
+
+		setUp();
+		Update();
+	}
+
+	function setUp()
+	{
+		var _grid = 64 * 1;
+		var _margin = 1;
+		var _pGrid = ~~( _dom.clientWidth / _grid + 1 );
+		var _all = ~~( window.innerWidth / _grid + 1.0 ) * ~~( _dom.clientHeight / _grid + 1 );
+
+		var len = _textureList.length;
+		for( var i = 0; i < _all; i++ )
+		{
+			_textureList = shuffleAry( _textureList );
+			var _geometry = new THREE.PlaneGeometry( _grid, _grid,1,1);			
+			var _shader = new mainShader( len );
+			//_shader.prop.defines.LENGTH = _textureList.length;
+			_shader.prop.uniforms.tDiffuse.value = _textureList[0];
+			_shader.prop.uniforms.tDiffuses.value = _textureList;
+			_shader.prop.uniforms.resolution.value.x = _dom.clientWidth;
+			_shader.prop.uniforms.resolution.value.y = _dom.clientHeight;
+			
+			var _material = new THREE.ShaderMaterial({
+				defines: _shader.prop.defines,
+				uniforms: _shader.prop.uniforms,
+				vertexShader: _shader.prop.vertexShader,
+				fragmentShader: _shader.prop.fragmentShader,
+				transparent: true
+			});
+
+			// var _material = new THREE.MeshPhongMaterial({
+			// 	map: _textureList[ Math.floor( Math.random() * _textureList.length ) ]
+			// });
+
+			var _mesh = new THREE.Mesh( _geometry, _material );
+			_world.add( _mesh );
+
+			_mesh.position.x = ( i % _pGrid ) * ( _grid + _margin ) - _dom.clientWidth * 0.5;
+			_mesh.position.y = ~~( i / _pGrid ) * ( _grid + _margin ) - _dom.clientHeight * 0.5;
+
+			//_mesh.rotation.z = Math.random() * Math.PI * 2.0;
+
+			_meshList.push( _mesh );
+
+		}
+
+	
+
+		_dom.addEventListener( 'mousemove', function(e){
+			_mouse.x = e.offsetX;
+			_mouse.y = e.offsetY;
+			_shader.prop.uniforms.mouse.value.x = _mouse.x;
+			_shader.prop.uniforms.mouse.value.y = _mouse.y;
+		})
+	}
+
+	function reset()
+	{
+		var len = _meshList.length;
+		while( len )
+		{
+			len--;
+			var _mesh = _meshList.pop();
+			_world.remove( _mesh );
+			_mesh = null;
+		}
+		_meshList = [];
+	}
+
+
+	function Update( _time )
+	{
+		_intervalKey = window.requestAnimationFrame( Update );
+
+		// var _delta = _clock.getDelta();
+		// _delta *= _timeScale;
+		// _time += _delta;
+
+		var len = _meshList.length;
+		for( var i = 0; i < len; i++ )
+		{
+			var _mesh = _meshList[i];
+			_mesh.position.x += 0.4;
+
+			//	ROLLUS
+			if( _mesh.position.x > window.innerWidth * 0.5 )
+			{
+				_mesh.position.x -= window.innerWidth;
+			}
+
+			var _dx = _mesh.position.x - ( _mouse.x - window.innerWidth * 0.5 );
+			var _dy = _mesh.position.y + ( _mouse.y - 270 );
+			var _dist = Math.sqrt( _dx * _dx + _dy * _dy );
+
+
+			// if( _mesh.material.uniforms.tDiffuses != undefined )
+			// {
+			// 	_mesh.material.uniforms.tDiffuses.value = shuffleAry( _mesh.material.uniforms.tDiffuses.value );
+			// }
+
+			if( _mesh.material.uniforms.dist != undefined )
+			{
+				_mesh.material.uniforms.dist.value = _dist / ( window.innerWidth * 0.5 );
+			}
+			
+			if( _mesh.material.uniforms.time != undefined)
+			{
+				_mesh.material.uniforms.time.value = _time;
+			}
+
+
+
+			if( _mesh.material.map != undefined )
+			{
+				//_mesh.material.map = _textureList[ Math.floor( Math.random() * _textureList.length ) ]
+			}
+
+			// _mesh.rotation.z += ( Math.floor( Math.random() * 4 ) / 4.0 * Math.PI * 2.0 - _mesh.rotation.z ) * 0.5;
+		}
+	}
+}
+
+function shuffleAry(_ary)
+{
+	var ary = _ary.splice(0,_ary.length);
+	var i = ary.length;
+		while(i){
+		var j = Math.floor(Math.random()*i);
+		var t = ary[--i];
+		ary[i] = ary[j];
+		ary[j] = t;
+	}
+	return ary;
+}
+</script>
+</body>
+</html>

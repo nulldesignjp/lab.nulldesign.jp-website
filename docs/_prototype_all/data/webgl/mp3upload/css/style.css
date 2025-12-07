@@ -1,0 +1,66 @@
+/*
+	style.css
+*/
+body { margin: 0; overflow: hidden; }
+body{
+	user-select: none; /* CSS3 */
+	-moz-user-select: none; /* Firefox */
+	-webkit-user-select: none; /* Safari、Chromeなど */
+	-ms-user-select: none; /* IE10かららしい */
+	background: #181818;
+}
+.fadeIn{
+	-webkit-animation: resizeFadeIn 1.0s ease 0s;
+	-moz-animation: resizeFadeIn 1.0s ease 0s;
+	opacity: 1.0 !important;
+}
+@-webkit-keyframes resizeFadeIn {
+	0% {	opacity: 0.0;	}
+	100% {	opacity: 1.0;	}
+}
+@-moz-keyframes resizeFadeIn {
+	0% {	opacity: 0.0;	}
+	100% {	opacity: 1.0;	}
+}
+
+::-webkit-scrollbar{
+	width: 3px;
+	height: 0px;
+}
+
+::-webkit-scrollbar-track{
+	-webkit-box-shadow: inset 0 0 6px rgba(255,255,255,0.3);
+	border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb{
+	border-radius: 10px;
+	-webkit-box-shadow: inset 0 0 6px rgba(255,255,255,0.6);
+}
+
+.clearfix:after {
+	content: "."; 
+	display: block;
+	clear: both;
+	height: 0;
+	visibility: hidden;
+}
+
+.clearfix {
+	min-height: 1px;
+}
+
+* html .clearfix {
+	height: 1px;
+	/*¥*//*/
+	height: auto;
+	overflow: hidden;
+	/**/
+}
+
+#audio{
+	position: fixed;
+	left: 16px;
+	top: 16px;
+	z-index: 1000;
+}

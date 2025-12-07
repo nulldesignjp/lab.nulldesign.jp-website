@@ -1,0 +1,118 @@
+<!DOCTYPE HTML>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=yes">
+<meta name="keywords" content="">
+<meta name="description" content="">
+<title>metrogram</title>
+</head>
+<body>
+<script type="text/javascript" src="../js/jquery-2.1.1.min.js"></script>
+<script type="text/javascript">
+(function(){
+
+/*
+https://developers.google.com/maps/documentation/elevation/?hl=ja
+*/
+
+
+
+/*
+35.4 - 35.9/139.5 - 140.0
+0.001
+*/
+
+var _p = []
+var _result = '';
+var _span = 0.001;
+//for( var i = 35.4; i < 35.5; i += _span )
+//for( var i = 35.5; i < 35.6; i += _span )
+//for( var i = 35.6; i < 35.7; i += _span )
+//for( var i = 35.7; i < 35.8; i += _span )
+for( var i = 35.8; i < 35.9; i += _span )
+{
+	var _y = Math.floor( i * 1000 ) / 1000;
+	//_p.push( _y + ',' + 139.5 + '|' + _y + ',' + 139.6 )
+	//_p.push( _y + ',' + 139.6 + '|' + _y + ',' + 139.7 )
+	//_p.push( _y + ',' + 139.7 + '|' + _y + ',' + 139.8 )
+	//_p.push( _y + ',' + 139.8 + '|' + _y + ',' + 139.9 )
+	_p.push( _y + ',' + 139.9 + '|' + _y + ',' + 134.0 )
+}
+
+load()
+
+function load()
+{
+	$('body').text(_p.length);
+	if( _p.length )
+	{
+		var _po = _p.pop();
+		loadPOS( _po, load );
+	} else {
+		$('body').text(_result);
+	}
+}
+
+function loadPOS( _pos, _callback )
+{
+	$.ajax({
+		url: 'http://maps.googleapis.com/maps/api/elevation/json?path='+_pos+'&samples=101&sensor=false',
+		type: 'GET',
+		dataType: 'json',
+		success: function( _json )
+		{
+			//console.log( _json )
+			if( _json.status == "OK" )
+			{
+				var _list = _json.results;
+				var len = _list.length;
+				for( var i = 0; i < len; i++ )
+				{
+					var _x = Math.round( _json.results[i].location.lat * 1000 ) / 1000;
+					var _y = Math.round( _json.results[i].location.lng * 1000 ) / 1000;
+					var _val1 = Math.round( _json.results[i].elevation * 1000 ) / 1000;
+					var _val2 = Math.round( _json.results[i].resolution * 1000 ) / 1000;
+					_result += '{"lat":'+_x+', "lng":'+_y+', "elev": '+_val1+', "reso":'+_val2+' },'
+				}
+				setTimeout( _callback, 200 );
+			} else {
+				setTimeout( _callback, 1000 );
+			}
+			
+		},
+		error: function(_json)
+		{
+			setTimeout( _callback, 1000 );
+		}
+	});	
+}
+
+
+
+/*
+位置の高度をリクエストする例
+次の例では、「マイル ハイ シティー」とも呼ばれるコロラド州デンバーの高度を JSON 形式でリクエストしています:
+http://maps.googleapis.com/maps/api/elevation/json?locations=39.7391536,-104.9847034&sensor=true_or_false
+{
+   "results" : [
+      {
+         "elevation" : 1608.637939453125,
+         "location" : {
+            "lat" : 39.73915360,
+            "lng" : -104.98470340
+         },
+         "resolution" : 4.771975994110107
+      }
+   ],
+   "status" : "OK"
+}
+
+35.619748 139.612865 35.78835 139.95876734629
+
+*/
+
+})();
+</script>
+</body>
+</html>

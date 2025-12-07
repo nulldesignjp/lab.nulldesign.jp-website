@@ -1,0 +1,51 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Language" content="ja">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<meta http-equiv="Content-Script-Type" content="text/javascript">
+<meta http-equiv="imagetoolbar" content="no">
+<meta http-equiv="cleartype" content="on">
+<meta name="format-detection" content="telephone=no">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=yes, viewport-fit=cover">
+<meta name="keywords" content="">
+<meta name="description" content="">
+<link href="https://fonts.googleapis.com/css?family=Heebo:100,400&display=swap&subset=hebrew" rel="stylesheet">
+<link href="shared/css/reset.css" rel="stylesheet" type="text/css" media="all">
+<link href="shared/css/style.css" rel="stylesheet" type="text/css" media="all">
+<title>The World</title>
+</head>
+<body>
+<h1 style="z-index:1000; margin: 0;padding: 0;line-height: 1;position: fixed;left:32px;top:32px;color: #333;font-family:Heebo;font-weight: 100;font-size: 2em;pointer-events: none;">mine craft field</h1>
+<div id="webglView"><!--/ webglView --></div>
+<div id="layer"></div>
+<script type="text/javascript" src="shared/js/three.min.js"></script>
+
+<!-- libs.js とかにまとめたい系ライブラリ群 -->
+<!-- <script type="text/javascript" src="shared/js/OrbitControls.js"></script>
+<script type="text/javascript" src="shared/js/FBXLoader.js"></script>
+<script type="text/javascript" src="shared/js/inflate.min.js"></script>
+<script type="text/javascript" src="shared/js/EffectComposers.js"></script>
+<script type="text/javascript" src="shared/js/LuminosityHighPassShader.js"></script>
+<script type="text/javascript" src="shared/js/UnrealBloomPass.js"></script> -->
+
+
+<script type="text/javascript" src="shared/js/SimplexNoise.js"></script>
+<script type="text/javascript" src="shared/js/libs.js"></script>
+<script type="text/javascript" src="shared/js/world.js"></script>
+<!-- libs.js とかにまとめたい系ライブラリ群 -->
+
+<script type="text/javascript" src="shared/js/engine.js"></script>
+
+<script type="text/javascript">
+//	フロントお渡し箇所
+window.addEventListener( 'DOMContentLoaded', function(){
+	var _om = new offerdme('webglView',0.5);
+	_om.start();
+
+	//	他必要に応じてメソッドを用意する感じ
+})
+</script>
+</body>
+</html>

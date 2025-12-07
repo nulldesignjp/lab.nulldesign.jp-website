@@ -1,0 +1,175 @@
+/*
+	style.css
+*/
+html,
+body{}
+body{
+	background: #181818;
+	color: #FFF;
+	font-family: Arial;
+	font-family: 'Heebo', sans-serif;
+	font-weight: 100;
+	padding-bottom: 160px;
+}
+a{
+	color: #42affa;
+	text-decoration: none;
+}
+a:hover{
+	color: #8dcffa;
+}
+h1,h2,h3,h4,h5,h6{
+	font-weight: normal;
+	font-weight: 100;
+}
+
+img{
+	vertical-align: bottom;
+}
+
+#mainHeader,
+#mainNavigation,
+#mainIndex,
+#mainFooter{
+	text-align: center;
+}
+
+#mainHeader{
+	padding: 5em;
+}
+
+#mainNavigation{
+	font-size: 75%;
+}
+#mainNavigation ul{
+	list-style-type: none;
+}
+#mainNavigation ul,
+#mainNavigation li{
+	margin: 0;
+	padding: 0;
+	line-height: 1
+}
+
+#mainNavigation ul:before,
+#mainNavigation ul:after{
+	content: "　-　";
+	opacity: 0.4;
+}
+
+#mainNavigation li{
+	display: inline-block;
+}
+
+#mainNavigation li:first-child:before{
+	content: "";
+}
+
+#mainNavigation li:before{
+	content: "　/　";
+	opacity: 0.4;
+}
+
+
+#mainHeader h1,
+#mainHeader p{
+	margin: 0;
+	padding: 0;
+}
+
+#mainHeader p{
+	color: #808080;
+	font-size: 75%;
+}
+
+#mainIndex ul,
+#mainIndex li{
+	margin: 0;
+	padding: 0;
+}
+
+#mainIndex h2{
+	margin-top: 3em;
+}
+/*
+#mainIndex h2:first-child{
+	margin-top: 0;
+};
+*/
+
+#mainIndex h2:before{
+	content: "- ";
+	opacity: 0.4;
+}
+#mainIndex h2:after{
+	content: " -";
+	opacity: 0.4;
+}
+
+#mainIndex ul{}
+#mainIndex li{
+	margin: 16px 4px 0 4px;
+	display: inline-block;
+}
+#mainIndex a{
+	display: block;
+	width: 160px;
+	height: 160px;
+	border: 1px solid #333;
+}
+#mainIndex a:hover{
+	border-color: #666;
+}
+#mainIndex a img{
+	width: 100%;
+	height: 100%;
+
+	/*
+		https://www.webprofessional.jp/css-filter-effects-blur-grayscale-brightness-and-more-in-css/
+	*/
+	filter: grayscale(60%);
+	/*
+	filter: brightness(100%);
+	filter: grayscale(100%);
+	filter: brightness(20%);
+	filter: drop-shadow(5px 5px 10px #666);
+	filter: blur(1px);
+	filter: sepia(100%);
+	filter: sepia(60%) brightness(60%);
+	*/
+
+	/*	filter: contrast(0%);	*/
+	/*	filter: saturate(0%);	*/
+	/*	filter: invert(100%);	*/
+}
+#mainIndex a:hover img{
+}
+#mainIndex a p{
+	margin: 0.5em 0 0 0;
+	padding: 0;
+	line-height: 1;
+	font-size: 75%;
+	text-align: left;
+}
+
+#mainFooter p{
+	color: #808080;
+	font-size: 50%;
+}
+
+#unityStudy li{
+	width: 200px;
+	height: 113px;
+	border: 1px solid #333;
+}
+
+#about{}
+#aboutbox{
+	font-size: 75%;
+	color: #808080;
+}
+
+
+
+
+

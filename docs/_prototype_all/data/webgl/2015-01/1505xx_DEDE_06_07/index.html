@@ -1,0 +1,160 @@
+<!doctype>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=yes">
+<meta name="keywords" content="">
+<meta name="description" content="CLASS">
+<title>DE DE MOUSE + HACKist</title>
+<style>
+html,body{height:100%;overflow:hidden;}
+body{
+	margin: 0;
+	padding: 0;
+	background: #000;
+	color: #FFF;
+	font-size: 12px;
+	font-family: Arial;
+}
+#container{
+	width: 100%;
+	height: 100%;
+}
+
+h1,p{
+	margin: 0;
+	padding: 0;
+	line-height: 1;
+	position: fixed;
+	z-index: 100;
+	font-size: 1em;
+}
+h1{
+	left: 32px;
+	top: 32px;
+}
+p{
+	left: 32px;
+	bottom: 32px;
+}
+</style>
+</head>
+<body>
+<h1>HOPE</h1>
+<div id="container"></div>
+<script src="../js/jquery-2.1.3.min.js"></script>
+<script src="../js/Detector.js"></script>
+<script src="../js/perlin-noise-simplex.js"></script>
+<script src="../js/r71/three.min.js"></script>
+<script src="../js/stats.min.js"></script>
+<script src="../js/THREE.ConvexGeometry.js"></script>
+<script src="world3d.js"></script>
+
+<script type="x-shader/x-vertex" id="vertexshader">
+void main()
+{
+	gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+}
+</script>
+<script type="x-shader/x-fragment" id="fragmentshader">
+#ifdef GL_ES
+precision mediump float;
+#endif
+
+//cgs
+
+uniform float time;
+uniform vec2 mouse;
+uniform vec2 resolution;
+
+float pyth(float a, float b) {
+    return sqrt(a*a + b*b);
+}
+
+vec3 glowCol(float x, float y, float glow) {
+    float intensity = glow/distance(vec2(x, y), gl_FragCoord.xy);
+    return vec3(intensity/3., intensity/2., intensity);
+}
+
+void main( void ) {
+    float x = mouse.x*resolution.x;
+    float y = mouse.y*resolution.y;
+    float glow = 10.0;
+
+    glow = ( sin( time * 0.5 ) + 1.0 + 0.1 ) * 20.0;
+
+    x = resolution.x * 0.5;
+    y = resolution.y * 0.5;
+    
+    float dx = distance(x, gl_FragCoord.x);
+    float dy = distance(y, gl_FragCoord.y);
+    float intensity = glow/pyth(dx/20., dy);
+    
+    vec3 color = glowCol(x, y, glow)/2. + vec3(0., 0., intensity/10.)/2.;
+    gl_FragColor = vec4(color, 1.);
+}
+</script>
+
+<script type="text/javascript">
+
+// var _scale = screen.width / ( 1280 * 3 );
+// var _top = Math.floor( ( screen.height - 1024 * _scale ) * 0.5 );
+// window.moveTo( 0, _top );
+// window.resizeTo( 1280 * 3  * _scale, 1024 * _scale );
+
+(function(){
+
+    var uniforms = {
+        volume: { type: "f", value: 0.0 },
+        time: { type: "f", value: 1.0 },
+        resolution: { type: "v2", value: new THREE.Vector2() },
+        mouse: { type: "v2", value: new THREE.Vector2() }
+    };
+    uniforms.time.value = 0.0;
+    uniforms.resolution.value.x = window.innerWidth;
+    uniforms.resolution.value.y = window.innerHeight;
+    uniforms.mouse.value.x = 0;
+    uniforms.mouse.value.y = 0;
+    uniforms.volume.value = 0.0;
+
+    var _vertexShader = document.getElementById('vertexshader').textContent;
+    var _fragmentShader = document.getElementById('fragmentshader').textContent;
+
+    var _width = window.innerWidth;
+    var _height = window.innerHeight;
+    var _dom = document.getElementById('container');
+
+    var camera = new THREE.OrthographicCamera(-_width * 0.5, _width * 0.5, _height * 0.5, -_height * 0.5, 0.1, 2000);
+    //camera = new THREE.PerspectiveCamera( 35, _width / _height, 0.1, 2000 );
+    camera.position.z = 1000;
+    var focus = new THREE.Vector3();
+    focus.set(0, 0, 0);
+    camera.lookAt(focus);
+
+    var scene = new THREE.Scene();
+    scene.fog = new THREE.Fog(0x000000, 1200, 1500);
+	//	renderer
+	renderer = new THREE.WebGLRenderer({ antialias: false });
+	renderer.setClearColor(scene.fog.color, 1);
+	renderer.setSize(_width,_height);
+	_dom.appendChild(renderer.domElement);
+
+    var geometry = new THREE.PlaneGeometry(_width, _height, 1, 1 );
+    var material = new THREE.ShaderMaterial({
+        uniforms: uniforms,
+        vertexShader: _vertexShader,
+        fragmentShader: _fragmentShader
+    });
+    var mesh = new THREE.Mesh(geometry, material);
+    scene.add(mesh);
+
+    setInterval(function(){
+    	uniforms.time.value += 0.05;
+        camera.lookAt(focus);
+        renderer.render(scene,camera);
+    },1000/60);
+
+})();
+</script>
+</body>
+</html>

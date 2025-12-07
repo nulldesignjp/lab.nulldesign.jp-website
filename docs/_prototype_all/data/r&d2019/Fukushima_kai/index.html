@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
+<title>FCL.Shader</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<link rel="stylesheet" type="text/css" href="assets/css/style.css" media="all">
+<script type="x-shader/x-vertex" id="vertexshader">
+uniform vec2 resolution;
+uniform vec2 mouse;
+uniform vec2 scroll;
+uniform float time;
+varying vec2 vUv;
+
+void main()
+{
+    vUv = uv;
+	gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+}
+</script>
+<script type="x-shader/x-fragment" id="fragmentshader">
+	highp float;
+
+uniform vec2 resolution;
+uniform vec2 mouse;
+uniform vec2 scroll;
+uniform float time;
+uniform float randomSeed;
+uniform sampler2D tex;
+
+
+varying vec2 vUv;
+
+float random(vec2 p){
+    return fract(sin(dot(p ,vec2(12.9898,78.233))) * 43758.5453);
+}
+
+float noise2(vec2 st)
+{
+    vec2 p = floor(st);
+    return random(p);
+}
+
+float noise3(vec2 st)
+{
+    vec2 p = floor(st);
+    return random(p + vec2(time,0.0));
+}
+
+float valueNoise(vec2 st)
+{
+    vec2 p = floor(st);
+    vec2 f = fract(st);
+
+    float v00 = random( p + vec2( 0, 0 ) );
+    float v10 = random( p + vec2( 1, 0 ) );
+    float v01 = random( p + vec2( 0, 1 ) );
+    float v11 = random( p + vec2( 1, 1 ) );
+
+    vec2 u = f * f * (3.0 - 2.0 * f);
+
+    float v0010 = mix(v00, v10, u.x);
+    float v0111 = mix(v01, v11, u.x);
+    return mix(v0010, v0111, u.y);
+}
+
+vec2 random2(vec2 st){
+   vec2 _st = vec2( dot(st,vec2(127.1,311.7)),
+                  dot(st,vec2(269.5,183.3)));
+   return -1.0 + 2.0 * fract( sin(_st) * 43758.5453123 );
+}
+
+float perlinNoise(vec2 st)
+{
+    vec2 p = floor(st);
+    vec2 f = fract(st);
+    vec2 u = f*f*(3.0-2.0*f);
+
+    vec2 v00 = random2( p + vec2(0,0) );
+    vec2 v10 = random2( p + vec2(1,0) );
+    vec2 v01 = random2( p + vec2(0,1) );
+    vec2 v11 = random2( p + vec2(1,1) );
+
+    return mix( mix( dot( v00, f - vec2(0,0) ), dot( v10, f - vec2(1,0) ), u.x ),
+                 mix( dot( v01, f - vec2(0,1) ), dot( v11, f - vec2(1,1) ), u.x ),
+                 u.y ) + 0.5;
+}
+
+vec3 hash( vec3 p )
+{
+    p = vec3( dot(p,vec3(127.1,311.7, 74.7)),
+              dot(p,vec3(269.5,183.3,246.1)),
+              dot(p,vec3(113.5,271.9,124.6)));
+
+    return -1.0 + 2.0*fract(sin(p)*43758.5453123);
+}
+
+float noise( in vec3 p )
+{
+    vec3 i = floor( p );
+    vec3 f = fract( p );
+
+    vec3 u = f*f*(3.0-2.0*f);
+
+    return mix( mix( mix( dot( hash( i + vec3(0.0,0.0,0.0) ), f - vec3(0.0,0.0,0.0) ), 
+                          dot( hash( i + vec3(1.0,0.0,0.0) ), f - vec3(1.0,0.0,0.0) ), u.x),
+                     mix( dot( hash( i + vec3(0.0,1.0,0.0) ), f - vec3(0.0,1.0,0.0) ), 
+                          dot( hash( i + vec3(1.0,1.0,0.0) ), f - vec3(1.0,1.0,0.0) ), u.x), u.y),
+                mix( mix( dot( hash( i + vec3(0.0,0.0,1.0) ), f - vec3(0.0,0.0,1.0) ), 
+                          dot( hash( i + vec3(1.0,0.0,1.0) ), f - vec3(1.0,0.0,1.0) ), u.x),
+                     mix( dot( hash( i + vec3(0.0,1.0,1.0) ), f - vec3(0.0,1.0,1.0) ), 
+                          dot( hash( i + vec3(1.0,1.0,1.0) ), f - vec3(1.0,1.0,1.0) ), u.x), u.y), u.z );
+}
+float fbm( vec3 p )
+{
+    return noise(p*.06125)*.5 + noise(p*.125)*.25 + noise(p*.25)*.125 + noise(p*.4)*.2;
+}
+
+float easeInOutExpo(float t,float b,float c,float d)
+{
+    if (t==0.0) return b;
+    if (t==d) return b+c;
+    if ((t/=d/2.0) < 1.0) return c/2.0 * pow(2.0, 10.0 * (t - 1.0)) + b - c * 0.0005;
+    return c/2.0 * 1.0005 * (- pow(2.0, -10.0 * --t) + 2.0) + b;
+}
+
+void main()
+{
+    //  ×ù˜Ë‰ä“Q  
+    vec2 st = vUv;
+    st = (gl_FragCoord.xy - 0.5 * resolution.xy) / min( resolution.x, resolution.y );
+
+
+
+    //  uv
+    vec2 _mouse = mouse;
+    _mouse.y = resolution.y - mouse.y;
+
+    //  mouse
+    //vec2 _mst = ( _mouse.xy - 0.5 * resolution.xy ) / min( resolution.x, resolution.y );
+
+    float _range = 0.28 + sin(time)*0.04;
+
+    vec3 _color = vec3(0.0);
+    int index = 0;
+    vec3 _colors[4];
+    _colors[0] = vec3( 254.0, 231.0, 188.0 ) / 255.0;
+    _colors[1] = vec3( 121.0, 208.0, 240.0 ) / 255.0;
+    _colors[2] = vec3( 242.0, 204.0, 219.0 ) / 255.0;
+    _colors[3] = vec3( 174.0, 225.0, 226.0 ) / 255.0;
+
+    float _time = time + randomSeed;
+
+    for( float i = 0.0; i < 4.0; i++ )
+    {
+
+	    vec2 _st = st;
+	    float _rad = ( sin( _time * 0.137 ) * cos( _time * 0.241 + i ) ) * 3.1416 * 2.0 * 0.05;
+	    st.x = _st.x * sin( _rad ) - _st.y * cos( _rad );
+	    st.y = _st.x * cos( _rad ) + _st.y * sin( _rad );
+
+        float _range0 = ( noise( vec3( st * 2.8 + i * 2.9, _time * 0.075+ i * 100.0 ) ) * 0.5 + 0.5 ) * ( 0.6 );
+        float _range1 = ( noise( vec3( st * 3.0 + i * 1.7, _time * 0.16 + i * 80.0 ) ) * 0.5 + 0.0 ) * ( 2.6 );
+        float _range = _range0 * _range1;
+        float _masterRange = _range;
+
+        _range *= 0.4;
+        _range += 0.2;
+
+        float _opacity = 1.0 - smoothstep( _range - 0.001, _range, length(st) );
+        float _dist = length(st) / _range;
+        _dist = _dist>1.0?1.0:_dist;
+        vec3 _myColor = _colors[int(i)] * ( step( length(st), _range ) );
+
+        _myColor = mix( vec3(0.9), _myColor, sin( _dist * 3.1416 - 3.1416 * 0.5 ) * 0.5 + 0.5 );
+
+        vec3 _customColor = _myColor;
+
+        _color += 1.0 * step( length(st), _range ) - _customColor;
+    }
+
+
+    //_color += texture2D( tex, st * 10.0 ).rgb;
+    _color = min( _color, vec3(1.0) );
+
+    //  White
+    //_color.a *= smoothstep( 0.178, 0.38, length( st )/_range );
+    gl_FragColor = vec4( 1.0 - _color, 1.0 );
+
+}
+</script>
+
+</head>
+<body>
+<p style="position:fixed;top:50%;margin:0;padding:0;line-height:0;width:100%;text-align:center;color:rgba(255,255,255,0.8);font-size:16px;font-weight:bold;text-shadow:0 0 16px rgba(0,0,0,0.8);">Future Create Lab.</p>
+<script type="text/javascript" src="assets/js/three.min.js"></script>
+<script type="text/javascript" src="assets/js/engine.js"></script>
+</body>
+</html>

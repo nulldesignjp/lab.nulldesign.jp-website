@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0">
+<meta name="description" content="postprocessing.... mosaic">
+<meta name="keywords" content="">
+<title>shader</title>
+<style>
+html,body{height: 100%;overflow: hidden;}
+body{margin: 0; padding: 0; background: #000;}
+</style>
+</head>
+<body>
+<div id="container"></div>
+<script type="text/javascript" src="shared/libs/jquery-2.2.3.min.js"></script>
+<script type="text/javascript" src="shared/libs/three.min.js"></script>
+<script type="text/javascript" src="shared/libs/OrbitControls.js"></script>
+
+	<!-- 必須 -->
+	<script src="shared/libs/js/postprocessing/EffectComposer.js"></script>
+	<script src="shared/libs/js/postprocessing/RenderPass.js"></script>
+	<script src="shared/libs/js/postprocessing/MaskPass.js"></script>
+	<script src="shared/libs/js/postprocessing/ShaderPass.js"></script>
+	<script src="shared/libs/js/shaders/CopyShader.js"></script>
+
+	<!-- 追加 -->
+	<script src="shared/libs/js/shaders/RGBShiftShader.js"></script>
+
+<script type="text/javascript" src="shared/js/engine.js"></script>
+
+
+</body>
+</html>

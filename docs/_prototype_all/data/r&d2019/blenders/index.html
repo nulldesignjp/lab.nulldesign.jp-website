@@ -1,0 +1,42 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Language" content="ja">
+<link href="https://fonts.googleapis.com/css?family=Heebo:100,400&display=swap&subset=hebrew" rel="stylesheet">
+<title>hrsk.dev || Gallery Fake</title>
+<style type="text/css">
+body{background: #181818;color: #FFF;font-family:'Heebo';font-weight: 100;text-align: center;}
+a{color: #42affa;text-decoration: none;}
+a:hover{color: #8dcffa;}
+h1,h2,h3,h4,h5,h6{font-weight: normal;font-weight: 100;}
+img{vertical-align: bottom;}
+p img{
+	width: 80%;
+	height: auto;
+}
+hr{
+	margin: 5em 0;
+}
+</style>
+</head>
+<body>
+<h1>Blender(モデリングソフト）と、ブラウザ、サイネージ連動の確認。</h1>
+<p><img src="blender.png"></p>
+<p>Blenderでのモデリング。アニメーションを入れなければ単純に時間計算で作り込める。<br>
+この例だと、一部のモデルはThree.jsを使って生成したのちに、WebGLからObj形式にモデルを変換。<br>
+そのモデルをBlenderに読み込ませている。</p>
+<hr>
+<p><img src="render.png"></p>
+<p>Blenderでのレンダリング結果。</p>
+<hr>
+<p><img src="webgl.png"></p>
+<p>Blenderからfbx形式でモデルを書き出して、WebGL(Three.js)に読み込み。<br>
+読み込み自体は問題ないが、スケール感やライティングの強さなどに意識しないと<br>
+実用化が難しいと思われる。（気をつければできる）。</p>
+<hr>
+<p><img src="unity.png"></p>
+<p>fbxをUnityに直接読み込み。</p>
+
+</body>
+</html>

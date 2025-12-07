@@ -1,0 +1,378 @@
+<?xml version="1.0" encoding="utf-8"?>
+<COLLADA xmlns="http://www.collada.org/2005/11/COLLADASchema" version="1.4.1">
+  <asset>
+    <contributor>
+      <authoring_tool>Shade 11.0 | COLLADAExporter 2.0</authoring_tool>
+      <source_data>file://</source_data>
+    </contributor>
+    <created>2014-12-24T11:32:58</created>
+    <modified>2014-12-24T11:32:58</modified>
+    <title>obj01.dae</title>
+    <unit name="centimeter" meter="0.009999999776"/>
+    <up_axis>Y_UP</up_axis>
+  </asset>
+  <library_geometries>
+    <geometry id="geom-1" name="自由曲面">
+      <mesh>
+        <source id="geom-1-positions">
+          <float_array id="geom-1-positions-array" count="300">52.5 150 -52.5 52.5 150 -52.5 52.5 150 -52.5 52.5 150 -52.5 52.5 150 -52.5 52.5 150 -52.5 52.5 150 -52.5 52.5 150 -52.5 52.5 150 -52.5 52.5 150 -52.5 52.5 150 -52.5 52.5 150 -52.5 52.5 150 -52.5 52.5 150 -52.5 52.5 150 -52.5 52.5 150 -52.5 52.5 150 -52.5 52.5 150 -52.5 52.5 150 -52.5 52.5 150 -52.5 60.70313 126.5625 -60.70313 60.70313 126.5625 -58.13965 60.70313 126.5625 -52.5 60.70313 126.5625 -46.86035 60.70313 126.5625 -44.29688 60.70313 126.5625 -44.29688 58.13965 126.5625 -44.29688 52.5 126.5625 -44.29688 46.86035 126.5625 -44.29688 44.29688 126.5625 -44.29688 44.29688 126.5625 -44.29688 44.29688 126.5625 -46.86035 44.29688 126.5625 -52.5 44.29688 126.5625 -58.13965 44.29688 126.5625 -60.70313 44.29688 126.5625 -60.70313 46.86035 126.5625 -60.70313 52.5 126.5625 -60.70313 58.13965 126.5625 -60.70313 60.70313 126.5625 -60.70313 78.75 75 -78.75 78.75 75 -70.54688 78.75 75 -52.5 78.75 75 -34.45313 78.75 75 -26.25 78.75 75 -26.25 70.54688 75 -26.25 52.5 75 -26.25 34.45313 75 -26.25 26.25 75 -26.25 26.25 75 -26.25 26.25 75 -34.45313 26.25 75 -52.5 26.25 75 -70.54688 26.25 75 -78.75 26.25 75 -78.75 34.45313 75 -78.75 52.5 75 -78.75 70.54688 75 -78.75 78.75 75 -78.75 96.79688 23.4375 -96.79688 96.79688 23.4375 -82.9541 96.79688 23.4375 -52.5 96.79688 23.4375 -22.0459 96.79688 23.4375 -8.203125 96.79688 23.4375 -8.203125 82.9541 23.4375 -8.203125 52.5 23.4375 -8.203125 22.0459 23.4375 -8.203125 8.203125 23.4375 -8.203125 8.203125 23.4375 -8.203125 8.203125 23.4375 -22.0459 8.203125 23.4375 -52.5 8.203125 23.4375 -82.9541 8.203125 23.4375 -96.79688 8.203125 23.4375 -96.79688 22.0459 23.4375 -96.79688 52.5 23.4375 -96.79688 82.9541 23.4375 -96.79688 96.79688 23.4375 -96.79688 105 0 -105 105 0 -88.59375 105 0 -52.5 105 0 -16.40625 105 0 0 105 0 0 88.59375 0 0 52.5 0 0 16.40625 0 0 0 0 0 0 0 0 0 0 -16.40625 0 0 -52.5 0 0 -88.59375 0 0 -105 0 0 -105 16.40625 0 -105 52.5 0 -105 88.59375 0 -105 105 0 -105 </float_array>
+          <technique_common>
+            <accessor source="#geom-1-positions-array" count="100" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="geom-1-normals">
+          <float_array id="geom-1-normals-array" count="24">0.943858444691 0.33035042882 0 -0.943858444691 -0.33035042882 0 0 0.33035042882 0.943858444691 0 -0.33035042882 -0.943858444691 -0.943858444691 0.33035042882 0 0.943858444691 -0.33035042882 0 0 0.33035042882 -0.943858444691 0 -0.33035042882 0.943858444691 </float_array>
+          <technique_common>
+            <accessor source="#geom-1-normals-array" count="8" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <vertices id="geom-1-vertices">
+          <input semantic="POSITION" source="#geom-1-positions"/>
+        </vertices>
+        <polygons count="128">
+          <input semantic="VERTEX" source="#geom-1-vertices" offset="0"/>
+          <input semantic="NORMAL" source="#geom-1-normals" offset="1"/>
+          <p>0 0 1 0 21 0 20 0 </p>
+          <p>1 0 2 0 22 0 21 0 </p>
+          <p>2 0 3 0 23 0 22 0 </p>
+          <p>3 0 4 0 24 0 23 0 </p>
+          <p>20 0 21 0 41 0 40 0 </p>
+          <p>21 0 22 0 42 0 41 0 </p>
+          <p>22 0 23 0 43 0 42 0 </p>
+          <p>23 0 24 0 44 0 43 0 </p>
+          <p>40 0 41 0 61 0 60 0 </p>
+          <p>41 0 42 0 62 0 61 0 </p>
+          <p>42 0 43 0 63 0 62 0 </p>
+          <p>43 0 44 0 64 0 63 0 </p>
+          <p>60 0 61 0 81 0 80 0 </p>
+          <p>61 0 62 0 82 0 81 0 </p>
+          <p>62 0 63 0 83 0 82 0 </p>
+          <p>63 0 64 0 84 0 83 0 </p>
+          <p>5 2 6 2 26 2 25 2 </p>
+          <p>6 2 7 2 27 2 26 2 </p>
+          <p>7 2 8 2 28 2 27 2 </p>
+          <p>8 2 9 2 29 2 28 2 </p>
+          <p>25 2 26 2 46 2 45 2 </p>
+          <p>26 2 27 2 47 2 46 2 </p>
+          <p>27 2 28 2 48 2 47 2 </p>
+          <p>28 2 29 2 49 2 48 2 </p>
+          <p>45 2 46 2 66 2 65 2 </p>
+          <p>46 2 47 2 67 2 66 2 </p>
+          <p>47 2 48 2 68 2 67 2 </p>
+          <p>48 2 49 2 69 2 68 2 </p>
+          <p>65 2 66 2 86 2 85 2 </p>
+          <p>66 2 67 2 87 2 86 2 </p>
+          <p>67 2 68 2 88 2 87 2 </p>
+          <p>68 2 69 2 89 2 88 2 </p>
+          <p>10 4 11 4 31 4 30 4 </p>
+          <p>11 4 12 4 32 4 31 4 </p>
+          <p>12 4 13 4 33 4 32 4 </p>
+          <p>13 4 14 4 34 4 33 4 </p>
+          <p>30 4 31 4 51 4 50 4 </p>
+          <p>31 4 32 4 52 4 51 4 </p>
+          <p>32 4 33 4 53 4 52 4 </p>
+          <p>33 4 34 4 54 4 53 4 </p>
+          <p>50 4 51 4 71 4 70 4 </p>
+          <p>51 4 52 4 72 4 71 4 </p>
+          <p>52 4 53 4 73 4 72 4 </p>
+          <p>53 4 54 4 74 4 73 4 </p>
+          <p>70 4 71 4 91 4 90 4 </p>
+          <p>71 4 72 4 92 4 91 4 </p>
+          <p>72 4 73 4 93 4 92 4 </p>
+          <p>73 4 74 4 94 4 93 4 </p>
+          <p>15 6 16 6 36 6 35 6 </p>
+          <p>16 6 17 6 37 6 36 6 </p>
+          <p>17 6 18 6 38 6 37 6 </p>
+          <p>18 6 19 6 39 6 38 6 </p>
+          <p>35 6 36 6 56 6 55 6 </p>
+          <p>36 6 37 6 57 6 56 6 </p>
+          <p>37 6 38 6 58 6 57 6 </p>
+          <p>38 6 39 6 59 6 58 6 </p>
+          <p>55 6 56 6 76 6 75 6 </p>
+          <p>56 6 57 6 77 6 76 6 </p>
+          <p>57 6 58 6 78 6 77 6 </p>
+          <p>58 6 59 6 79 6 78 6 </p>
+          <p>75 6 76 6 96 6 95 6 </p>
+          <p>76 6 77 6 97 6 96 6 </p>
+          <p>77 6 78 6 98 6 97 6 </p>
+          <p>78 6 79 6 99 6 98 6 </p>
+          <p>98 7 99 7 79 7 78 7 </p>
+          <p>97 7 98 7 78 7 77 7 </p>
+          <p>96 7 97 7 77 7 76 7 </p>
+          <p>95 7 96 7 76 7 75 7 </p>
+          <p>78 7 79 7 59 7 58 7 </p>
+          <p>77 7 78 7 58 7 57 7 </p>
+          <p>76 7 77 7 57 7 56 7 </p>
+          <p>75 7 76 7 56 7 55 7 </p>
+          <p>58 7 59 7 39 7 38 7 </p>
+          <p>57 7 58 7 38 7 37 7 </p>
+          <p>56 7 57 7 37 7 36 7 </p>
+          <p>55 7 56 7 36 7 35 7 </p>
+          <p>38 7 39 7 19 7 18 7 </p>
+          <p>37 7 38 7 18 7 17 7 </p>
+          <p>36 7 37 7 17 7 16 7 </p>
+          <p>35 7 36 7 16 7 15 7 </p>
+          <p>93 5 94 5 74 5 73 5 </p>
+          <p>92 5 93 5 73 5 72 5 </p>
+          <p>91 5 92 5 72 5 71 5 </p>
+          <p>90 5 91 5 71 5 70 5 </p>
+          <p>73 5 74 5 54 5 53 5 </p>
+          <p>72 5 73 5 53 5 52 5 </p>
+          <p>71 5 72 5 52 5 51 5 </p>
+          <p>70 5 71 5 51 5 50 5 </p>
+          <p>53 5 54 5 34 5 33 5 </p>
+          <p>52 5 53 5 33 5 32 5 </p>
+          <p>51 5 52 5 32 5 31 5 </p>
+          <p>50 5 51 5 31 5 30 5 </p>
+          <p>33 5 34 5 14 5 13 5 </p>
+          <p>32 5 33 5 13 5 12 5 </p>
+          <p>31 5 32 5 12 5 11 5 </p>
+          <p>30 5 31 5 11 5 10 5 </p>
+          <p>88 3 89 3 69 3 68 3 </p>
+          <p>87 3 88 3 68 3 67 3 </p>
+          <p>86 3 87 3 67 3 66 3 </p>
+          <p>85 3 86 3 66 3 65 3 </p>
+          <p>68 3 69 3 49 3 48 3 </p>
+          <p>67 3 68 3 48 3 47 3 </p>
+          <p>66 3 67 3 47 3 46 3 </p>
+          <p>65 3 66 3 46 3 45 3 </p>
+          <p>48 3 49 3 29 3 28 3 </p>
+          <p>47 3 48 3 28 3 27 3 </p>
+          <p>46 3 47 3 27 3 26 3 </p>
+          <p>45 3 46 3 26 3 25 3 </p>
+          <p>28 3 29 3 9 3 8 3 </p>
+          <p>27 3 28 3 8 3 7 3 </p>
+          <p>26 3 27 3 7 3 6 3 </p>
+          <p>25 3 26 3 6 3 5 3 </p>
+          <p>83 1 84 1 64 1 63 1 </p>
+          <p>82 1 83 1 63 1 62 1 </p>
+          <p>81 1 82 1 62 1 61 1 </p>
+          <p>80 1 81 1 61 1 60 1 </p>
+          <p>63 1 64 1 44 1 43 1 </p>
+          <p>62 1 63 1 43 1 42 1 </p>
+          <p>61 1 62 1 42 1 41 1 </p>
+          <p>60 1 61 1 41 1 40 1 </p>
+          <p>43 1 44 1 24 1 23 1 </p>
+          <p>42 1 43 1 23 1 22 1 </p>
+          <p>41 1 42 1 22 1 21 1 </p>
+          <p>40 1 41 1 21 1 20 1 </p>
+          <p>23 1 24 1 4 1 3 1 </p>
+          <p>22 1 23 1 3 1 2 1 </p>
+          <p>21 1 22 1 2 1 1 1 </p>
+          <p>20 1 21 1 1 1 0 1 </p>
+        </polygons>
+      </mesh>
+    </geometry>
+    <geometry id="geom-2" name="閉じた線形状">
+      <mesh>
+        <source id="geom-2-positions">
+          <float_array id="geom-2-positions-array" count="12">105 0 -105 105 0 0 0 0 0 0 0 -105 </float_array>
+          <technique_common>
+            <accessor source="#geom-2-positions-array" count="4" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="geom-2-normals">
+          <float_array id="geom-2-normals-array" count="6">0 -1 0 0 1 0 </float_array>
+          <technique_common>
+            <accessor source="#geom-2-normals-array" count="2" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <vertices id="geom-2-vertices">
+          <input semantic="POSITION" source="#geom-2-positions"/>
+        </vertices>
+        <polygons count="2">
+          <input semantic="VERTEX" source="#geom-2-vertices" offset="0"/>
+          <input semantic="NORMAL" source="#geom-2-normals" offset="1"/>
+          <p>0 0 1 0 2 0 3 0 </p>
+          <p>3 1 2 1 1 1 0 1 </p>
+        </polygons>
+      </mesh>
+    </geometry>
+    <geometry id="geom-3" name="閉じた線形状の掃引体">
+      <mesh>
+        <source id="geom-3-positions">
+          <float_array id="geom-3-positions-array" count="12">100 0 -150 100 0 -100 150 0 -100 150 0 -150 </float_array>
+          <technique_common>
+            <accessor source="#geom-3-positions-array" count="4" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="geom-3-normals">
+          <float_array id="geom-3-normals-array" count="6">0 1 0 0 -1 0 </float_array>
+          <technique_common>
+            <accessor source="#geom-3-normals-array" count="2" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <vertices id="geom-3-vertices">
+          <input semantic="POSITION" source="#geom-3-positions"/>
+        </vertices>
+        <polygons count="2">
+          <input semantic="VERTEX" source="#geom-3-vertices" offset="0"/>
+          <input semantic="NORMAL" source="#geom-3-normals" offset="1"/>
+          <p>3 0 2 0 1 0 0 0 </p>
+          <p>0 1 1 1 2 1 3 1 </p>
+        </polygons>
+      </mesh>
+    </geometry>
+    <geometry id="geom-4" name="閉じた線形状の掃引体">
+      <mesh>
+        <source id="geom-4-positions">
+          <float_array id="geom-4-positions-array" count="12">100 0 -150 100 0 -100 150 0 -100 150 0 -150 </float_array>
+          <technique_common>
+            <accessor source="#geom-4-positions-array" count="4" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="geom-4-normals">
+          <float_array id="geom-4-normals-array" count="6">0 1 0 0 -1 0 </float_array>
+          <technique_common>
+            <accessor source="#geom-4-normals-array" count="2" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <vertices id="geom-4-vertices">
+          <input semantic="POSITION" source="#geom-4-positions"/>
+        </vertices>
+        <polygons count="2">
+          <input semantic="VERTEX" source="#geom-4-vertices" offset="0"/>
+          <input semantic="NORMAL" source="#geom-4-normals" offset="1"/>
+          <p>0 0 1 0 2 0 3 0 </p>
+          <p>3 1 2 1 1 1 0 1 </p>
+        </polygons>
+      </mesh>
+    </geometry>
+    <geometry id="geom-5" name="閉じた線形状の掃引体">
+      <mesh>
+        <source id="geom-5-positions">
+          <float_array id="geom-5-positions-array" count="48">150 50 -150 150 0 -150 150 50 -100 150 0 -100 150 50 -100 150 0 -100 100 50 -100 100 0 -100 100 50 -100 100 0 -100 100 50 -150 100 0 -150 100 50 -150 100 0 -150 150 50 -150 150 0 -150 </float_array>
+          <technique_common>
+            <accessor source="#geom-5-positions-array" count="16" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="geom-5-normals">
+          <float_array id="geom-5-normals-array" count="12">-1 0 0 1 0 0 0 0 -1 0 0 1 </float_array>
+          <technique_common>
+            <accessor source="#geom-5-normals-array" count="4" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <vertices id="geom-5-vertices">
+          <input semantic="POSITION" source="#geom-5-positions"/>
+        </vertices>
+        <polygons count="8">
+          <input semantic="VERTEX" source="#geom-5-vertices" offset="0"/>
+          <input semantic="NORMAL" source="#geom-5-normals" offset="1"/>
+          <p>2 0 3 0 1 0 0 0 </p>
+          <p>6 2 7 2 5 2 4 2 </p>
+          <p>10 1 11 1 9 1 8 1 </p>
+          <p>14 3 15 3 13 3 12 3 </p>
+          <p>12 2 13 2 15 2 14 2 </p>
+          <p>8 0 9 0 11 0 10 0 </p>
+          <p>4 3 5 3 7 3 6 3 </p>
+          <p>0 1 1 1 3 1 2 1 </p>
+        </polygons>
+      </mesh>
+    </geometry>
+  </library_geometries>
+  <library_effects/>
+  <library_materials/>
+  <library_cameras>
+    <camera id="Camera1" name="Camera1">
+      <optics>
+        <technique_common>
+          <perspective>
+            <xfov>39.59775</xfov>
+            <yfov>26.99147</yfov>
+            <znear>0.099999964237</znear>
+            <zfar>1000</zfar>
+          </perspective>
+        </technique_common>
+      </optics>
+    </camera>
+  </library_cameras>
+  <library_lights>
+    <light id="Light1" name="Light1">
+      <technique_common>
+        <directional>
+          <color>1 1 1</color>
+        </directional>
+      </technique_common>
+    </light>
+  </library_lights>
+  <library_visual_scenes>
+    <visual_scene id="DefaultScene">
+      <node type="NODE">
+        <rotate>0 0 1 43.96492</rotate>
+        <rotate>0 1 0 -4.867355</rotate>
+        <rotate>1 0 0 -12.02072</rotate>
+        <instance_light url="#Light1"/>
+      </node>
+      <node type="NODE">
+        <translate>200 200 300</translate>
+        <rotate>0 0 1 8.960101</rotate>
+        <rotate>0 1 0 29.01713</rotate>
+        <rotate>1 0 0 -33.69006</rotate>
+        <instance_camera url="#Camera1"/>
+      </node>
+      <node id="SimplePart1" name="ルートパート" sid="SimplePart1" type="NODE">
+        <node id="SimplePart2" name="パート" sid="SimplePart2" type="NODE">
+          <matrix sid="Matrix1">1 0 0 -50 0 1 0 0 0 0 1 50 0 0 0 1</matrix>
+          <node id="SurfacePart1" name="自由曲面" sid="SurfacePart1" type="NODE">
+            <instance_geometry url="#geom-1"/>
+          </node>
+          <instance_geometry url="#geom-2"/>
+        </node>
+        <node type="NODE">
+          <instance_geometry url="#geom-3"/>
+        </node>
+        <node type="NODE">
+          <matrix sid="Matrix2">1 0 0 0 0 1 0 50 0 0 1 0 0 0 0 1</matrix>
+          <instance_geometry url="#geom-4"/>
+        </node>
+        <node type="NODE">
+          <instance_geometry url="#geom-5"/>
+        </node>
+      </node>
+    </visual_scene>
+  </library_visual_scenes>
+  <library_animations/>
+  <scene>
+    <instance_visual_scene url="#DefaultScene"/>
+  </scene>
+</COLLADA>

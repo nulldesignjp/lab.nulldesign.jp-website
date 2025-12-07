@@ -1,0 +1,85 @@
+/*
+	style.css
+*/
+
+html,
+body{}
+
+body{
+	margin: 0;
+	padding: 0;
+	text-align: center;
+	font-size: 100%;
+	font-family: Verdana;
+	color: #484848;
+	background-color: #000;
+}
+
+h1,h2,h3,h4,h5,h6{
+	font-weight: normal !important;
+	font-size: 14px;
+}
+
+#container{
+	margin: 0 auto;
+	width: 960px;
+	text-align: left;
+	font-size: 12px;
+}
+#container canvas{
+	position: fixed;
+	left: 0;
+	top: 0;
+	z-index: -1;
+}
+h1{
+	color: #CCC;
+}
+h2,#siteHead,#siteFoot{	margin-left: 16px;	margin-right: 16px;}
+h2{
+	margin-top: 60px;
+	margin-bottom: 32px;
+}
+
+#siteHead{
+	margin-top: 180px;
+	margin-bottom: 60px;
+}
+
+#siteHead p{
+	margin: 1em 0;
+	line-height: 1.80;
+}
+
+#siteFoot{
+	padding: 60px 0;
+}
+#siteFoot p small{
+	font-size: 9px;
+}
+li{
+	float: left;
+	display: block;
+	margin: 0 0 16px 16px;
+	width: 220px;
+}
+
+img{
+	width: 100%;
+	height: auto;
+}
+
+#siteBody.open{
+	-webkit-animation: fadein01 3.0s ease 0s;
+	-moz-animation: fadein01 3.0s ease 0s;
+	opacity: 1.0;
+}
+@-webkit-keyframes fadein01 {
+	0% {	opacity: 0.0;	}
+	100% {	opacity: 1.0;	}
+}
+@-moz-keyframes fadein01 {
+	0% {	opacity: 0.0;	}
+	100% {	opacity: 1.0;	}
+}
+

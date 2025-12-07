@@ -1,0 +1,154 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Language" content="ja">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<meta http-equiv="Content-Script-Type" content="text/javascript">
+<meta http-equiv="imagetoolbar" content="no">
+<meta http-equiv="cleartype" content="on">
+<meta name="format-detection" content="telephone=no">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=yes, viewport-fit=cover">
+<meta name="keywords" content="">
+<meta name="description" content="">
+<link href="https://fonts.googleapis.com/css?family=Heebo:100,400&display=swap&subset=hebrew" rel="stylesheet">
+<!--<link href="assets/css/reset.css" rel="stylesheet" type="text/css" media="all">
+<link href="assets/css/style.css" rel="stylesheet" type="text/css" media="all">-->
+<title>shiraishi prototype</title>
+<style>
+.hide{
+	display: none;
+}
+#hideArea{
+	display: none;
+}
+</style>
+</head>
+<body>
+<div id="webglView"><!--/ webglView --></div>
+<div id="hideArea"></div>
+<script src="jquery-3.3.1.min.js"></script>
+<script src="https://d3js.org/d3.v5.min.js"></script>
+<script src="downloadSVG.js"></script>
+
+
+<script type="text/javascript">
+//	フロントお渡し箇所
+window.addEventListener( 'DOMContentLoaded', function(){
+
+	var _svg = 'shiraishi-prototype.svg';
+	var _width = 1920;
+	var _height = 1080;
+
+	var _style = '';
+	var _fontSizeList = [];
+	var _text = '';
+	var _family = 'YuMincho' 
+	$.ajax({
+		url: _svg,
+		type: 'get',
+		datatype: 'xml',
+		success: function( _xml )
+		{
+
+			var _hoge = $( _xml ).find('svg');
+			// console.log(_xml)
+
+
+
+				_width = $( '<root>' + _xml + '</root>' ).find('svg').attr('width');
+				_height = $( '<root>' + _xml + '</root>' ).find('svg').attr('height');
+
+				console.log( _width, _height )
+
+
+			$( _xml ).find('text').each(function(i,e){
+				//	<text fill="rgba(30,10,12,1.0)" font-size="2px" x="343.798828125" y="2">サヨナラの意味</text>
+
+				var _color = $( this ).attr('fill');
+				var _size = $( this ).attr('font-size');
+			//	var _baseline = $( this ).attr('dominant-baseline');
+				var _class = 'st' + i;
+				_family = $( this ).attr('font-family');
+
+				var len = _fontSizeList.length;
+				var _flag = false;
+				for( var j = 0; j < len; j++ )
+				{
+					if( _fontSizeList[j] == _size )
+					{
+						_flag = true;
+						break;
+					}
+				}
+
+				if( !_flag )
+				{
+					_fontSizeList.push( _size );
+				}
+
+				_class+= ' size' + _size;
+
+				_color = _color.replace('rgba(','')
+				_color = _color.replace(')','')
+				_color = _color.split(',')
+
+				var _r = conv16( parseInt( _color[0] ) );
+				var _g = conv16( parseInt( _color[1] ) );
+				var _b = conv16( parseInt( _color[2] ) );
+
+
+				_color = '#' + _r + _g + _b;
+				_style += '.st' + i + '{fill:'+_color+';}';
+
+				var _x = ~~$( this ).attr('x');
+				var _y = ~~$( this ).attr('y');
+				var _txt = $( this ).text();
+
+				_text += '<text x="'+_x+'" y="'+_y+'" class="'+_class+'">'+_txt+'</text>'
+
+			})
+
+			_style += '\n';
+
+			_style += "text{font-family: "+_family+";}" + '\n';
+
+			var len = _fontSizeList.length;
+			for( var j = 0; j < len; j++ )
+			{
+				_style += '.size'+_fontSizeList[j]+'{font-size: '+_fontSizeList[j]+';}' + '\n'
+			}
+
+			var _header = '<?xml version="1.0" encoding="utf-8"?><!-- Generator: Adobe Illustrator 23.1.1, SVG Export Plug-In . SVG Version: 6.00 Build 0)  --><svg version="1.1" id="layer01" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 '+_width+' '+_height+'" style="enable-background:new 0 0 '+_width+' '+_height+';" xml:space="preserve">';
+
+			var _styleString = '<style>' + _style + '</style>';
+			var _textString = _text;
+			var _footer = '</svg>';
+			var _SVGSTRING = _header + _styleString + _textString + _footer;
+			document.getElementById('webglView').innerHTML = _SVGSTRING;
+		},
+		error: function( _e )
+		{
+			alert( 'error.')
+		}
+	});
+
+
+	d3.select("body").append("button")
+	.attr("type","button")
+	.attr("class", "downloadButton")
+	.text("Download SVG")
+	.on("click", function() {
+	// download the svg
+		downloadSVG();
+	});
+})
+
+function conv16( e )
+{
+	var sin = "0123456789ABCDEF";
+	return sin.charAt(Math.floor(e/16))+sin.charAt(e%16);
+}
+</script>
+</body>
+</html>

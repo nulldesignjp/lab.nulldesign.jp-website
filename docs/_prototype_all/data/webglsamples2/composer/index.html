@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0">
+<meta name="description" content="">
+<meta name="keywords" content="">
+<style type="text/css">
+html,body{overflow: hidden;height: 100%;}
+body{margin: 0;padding: 0;background: #000;}
+</style>
+<title>untitled</title>
+</head>
+<body>
+<div id="container"></div>
+<script type="text/javascript" src="three.min.js"></script>
+<script type="text/javascript" src="EffectComposer.js"></script>
+<script type="text/javascript" src="RenderPass.js"></script>
+<script type="text/javascript" src="MaskPass.js"></script>
+<script type="text/javascript" src="ShaderPass.js"></script>
+<script type="text/javascript" src="CopyShader.js"></script>
+<script type="text/javascript" src="DotMatrixShader.js"></script>
+<script type="text/javascript" src="AdditiveBlendShader.js"></script>
+<script type="text/javascript" src="HorizontalBlurShader.js"></script>
+<script type="text/javascript" src="VerticalBlurShader.js"></script>
+<script type="text/javascript">
+
+var scene,camera,renderer;
+var basicComposer, addComposer, blendComposer;
+var blendPass_;
+
+var width_ = window.innerWidth;
+var height_ = window.innerHeight;
+
+//  scene
+scene = new THREE.Scene();
+scene.fog = new THREE.Fog( 0x000000, 800, 1600 );
+
+scene2 = new THREE.Scene();
+scene2.fog = new THREE.Fog( 0x000000, 800, 1600 );
+
+//  camera.lookAt focue
+focus = new THREE.Vector3();
+
+//  camera
+camera = new THREE.PerspectiveCamera( 35, width_ / height_, 0.1, 1600 );
+camera.position.set( 0, 0, 1000 );
+camera.lookAt( focus );
+
+camera0 = new THREE.PerspectiveCamera( 135, width_ / height_, 0.1, 1600 );
+camera0.position.set( 0, 0, 1000 );
+camera0.lookAt( focus );
+
+//   renderer
+renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
+renderer.setClearColor(0x000000);
+renderer.setSize( width_, height_ );
+document.getElementById( 'container' ).appendChild(renderer.domElement);
+
+for( var i = 0; i < 64; i++ )
+{
+	var _geo = new THREE.IcosahedronGeometry( 100, 1 );
+	var _s = Math.random();
+	_geo.scale( _s, _s, _s );
+	var _mat = new THREE.MeshBasicMaterial({
+		color: new THREE.Color( 1.0, 0.0, 0.0 ).setHSL( Math.random(), 1.0, 0.5 ),
+		shading: THREE.FlatShading,
+		transparent: true,
+		blending: THREE.AdditiveBlending
+	});
+	var _mesh = new THREE.Mesh( _geo, _mat );
+	_mesh.position.set(
+		(Math.random()-.5)*1600,
+		(Math.random()-.5)*1600,
+		(Math.random()-.5)*1600
+	);
+	scene.add( _mesh );
+}
+for( var i = 0; i < 64; i++ )
+{
+	var _geo = new THREE.BoxGeometry( 100,100,100 );
+	var _mat = new THREE.MeshBasicMaterial({
+		color: new THREE.Color( 1.0, 0.0, 0.0 ).setHSL( Math.random(), 1.0, 0.5 ),
+		shading: THREE.FlatShading,
+		transparent: true,
+		blending: THREE.AdditiveBlending
+	});
+	var _mesh = new THREE.Mesh( _geo, _mat );
+	_mesh.position.set(
+		(Math.random()-.5)*1600,
+		(Math.random()-.5)*1600,
+		(Math.random()-.5)*1600
+	);
+
+	scene2.add( _mesh );
+}
+
+
+/*
+	オフスクリーンここから
+*/
+
+//common render target params
+var renderTargetParameters = {
+	minFilter: THREE.LinearFilter,
+	magFilter: THREE.LinearFilter,
+	format: THREE.RGBFormat,
+	stencilBufer: false
+};
+
+//  basicComposer
+var renderTargetDots = new THREE.WebGLRenderTarget( width_, height_, renderTargetParameters );
+basicComposer = new THREE.EffectComposer( renderer,renderTargetDots );
+var renderPass = new THREE.RenderPass( scene, camera );
+basicComposer.addPass( renderPass );
+
+var dotMatrixPass = new THREE.ShaderPass( THREE.DotMatrixShader );
+basicComposer.addPass( dotMatrixPass );
+
+var _copySahder = new THREE.ShaderPass( THREE.CopyShader );
+basicComposer.addPass( _copySahder );
+
+//  glow Composer
+var renderTargetGlow = new THREE.WebGLRenderTarget( width_, height_, renderTargetParameters );
+addComposer = new THREE.EffectComposer( renderer, renderTargetGlow );
+var hblurPass = new THREE.ShaderPass( THREE.HorizontalBlurShader );
+var vblurPass = new THREE.ShaderPass( THREE.VerticalBlurShader );
+addComposer.addPass( renderPass );
+//  if addPass insert here....
+addComposer.addPass( dotMatrixPass );
+addComposer.addPass( hblurPass );
+addComposer.addPass( vblurPass );
+
+//blend Composer
+var blendPass = new THREE.ShaderPass( THREE.AdditiveBlendShader );
+blendPass.uniforms[ 'tBase' ].value = basicComposer.renderTarget1;
+blendPass.uniforms[ 'tAdd' ].value = addComposer.renderTarget1;
+blendComposer = new THREE.EffectComposer( renderer );
+blendComposer.addPass( blendPass );
+blendPass.renderToScreen = true;
+
+//  param
+var _blur = 8.0;
+
+//copy gui params into shader uniforms
+dotMatrixPass.uniforms[ "spacing" ].value = 8;
+dotMatrixPass.uniforms[ "size" ].value = 4;
+dotMatrixPass.uniforms[ "blur" ].value = 0;
+
+hblurPass.uniforms[ 'h' ].value = _blur / width_*2;
+vblurPass.uniforms[ 'v' ].value = _blur  / height_*2;
+blendPass.uniforms[ 'amount' ].value = 16;
+
+blendPass_ = blendPass;
+
+/*
+	オフスクリーンここまで
+*/
+
+render_();
+
+function render_(){
+	window.requestAnimationFrame( render_ );
+
+	//renderer.render( scene, camera )
+	basicComposer.render( 0.1 );
+	addComposer.render( 0.1 );
+	blendComposer.render( 0.1 );
+
+	scene.rotation.x += 0.001;
+	scene.rotation.y += 0.001;
+	scene.rotation.z += 0.001;
+	scene2.rotation.x += 0.001;
+	scene2.rotation.y += 0.001;
+	scene2.rotation.z += 0.001;
+}
+
+window.onresize = function(){
+
+	var width_ = window.innerWidth;
+	var height_ = window.innerHeight;
+
+	if( camera.aspect )
+	{
+		camera.aspect = width_ / height_;
+	} else {
+		camera.left = - width_ * 0.5;
+		camera.right = width_ * 0.5;
+		camera.bottom = - height_ * 0.5;
+		camera.top = height_ * 0.5;
+	}
+
+	camera.updateProjectionMatrix();
+
+	renderer.setSize( width_, height_ );
+	basicComposer.setSize( width_, height_ );
+	addComposer.setSize( width_, height_ );
+	blendComposer.setSize( width_, height_ );
+}
+
+
+window.addEventListener( 'mousemove', function(e){
+	var _parX = e.pageX / window.innerWidth;
+	blendPass_.uniforms['amount'].value = _parX * 32.0;
+});
+window.addEventListener( 'click', function(e){
+	var _spacing = Math.floor( Math.random() * 30 ) + 4;
+	var _size = Math.floor( Math.random() * 10 ) + 1;
+	var _blur = Math.floor( Math.random() * 16 );
+	dotMatrixPass.uniforms[ "spacing" ].value = _spacing;
+	dotMatrixPass.uniforms[ "size" ].value = _size;
+	dotMatrixPass.uniforms[ "blur" ].value = _blur;
+});
+
+var _flag = true;
+window.addEventListener( 'keydown', function(e){
+
+	var _scene = scene;
+	var _camera = camera;
+	if( _flag )
+	{
+		_scene = scene2;
+		_camera = camera0;
+	}
+
+	_flag = !_flag;
+	var renderPass = new THREE.RenderPass( _scene, _camera );
+	basicComposer.passes[0] = renderPass;
+	addComposer.passes[0] = renderPass;
+});
+
+
+</script>
+</body>
+</html>

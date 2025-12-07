@@ -1,0 +1,143 @@
+/*
+	animate.css
+*/
+
+.bringLoading{
+	animation: ani-bring 0.4s ease-in-out 0.0s infinite alternate;
+	-webkit-animation: ani-bring 0.4s ease-in-out 0.0s infinite alternate;
+	-moz-animation: ani-bring 0.4s ease-in-out 0.0s infinite alternate;
+	-o-animation: ani-bring 0.4s ease-in-out 0.0s infinite alternate;
+	-ms-animation: ani-bring 0.4s ease-in-out 0.0s infinite alternate;
+}
+
+@keyframes ani-bring{
+	0%		{	opacity: 0.8;}
+	100%	{	opacity:	1.0;}
+}
+@-webkit-keyframes ani-bring{
+	0%		{	opacity: 0.8;}
+	100%	{	opacity:	1.0;}
+}
+@-moz-keyframes ani-bring{
+	0%		{	opacity: 0.8;}
+	100%	{	opacity:	1.0;}
+}
+@-o-keyframes ani-bring{
+	0%		{	opacity: 0.8;}
+	100%	{	opacity:	1.0;}
+}
+@-ms-keyframes ani-bring{
+	0%		{	opacity: 0.8;}
+	100%	{	opacity:	1.0;}
+}
+
+
+.fadeOut{
+	animation: ani-fadeout 0.4s ease-in-out 0.0s 1 alternate;
+	-webkit-animation: ani-fadeout 0.4s ease-in-out 0.0s 1 alternate;
+	-moz-animation: ani-fadeout 0.4s ease-in-out 0.0s 1 alternate;
+	-o-animation: ani-fadeout 0.4s ease-in-out 0.0s 1 alternate;
+	-ms-animation: ani-fadeout 0.4s ease-in-out 0.0s 1 alternate;
+	opacity:	0.0;
+}
+
+@keyframes ani-fadeout{
+	0%		{	opacity: 1.0;}
+	100%	{	opacity:	0.0;}
+}
+@-webkit-keyframes ani-fadeout{
+	0%		{	opacity: 1.0;}
+	100%	{	opacity:	0.0;}
+}
+@-moz-keyframes ani-fadeout{
+	0%		{	opacity: 1.0;}
+	100%	{	opacity:	0.0;}
+}
+@-o-keyframes ani-fadeout{
+	0%		{	opacity: 1.0;}
+	100%	{	opacity:	0.0;}
+}
+@-ms-keyframes ani-fadeout{
+	0%		{	opacity: 1.0;}
+	100%	{	opacity:	0.0;}
+}
+.fadeIn{
+	animation: ani-fadein 0.4s ease-in-out 0.0s 1 alternate;
+	-webkit-animation: ani-fadein 0.4s ease-in-out 0.0s 1 alternate;
+	-moz-animation: ani-fadein 0.4s ease-in-out 0.0s 1 alternate;
+	-o-animation: ani-fadein 0.4s ease-in-out 0.0s 1 alternate;
+	-ms-animation: ani-fadein 0.4s ease-in-out 0.0s 1 alternate;
+}
+
+@keyframes ani-fadein{
+	0%		{	opacity: 0.0;}
+	100%	{	opacity:	1.0;}
+}
+@-webkit-keyframes ani-fadein{
+	0%		{	opacity: 0.0;}
+	100%	{	opacity:	1.0;}
+}
+@-moz-keyframes ani-fadein{
+	0%		{	opacity: 0.0;}
+	100%	{	opacity:	1.0;}
+}
+@-o-keyframes ani-fadein{
+	0%		{	opacity: 0.0;}
+	100%	{	opacity:	1.0;}
+}
+@-ms-keyframes ani-fadein{
+	0%		{	opacity: 0.0;}
+	100%	{	opacity:	1.0;}
+}
+
+
+.fillInBottomToTop{
+	animation: ani-BottomToTop 0.4s ease-in-out 0.2s 1 alternate;
+	-webkit-animation: ani-BottomToTop 0.4s ease-in-out 0.2s 1 alternate;
+	-moz-animation: ani-BottomToTop 0.4s ease-in-out 0.2s 1 alternate;
+	-o-animation: ani-BottomToTop 0.4s ease-in-out 0.2s 1 alternate;
+	-ms-animation: ani-BottomToTop 0.4s ease-in-out 0.2s 1 alternate;
+	position: relative;
+	top: 0;
+}
+
+@keyframes ani-BottomToTop,
+@-webkit-keyframes ani-BottomToTop,
+@-moz-keyframes ani-BottomToTop,
+@-o-keyframes ani-BottomToTop,
+@-ms-keyframes ani-BottomToTop{
+	0%		{	top:	20px;}
+	100%	{	top:	0;}
+}
+
+.post:hover,
+#close:hover,
+#gototop01:hover,
+#gototop02:hover{
+	animation: ani-rollOver 0.4s ease-in-out 0.0s 1 alternate;
+	-webkit-animation: ani-rollOver 0.4s ease-in-out 0.0s 1 alternate;
+	-moz-animation: ani-rollOver 0.4s ease-in-out 0.0s 1 alternate;
+	-o-animation: ani-rollOver 0.4s ease-in-out 0.0s 1 alternate;
+	-ms-animation: ani-rollOver 0.4s ease-in-out 0.0s 1 alternate;
+	opacity: 1.0;
+}
+@keyframes ani-rollOver{
+	0%		{	opacity: 0.5;}
+	100%	{	opacity:	1.0;}
+}
+@-webkit-keyframes ani-rollOver{
+	0%		{	opacity: 0.5;}
+	100%	{	opacity:	1.0;}
+}
+@-moz-keyframes ani-rollOver{
+	0%		{	opacity: 0.5;}
+	100%	{	opacity:	1.0;}
+}
+@-o-keyframes ani-rollOver{
+	0%		{	opacity: 0.5;}
+	100%	{	opacity:	1.0;}
+}
+@-ms-keyframes ani-rollOver{
+	0%		{	opacity: 0.5;}
+	100%	{	opacity:	1.0;}
+}

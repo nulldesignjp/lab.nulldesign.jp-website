@@ -1,0 +1,333 @@
+<!DOCTYPE HTML>
+<html lang="ja">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=yes">
+<meta name="keywords" content="">
+<meta name="description" content="metrogram3D">
+<title>webgl sample</title>
+<style>
+html,body{height:100%;overflow:hidden;}
+body{
+	margin: 0;
+	padding: 0;
+	background: #000;
+}
+#container{
+	width: 100%;
+	height: 100%;
+}
+#counter{
+	position: fixed;
+	left: 32;
+	top: 32;
+	color: #FFF;
+	font-family: Arial;
+	z-index: 100;
+}
+</style>
+</head>
+<body>
+<p id="counter"></p>
+<div id="container"></div>
+<script src="../js/jquery-2.1.1.min.js"></script>
+<script src="../js/SplineCurve.js"></script>
+<script src="../js/Detector.js"></script>
+<script src="../js/stats.min.js"></script>
+<script src="../js/three.min.js"></script>
+<script type="text/javascript">
+
+(function(){
+	var stations
+	var zoom = 20000;
+	var _hPar = 16;
+	var offsetLat = 35.68251450;
+	var offsetLng = 139.76614850;
+	var div = 60;
+	var meshs = [];
+	var stats
+
+
+	var container
+	var camera
+	var scene
+	var renderer
+	var mesh
+	var plane
+
+	var cube
+	var all = [];
+	var pointer = 0;
+	var target = {x:0,y:0,z:0};
+
+
+	if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
+
+	loadXML();
+
+	function loadXML()
+	{
+		$.ajax({
+			url: 'stationlist.xml',
+			type: 'GET',
+			dataType: 'XML',
+			success: function( _xml )
+			{
+				stations = [];
+
+				$( _xml ).find('line').each(function(){
+					var _id = $( this ).attr('id');
+					var _name = $( this ).attr('name');
+					var _color = $( this ).attr('color');
+
+					$( this ).find('item').each(function(){
+						var _x = parseFloat( $( this ).find('location latitude').text() );
+						var _y = parseFloat( $( this ).find('location longitude').text() );
+						var _e = parseFloat( $( this ).find('english').text() );
+
+						_x = ( _x - offsetLat ) * zoom;
+						_z = ( _y - offsetLng ) * zoom;
+						_y = $( this ).find('depth').text() * _hPar;
+
+						if( !stations[_id] )
+						{
+							stations[_id] = {}
+							stations[_id].id = _id;
+							stations[_id].name = _name;
+							stations[_id].english = _e;
+							stations[_id].color = _color;
+							stations[_id].data = [];
+						}
+
+						stations[_id].data.push({x:_z,y:_y,z:_x});
+
+					});
+
+					//	SplineCurve3D	CUSTOMIZE
+					stations[_id].data = SplineCurve3D( stations[_id].data, div );
+					all = all.concat( stations[_id].data );
+
+
+				});
+
+				init();
+				animate();
+
+				window.addEventListener( 'resize', onWindowResize, false );
+			}
+		});
+	}
+
+	function onWindowResize()
+	{
+		camera.aspect = window.innerWidth / window.innerHeight;
+		camera.updateProjectionMatrix();
+		renderer.setSize( window.innerWidth, window.innerHeight );
+	}
+
+	function init()
+	{
+		//	器
+		container = document.getElementById('container');
+
+		//	カメラ
+		var _width = window.innerWidth;
+		var _height = window.innerHeight;
+		camera = new THREE.PerspectiveCamera( 35, _width / _height, 1, 3500 );
+		camera.position.z = 2750;
+		camera.position.y = -100;
+
+		var _focus = new THREE.Vector3();
+		_focus.set( 0, 0, 0 );
+		camera.lookAt( _focus );
+
+		//	シーン
+		//	http://threejs.org/docs/#Reference/Scenes/Scene
+		scene = new THREE.Scene();
+		scene.fog = new THREE.Fog( 0x000000, 2000, 3500 );
+
+		//scene.add( new THREE.AmbientLight( 0x444444 ) );
+		scene.add( new THREE.AmbientLight( 0xCCCCCC ) );
+
+
+		//	pointlist
+		//	var vertexPositions = [];
+
+		var _num = Math.floor( Math.random() * 6 ) + 3;
+		var _len = Math.floor( Math.random() * 10000 ) + 1000;
+
+		for( var i in stations )
+		{
+			var _list = stations[i].data;
+			var _color = stations[i].color;
+			var _name = stations[i].name;
+			var len = _list.length;
+
+			var vertexPositions = [];
+			for( var j = 0; j < len; j++ )
+			{
+				vertexPositions.push( _list[j] )
+			}
+
+			//	geo
+			var geometry = new THREE.BufferGeometry();
+			var colors = new Float32Array( vertexPositions.length * 3 );
+			var positions = new Float32Array( vertexPositions.length * 3 );
+
+			var color = new THREE.Color();
+			var _r = parseInt( _color.substr( 0, 2 ), 16 ) / 256;
+			var _g = parseInt( _color.substr( 2, 2 ), 16 ) / 256;
+			var _b = parseInt( _color.substr( 4, 2 ), 16 ) / 256;
+			color.setRGB( _r, _g, _b );
+
+			for ( var i = 0; i < vertexPositions.length; i++ )
+			{
+				//	直線リストに
+				positions[ i*3 + 0 ] = vertexPositions[i].x;
+				positions[ i*3 + 1 ] = vertexPositions[i].y;
+				positions[ i*3 + 2 ] = vertexPositions[i].z;
+
+				colors[ i * 3 + 0 ] = color.r;
+				colors[ i * 3 + 1 ] = color.g;
+				colors[ i * 3 + 2 ] = color.b;
+			}
+
+			geometry.addAttribute( 'position', new THREE.BufferAttribute( positions, 3 ) );
+			geometry.addAttribute( 'color', new THREE.BufferAttribute( colors, 3 ) );
+
+
+			//	material
+			//	http://threejs.org/docs/#Reference/Materials/MeshBasicMaterial
+
+			var _width = _name=='oedo'||_name=='yamanote'?3:1;
+			var material = new THREE.LineBasicMaterial({ vertexColors: THREE.VertexColors, linewidth: _width });
+			var mesh = new THREE.Line( geometry, material );
+			//meshs.push( mesh )
+
+			scene.add( mesh );
+
+			//	particle
+			var len = Math.floor( vertexPositions.length / div );
+			var geometry = new THREE.BufferGeometry();
+			var pColors = new Float32Array( len * 3 + 3);
+			var pPosition = new Float32Array( len * 3 + 3 );
+			for ( var i = 0; i < len; i++ )
+			{
+				//	直線リストに
+				pPosition[ i * 3 + 0 ] = vertexPositions[i * div].x;
+				pPosition[ i * 3 + 1 ] = vertexPositions[i * div].y;
+				pPosition[ i * 3 + 2 ] = vertexPositions[i * div].z;
+
+				pColors[ i * 3 + 0 ] = color.r;
+				pColors[ i * 3 + 1 ] = color.g;
+				pColors[ i * 3 + 2 ] = color.b;
+			}
+
+				pPosition[ len * 3 + 0 ] = vertexPositions[vertexPositions.length-1].x;
+				pPosition[ len * 3 + 1 ] = vertexPositions[vertexPositions.length-1].y;
+				pPosition[ len * 3 + 2 ] = vertexPositions[vertexPositions.length-1].z;
+
+				pColors[ len * 3 + 0 ] = color.r;
+				pColors[ len * 3 + 1 ] = color.g;
+				pColors[ len * 3 + 2 ] = color.b;
+
+			geometry.addAttribute( 'position', new THREE.BufferAttribute( pPosition, 3 ) );
+			geometry.addAttribute( 'color', new THREE.BufferAttribute( pColors, 3 ) );
+
+			var material = new THREE.PointCloudMaterial( { size: 16, vertexColors: THREE.VertexColors } );
+			particleSystem = new THREE.PointCloud( geometry, material );
+			scene.add( particleSystem );
+
+		}
+
+		//	GROUND
+		var geometry = new THREE.PlaneGeometry( 8000, 8000, 40, 40 );
+		var material = new THREE.MeshBasicMaterial( {color: 0x181818, side: THREE.DoubleSide, wireframe: true	} );
+		plane = new THREE.Mesh( geometry, material );
+		plane.rotation.x = Math.PI * 0.5;
+		scene.add( plane );
+
+		//var geometry = new THREE.BoxGeometry( 16, 16, 16 );
+		var geometry = new THREE.SphereGeometry( 4, 3, 2 );
+		var material = new THREE.MeshBasicMaterial( {color: 0x00ff00, wireframe:true} )
+		cube = new THREE.Mesh( geometry, material );
+		scene.add( cube );
+
+		//	renderer
+		renderer = new THREE.WebGLRenderer( { antialias: false } );
+		renderer.setClearColor( scene.fog.color, 1 );
+		renderer.setSize( window.innerWidth, window.innerHeight );
+
+		renderer.gammaInput = true;
+		renderer.gammaOutput = true;
+
+		container.appendChild( renderer.domElement );
+
+		stats = new Stats();
+		stats.domElement.style.position = 'absolute';
+		stats.domElement.style.top = '0px';
+		container.appendChild( stats.domElement );
+
+	}
+
+	function animate()
+	{
+		requestAnimationFrame( animate );
+		render();
+		
+		stats.update();
+	}
+
+	function render()
+	{
+		var time = Date.now() * 0.01;
+
+		pointer ++;
+		pointer %= all.length;
+
+		$('#counter').text(pointer +' / '+ all.length);
+
+		cube.position.x = all[pointer].x;
+		cube.position.y = all[pointer].y;
+		cube.position.z = all[pointer].z;
+
+		cube.rotation.x = time * 0.05;
+		cube.rotation.y = time * 0.25;
+
+		var _dist = 300;
+		var _dx = cube.position.x - camera.position.x;
+		var _dy = cube.position.y - camera.position.y;
+		var _dz = cube.position.z - camera.position.z;
+		var _d = Math.sqrt( _dx * _dx + _dy * _dy + _dz * _dz );
+		var _pow = _d - _dist;
+		var _par = _pow / ( _dist - _d );
+		_dx = _pow * _dx / _d;
+		_dy = _pow * _dy / _d;
+		_dz = _pow * _dz / _d;
+
+		target.x = camera.position.x + _dx;
+		target.y = camera.position.y + _dy;
+		target.z = camera.position.z + _dz;
+
+		var _speed = 0.1;
+		camera.position.x += ( target.x - camera.position.x ) * _speed;
+		camera.position.y += ( target.y - camera.position.y ) * _speed;
+		camera.position.z += ( target.z - camera.position.z ) * _speed;
+
+		//camera.position.x = target.x;
+		//camera.position.y = target.y;
+		//camera.position.z = target.z;
+
+		var _focus = new THREE.Vector3();
+		_focus.set( cube.position.x, cube.position.y, cube.position.z );
+		camera.lookAt( _focus );
+
+		renderer.render( scene, camera );
+	}
+
+})();
+
+
+</script>
+</body>
+</html>

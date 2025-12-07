@@ -1,0 +1,768 @@
+<?xml version="1.0" encoding="utf-8"?>
+<COLLADA xmlns="http://www.collada.org/2005/11/COLLADASchema" version="1.4.1">
+  <asset>
+    <contributor>
+      <authoring_tool>Shade 11.0 | COLLADAExporter 2.0</authoring_tool>
+      <source_data>file:///Users/h_koi/Desktop/tree.shd</source_data>
+    </contributor>
+    <created>2014-12-24T21:23:59</created>
+    <modified>2014-12-24T21:23:59</modified>
+    <title>tree.dae</title>
+    <unit name="centimeter" meter="0.009999999776"/>
+    <up_axis>Y_UP</up_axis>
+  </asset>
+  <library_geometries>
+    <geometry id="geom-1" name="ポリゴンメッシュ">
+      <mesh>
+        <source id="geom-1-positions">
+          <float_array id="geom-1-positions-array" count="48">14.14214 0 0 10 0 10 0 0 14.14214 -10 0 10 -14.14214 0 0 -10 0 -10 0 0 -14.14214 10 0 -10 14.14214 40 0 10 40 10 0 40 14.14214 -10 40 10 -14.14214 40 0 -10 40 -10 0 40 -14.14214 10 40 -10 </float_array>
+          <technique_common>
+            <accessor source="#geom-1-positions-array" count="16" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="geom-1-normals">
+          <float_array id="geom-1-normals-array" count="30">0 -1 0 0 1 0 0.923879623413 0 0.382683485746 -0.923879623413 0 -0.382683485746 0.382683426142 0 0.923879563808 -0.382683426142 0 -0.923879563808 -0.382683485746 0 0.923879504204 0.382683485746 0 -0.923879504204 -0.923879563808 0 0.382683366537 0.923879563808 0 -0.382683366537 </float_array>
+          <technique_common>
+            <accessor source="#geom-1-normals-array" count="10" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="geom-1-map0">
+          <float_array id="geom-1-map0-array" count="16">0.5 0 0.853553414345 0.146446585655 1 0.5 0.853553473949 0.853553295135 0.146446585655 0.146446585655 0.500000059605 1 0 0.5 0.14644664526 0.853553414345 </float_array>
+          <technique_common>
+            <accessor source="#geom-1-map0-array" count="8" stride="2">
+              <param name="S" type="float"/>
+              <param name="T" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <vertices id="geom-1-vertices">
+          <input semantic="POSITION" source="#geom-1-positions"/>
+        </vertices>
+        <polygons material="MATERIAL1" count="56">
+          <input semantic="VERTEX" source="#geom-1-vertices" offset="0"/>
+          <input semantic="NORMAL" source="#geom-1-normals" offset="1"/>
+          <input semantic="TEXCOORD" source="#geom-1-map0" offset="2" set="0"/>
+          <p>0 0 2 1 0 1 2 0 0 </p>
+          <p>2 0 0 7 0 3 0 0 2 </p>
+          <p>7 0 3 2 0 0 3 0 4 </p>
+          <p>3 0 4 6 0 5 7 0 3 </p>
+          <p>6 0 5 3 0 4 4 0 6 </p>
+          <p>4 0 6 5 0 7 6 0 5 </p>
+          <p>15 1 3 14 1 5 13 1 7 </p>
+          <p>13 1 7 8 1 2 15 1 3 </p>
+          <p>8 1 2 13 1 7 12 1 6 </p>
+          <p>12 1 6 9 1 1 8 1 2 </p>
+          <p>9 1 1 12 1 6 11 1 4 </p>
+          <p>11 1 4 10 1 0 9 1 1 </p>
+          <p>9 2 1 1 2 1 0 2 2 </p>
+          <p>0 2 2 8 2 2 9 2 1 </p>
+          <p>10 4 0 2 4 0 1 4 1 </p>
+          <p>1 4 1 9 4 1 10 4 0 </p>
+          <p>11 6 4 3 6 4 2 6 0 </p>
+          <p>2 6 0 10 6 0 11 6 4 </p>
+          <p>12 8 6 4 8 6 3 8 4 </p>
+          <p>3 8 4 11 8 4 12 8 6 </p>
+          <p>13 3 7 5 3 7 4 3 6 </p>
+          <p>4 3 6 12 3 6 13 3 7 </p>
+          <p>14 5 5 6 5 5 5 5 7 </p>
+          <p>5 5 7 13 5 7 14 5 5 </p>
+          <p>15 7 3 7 7 3 6 7 5 </p>
+          <p>6 7 5 14 7 5 15 7 3 </p>
+          <p>8 9 2 0 9 2 7 9 3 </p>
+          <p>7 9 3 15 9 3 8 9 2 </p>
+          <p>8 8 2 15 8 3 7 8 3 </p>
+          <p>7 8 3 0 8 2 8 8 2 </p>
+          <p>15 6 3 14 6 5 6 6 5 </p>
+          <p>6 6 5 7 6 3 15 6 3 </p>
+          <p>14 4 5 13 4 7 5 4 7 </p>
+          <p>5 4 7 6 4 5 14 4 5 </p>
+          <p>13 2 7 12 2 6 4 2 6 </p>
+          <p>4 2 6 5 2 7 13 2 7 </p>
+          <p>12 9 6 11 9 4 3 9 4 </p>
+          <p>3 9 4 4 9 6 12 9 6 </p>
+          <p>11 7 4 10 7 0 2 7 0 </p>
+          <p>2 7 0 3 7 4 11 7 4 </p>
+          <p>10 5 0 9 5 1 1 5 1 </p>
+          <p>1 5 1 2 5 0 10 5 0 </p>
+          <p>9 3 1 8 3 2 0 3 2 </p>
+          <p>0 3 2 1 3 1 9 3 1 </p>
+          <p>9 0 1 10 0 0 11 0 4 </p>
+          <p>11 0 4 12 0 6 9 0 1 </p>
+          <p>8 0 2 9 0 1 12 0 6 </p>
+          <p>12 0 6 13 0 7 8 0 2 </p>
+          <p>15 0 3 8 0 2 13 0 7 </p>
+          <p>13 0 7 14 0 5 15 0 3 </p>
+          <p>6 1 5 5 1 7 4 1 6 </p>
+          <p>4 1 6 3 1 4 6 1 5 </p>
+          <p>7 1 3 6 1 5 3 1 4 </p>
+          <p>3 1 4 2 1 0 7 1 3 </p>
+          <p>0 1 2 7 1 3 2 1 0 </p>
+          <p>2 1 0 1 1 1 0 1 2 </p>
+        </polygons>
+      </mesh>
+    </geometry>
+    <geometry id="geom-2" name="ポリゴンメッシュ">
+      <mesh>
+        <source id="geom-2-positions">
+          <float_array id="geom-2-positions-array" count="21">0 90 0 60 40 0 30 40 51.96152 -30 40 51.96152 -60 40 0 -30 40 -51.96152 30 40 -51.96152 </float_array>
+          <technique_common>
+            <accessor source="#geom-2-positions-array" count="7" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="geom-2-normals">
+          <float_array id="geom-2-normals-array" count="42">0.600480556488 0.720576703548 0.34668764472 -0.600480556488 -0.720576703548 -0.34668764472 0 0.720576703548 0.693375229836 0 -0.720576703548 -0.693375229836 -0.600480616093 0.720576703548 0.346687585115 0.600480616093 -0.720576703548 -0.346687585115 -0.600480556488 0.720576703548 -0.346687704325 0.600480556488 -0.720576703548 0.346687704325 0 0.720576703548 -0.69337528944 0 -0.720576703548 0.69337528944 0.600480616093 0.720576703548 -0.346687555313 -0.600480616093 -0.720576703548 0.346687555313 0 -1 0 0 1 0 </float_array>
+          <technique_common>
+            <accessor source="#geom-2-normals-array" count="14" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="geom-2-map0">
+          <float_array id="geom-2-map0-array" count="18">0.5 1 1 0 0.833333313465 0 0.66666662693 0 0.499999940395 0 0.33333325386 0 0.166666582227 0 0 0 0 1 </float_array>
+          <technique_common>
+            <accessor source="#geom-2-map0-array" count="9" stride="2">
+              <param name="S" type="float"/>
+              <param name="T" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <vertices id="geom-2-vertices">
+          <input semantic="POSITION" source="#geom-2-positions"/>
+        </vertices>
+        <polygons material="MATERIAL2" count="20">
+          <input semantic="VERTEX" source="#geom-2-vertices" offset="0"/>
+          <input semantic="NORMAL" source="#geom-2-normals" offset="1"/>
+          <input semantic="TEXCOORD" source="#geom-2-map0" offset="2" set="0"/>
+          <p>2 0 2 1 0 1 0 0 0 </p>
+          <p>3 2 3 2 2 2 0 2 0 </p>
+          <p>4 4 4 3 4 3 0 4 0 </p>
+          <p>5 6 5 4 6 4 0 6 0 </p>
+          <p>6 8 6 5 8 5 0 8 0 </p>
+          <p>1 10 7 6 10 6 0 10 0 </p>
+          <p>1 12 8 2 12 8 3 12 8 </p>
+          <p>3 12 8 6 12 8 1 12 8 </p>
+          <p>6 12 8 3 12 8 4 12 8 </p>
+          <p>4 12 8 5 12 8 6 12 8 </p>
+          <p>6 13 8 5 13 8 4 13 8 </p>
+          <p>4 13 8 3 13 8 6 13 8 </p>
+          <p>1 13 8 6 13 8 3 13 8 </p>
+          <p>3 13 8 2 13 8 1 13 8 </p>
+          <p>0 11 0 6 11 6 1 11 7 </p>
+          <p>0 9 0 5 9 5 6 9 6 </p>
+          <p>0 7 0 4 7 4 5 7 5 </p>
+          <p>0 5 0 3 5 3 4 5 4 </p>
+          <p>0 3 0 2 3 2 3 3 3 </p>
+          <p>0 1 0 1 1 1 2 1 2 </p>
+        </polygons>
+      </mesh>
+    </geometry>
+    <geometry id="geom-3" name="ポリゴンメッシュ">
+      <mesh>
+        <source id="geom-3-positions">
+          <float_array id="geom-3-positions-array" count="21">0 120 0 0 70 -50 43.30127 70 -25 43.30127 70 25 0 70 50 -43.30127 70 25 -43.30127 70 -25 </float_array>
+          <technique_common>
+            <accessor source="#geom-3-positions-array" count="7" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="geom-3-normals">
+          <float_array id="geom-3-normals-array" count="42">0.377964556217 0.654653668404 -0.654653668404 -0.377964556217 -0.654653668404 0.654653668404 0.755928993225 0.654653608799 0 -0.755928993225 -0.654653608799 0 0.377964437008 0.654653608799 0.654653728008 -0.377964437008 -0.654653608799 -0.654653728008 -0.377964526415 0.654653668404 0.654653668404 0.377964526415 -0.654653668404 -0.654653668404 -0.75592893362 0.654653668404 0 0.75592893362 -0.654653668404 0 -0.377964437008 0.654653668404 -0.654653668404 0.377964437008 -0.654653668404 0.654653668404 0 -1 0 0 1 0 </float_array>
+          <technique_common>
+            <accessor source="#geom-3-normals-array" count="14" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="geom-3-map0">
+          <float_array id="geom-3-map0-array" count="18">0.5 1 1 0 0.833333313465 0 0.66666662693 0 0.499999940395 0 0.33333325386 0 0.166666582227 0 0 0 0 1 </float_array>
+          <technique_common>
+            <accessor source="#geom-3-map0-array" count="9" stride="2">
+              <param name="S" type="float"/>
+              <param name="T" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <vertices id="geom-3-vertices">
+          <input semantic="POSITION" source="#geom-3-positions"/>
+        </vertices>
+        <polygons material="MATERIAL3" count="20">
+          <input semantic="VERTEX" source="#geom-3-vertices" offset="0"/>
+          <input semantic="NORMAL" source="#geom-3-normals" offset="1"/>
+          <input semantic="TEXCOORD" source="#geom-3-map0" offset="2" set="0"/>
+          <p>2 0 2 1 0 1 0 0 0 </p>
+          <p>3 2 3 2 2 2 0 2 0 </p>
+          <p>4 4 4 3 4 3 0 4 0 </p>
+          <p>5 6 5 4 6 4 0 6 0 </p>
+          <p>6 8 6 5 8 5 0 8 0 </p>
+          <p>1 10 7 6 10 6 0 10 0 </p>
+          <p>1 12 8 2 12 8 3 12 8 </p>
+          <p>3 12 8 6 12 8 1 12 8 </p>
+          <p>6 12 8 3 12 8 4 12 8 </p>
+          <p>4 12 8 5 12 8 6 12 8 </p>
+          <p>6 13 8 5 13 8 4 13 8 </p>
+          <p>4 13 8 3 13 8 6 13 8 </p>
+          <p>1 13 8 6 13 8 3 13 8 </p>
+          <p>3 13 8 2 13 8 1 13 8 </p>
+          <p>0 11 0 6 11 6 1 11 7 </p>
+          <p>0 9 0 5 9 5 6 9 6 </p>
+          <p>0 7 0 4 7 4 5 7 5 </p>
+          <p>0 5 0 3 5 3 4 5 4 </p>
+          <p>0 3 0 2 3 2 3 3 3 </p>
+          <p>0 1 0 1 1 1 2 1 2 </p>
+        </polygons>
+      </mesh>
+    </geometry>
+    <geometry id="geom-4" name="ポリゴンメッシュ">
+      <mesh>
+        <source id="geom-4-positions">
+          <float_array id="geom-4-positions-array" count="21">0 150 0 45 100 0 22.5 100 38.97114 -22.5 100 38.97114 -45 100 0 -22.5 100 -38.97115 22.5 100 -38.97114 </float_array>
+          <technique_common>
+            <accessor source="#geom-4-positions-array" count="7" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="geom-4-normals">
+          <float_array id="geom-4-normals-array" count="42">0.683054149151 0.614748716354 0.394361525774 -0.683054149151 -0.614748716354 -0.394361525774 0 0.614748775959 0.788723111153 0 -0.614748775959 -0.788723111153 -0.683054208755 0.614748716354 0.394361466169 0.683054208755 -0.614748716354 -0.394361466169 -0.683054149151 0.614748775959 -0.394361644983 0.683054149151 -0.614748775959 0.394361644983 0 0.614748775959 -0.788722991943 0 -0.614748775959 0.788722991943 0.683054149151 0.614748775959 -0.394361466169 -0.683054149151 -0.614748775959 0.394361466169 0 -1 0 0 1 0 </float_array>
+          <technique_common>
+            <accessor source="#geom-4-normals-array" count="14" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="geom-4-map0">
+          <float_array id="geom-4-map0-array" count="18">0.5 1 1 0 0.833333313465 0 0.66666662693 0 0.499999940395 0 0.33333325386 0 0.166666582227 0 0 0 0 1 </float_array>
+          <technique_common>
+            <accessor source="#geom-4-map0-array" count="9" stride="2">
+              <param name="S" type="float"/>
+              <param name="T" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <vertices id="geom-4-vertices">
+          <input semantic="POSITION" source="#geom-4-positions"/>
+        </vertices>
+        <polygons material="MATERIAL4" count="20">
+          <input semantic="VERTEX" source="#geom-4-vertices" offset="0"/>
+          <input semantic="NORMAL" source="#geom-4-normals" offset="1"/>
+          <input semantic="TEXCOORD" source="#geom-4-map0" offset="2" set="0"/>
+          <p>2 0 2 1 0 1 0 0 0 </p>
+          <p>3 2 3 2 2 2 0 2 0 </p>
+          <p>4 4 4 3 4 3 0 4 0 </p>
+          <p>5 6 5 4 6 4 0 6 0 </p>
+          <p>6 8 6 5 8 5 0 8 0 </p>
+          <p>1 10 7 6 10 6 0 10 0 </p>
+          <p>1 12 8 2 12 8 3 12 8 </p>
+          <p>3 12 8 6 12 8 1 12 8 </p>
+          <p>6 12 8 3 12 8 4 12 8 </p>
+          <p>4 12 8 5 12 8 6 12 8 </p>
+          <p>6 13 8 5 13 8 4 13 8 </p>
+          <p>4 13 8 3 13 8 6 13 8 </p>
+          <p>1 13 8 6 13 8 3 13 8 </p>
+          <p>3 13 8 2 13 8 1 13 8 </p>
+          <p>0 11 0 6 11 6 1 11 7 </p>
+          <p>0 9 0 5 9 5 6 9 6 </p>
+          <p>0 7 0 4 7 4 5 7 5 </p>
+          <p>0 5 0 3 5 3 4 5 4 </p>
+          <p>0 3 0 2 3 2 3 3 3 </p>
+          <p>0 1 0 1 1 1 2 1 2 </p>
+        </polygons>
+      </mesh>
+    </geometry>
+  </library_geometries>
+  <library_effects>
+    <effect id="Effect1">
+      <profile_COMMON id="Phong1">
+        <newparam sid="tree1diffuse-surface">
+          <surface type="2D">
+            <init_from>tree1diffuse</init_from>
+          </surface>
+        </newparam>
+        <newparam sid="tree1diffuse-sampler">
+          <sampler2D>
+            <source>tree1diffuse-surface</source>
+            <minfilter>LINEAR_MIPMAP_LINEAR</minfilter>
+            <magfilter>LINEAR</magfilter>
+          </sampler2D>
+        </newparam>
+        <technique sid="common">
+          <phong>
+            <emission>
+              <color>0 0 0 1</color>
+            </emission>
+            <ambient>
+              <color>0 0 0 1</color>
+            </ambient>
+            <diffuse>
+              <texture texture="tree1diffuse-sampler" texcoord="TEXCOORD0"/>
+            </diffuse>
+            <specular>
+              <color>0 0 0 1</color>
+            </specular>
+            <shininess>
+              <float>6</float>
+            </shininess>
+            <reflective>
+              <color>0 0 0 1</color>
+            </reflective>
+            <reflectivity>
+              <float>0.5</float>
+            </reflectivity>
+            <transparent>
+              <color>0 0 0 1</color>
+            </transparent>
+            <transparency>
+              <float>1</float>
+            </transparency>
+            <index_of_refraction>
+              <float>1</float>
+            </index_of_refraction>
+          </phong>
+        </technique>
+      </profile_COMMON>
+    </effect>
+    <effect id="Effect2">
+      <profile_COMMON id="Phong2">
+        <newparam sid="tree2diffuse-surface">
+          <surface type="2D">
+            <init_from>tree2diffuse</init_from>
+          </surface>
+        </newparam>
+        <newparam sid="tree2diffuse-sampler">
+          <sampler2D>
+            <source>tree2diffuse-surface</source>
+            <minfilter>LINEAR_MIPMAP_LINEAR</minfilter>
+            <magfilter>LINEAR</magfilter>
+          </sampler2D>
+        </newparam>
+        <technique sid="common">
+          <phong>
+            <emission>
+              <color>0 0 0 1</color>
+            </emission>
+            <ambient>
+              <color>0 0 0 1</color>
+            </ambient>
+            <diffuse>
+              <texture texture="tree2diffuse-sampler" texcoord="TEXCOORD0"/>
+            </diffuse>
+            <specular>
+              <color>0 0 0 1</color>
+            </specular>
+            <shininess>
+              <float>6</float>
+            </shininess>
+            <reflective>
+              <color>0 0 0 1</color>
+            </reflective>
+            <reflectivity>
+              <float>0.5</float>
+            </reflectivity>
+            <transparent>
+              <color>0 0 0 1</color>
+            </transparent>
+            <transparency>
+              <float>1</float>
+            </transparency>
+            <index_of_refraction>
+              <float>1</float>
+            </index_of_refraction>
+          </phong>
+        </technique>
+      </profile_COMMON>
+    </effect>
+    <effect id="Effect3">
+      <profile_COMMON id="Phong3">
+        <newparam sid="tree2diffuse-surface">
+          <surface type="2D">
+            <init_from>tree2diffuse</init_from>
+          </surface>
+        </newparam>
+        <newparam sid="tree2diffuse-sampler">
+          <sampler2D>
+            <source>tree2diffuse-surface</source>
+            <minfilter>LINEAR_MIPMAP_LINEAR</minfilter>
+            <magfilter>LINEAR</magfilter>
+          </sampler2D>
+        </newparam>
+        <technique sid="common">
+          <phong>
+            <emission>
+              <color>0 0 0 1</color>
+            </emission>
+            <ambient>
+              <color>0 0 0 1</color>
+            </ambient>
+            <diffuse>
+              <texture texture="tree2diffuse-sampler" texcoord="TEXCOORD0"/>
+            </diffuse>
+            <specular>
+              <color>0 0 0 1</color>
+            </specular>
+            <shininess>
+              <float>6</float>
+            </shininess>
+            <reflective>
+              <color>0 0 0 1</color>
+            </reflective>
+            <reflectivity>
+              <float>0.5</float>
+            </reflectivity>
+            <transparent>
+              <color>0 0 0 1</color>
+            </transparent>
+            <transparency>
+              <float>1</float>
+            </transparency>
+            <index_of_refraction>
+              <float>1</float>
+            </index_of_refraction>
+          </phong>
+        </technique>
+      </profile_COMMON>
+    </effect>
+    <effect id="Effect4">
+      <profile_COMMON id="Phong4">
+        <newparam sid="tree2diffuse-surface">
+          <surface type="2D">
+            <init_from>tree2diffuse</init_from>
+          </surface>
+        </newparam>
+        <newparam sid="tree2diffuse-sampler">
+          <sampler2D>
+            <source>tree2diffuse-surface</source>
+            <minfilter>LINEAR_MIPMAP_LINEAR</minfilter>
+            <magfilter>LINEAR</magfilter>
+          </sampler2D>
+        </newparam>
+        <technique sid="common">
+          <phong>
+            <emission>
+              <color>0 0 0 1</color>
+            </emission>
+            <ambient>
+              <color>0 0 0 1</color>
+            </ambient>
+            <diffuse>
+              <texture texture="tree2diffuse-sampler" texcoord="TEXCOORD0"/>
+            </diffuse>
+            <specular>
+              <color>0 0 0 1</color>
+            </specular>
+            <shininess>
+              <float>6</float>
+            </shininess>
+            <reflective>
+              <color>0 0 0 1</color>
+            </reflective>
+            <reflectivity>
+              <float>0.5</float>
+            </reflectivity>
+            <transparent>
+              <color>0 0 0 1</color>
+            </transparent>
+            <transparency>
+              <float>1</float>
+            </transparency>
+            <index_of_refraction>
+              <float>1</float>
+            </index_of_refraction>
+          </phong>
+        </technique>
+      </profile_COMMON>
+    </effect>
+  </library_effects>
+  <library_materials>
+    <material id="Material1" name="MATERIAL1">
+      <instance_effect url="#Effect1"/>
+    </material>
+    <material id="Material2" name="MATERIAL2">
+      <instance_effect url="#Effect2"/>
+    </material>
+    <material id="Material3" name="MATERIAL3">
+      <instance_effect url="#Effect3"/>
+    </material>
+    <material id="Material4" name="MATERIAL4">
+      <instance_effect url="#Effect4"/>
+    </material>
+  </library_materials>
+  <library_images>
+    <image id="tree1diffuse" name="tree1diffuse">
+      <init_from>tree1diffuse.png</init_from>
+    </image>
+    <image id="tree2diffuse" name="tree2diffuse">
+      <init_from>tree2diffuse.png</init_from>
+    </image>
+  </library_images>
+  <library_cameras>
+    <camera id="Camera1" name="Camera1">
+      <optics>
+        <technique_common>
+          <perspective>
+            <xfov>39.59775</xfov>
+            <yfov>26.99147</yfov>
+            <znear>0.099999964237</znear>
+            <zfar>1000</zfar>
+          </perspective>
+        </technique_common>
+      </optics>
+    </camera>
+  </library_cameras>
+  <library_lights>
+    <light id="Light1" name="Light1">
+      <technique_common>
+        <directional>
+          <color>1 1 1</color>
+        </directional>
+      </technique_common>
+    </light>
+  </library_lights>
+  <library_visual_scenes>
+    <visual_scene id="DefaultScene">
+      <node type="NODE">
+        <rotate>0 0 1 43.96492</rotate>
+        <rotate>0 1 0 -4.867355</rotate>
+        <rotate>1 0 0 -12.02072</rotate>
+        <instance_light url="#Light1"/>
+      </node>
+      <node type="NODE">
+        <translate>313.8423 313.8423 470.7635</translate>
+        <rotate>0 0 1 8.960102</rotate>
+        <rotate>0 1 0 29.01714</rotate>
+        <rotate>1 0 0 -33.69006</rotate>
+        <instance_camera url="#Camera1"/>
+      </node>
+      <node id="SimplePart1" name="ルートパート" sid="SimplePart1" type="NODE">
+        <node name="ポリゴンメッシュ" type="NODE">
+          <instance_geometry url="#geom-1">
+            <bind_material>
+              <technique_common>
+                <instance_material symbol="MATERIAL1" target="#Material1">
+                  <bind_vertex_input semantic="TEXCOORD0" input_semantic="TEXCOORD" input_set="0"/>
+                </instance_material>
+              </technique_common>
+            </bind_material>
+          </instance_geometry>
+        </node>
+        <node name="ポリゴンメッシュ" type="NODE">
+          <instance_geometry url="#geom-2">
+            <bind_material>
+              <technique_common>
+                <instance_material symbol="MATERIAL2" target="#Material2">
+                  <bind_vertex_input semantic="TEXCOORD0" input_semantic="TEXCOORD" input_set="0"/>
+                </instance_material>
+              </technique_common>
+            </bind_material>
+          </instance_geometry>
+        </node>
+        <node name="ポリゴンメッシュ" type="NODE">
+          <instance_geometry url="#geom-3">
+            <bind_material>
+              <technique_common>
+                <instance_material symbol="MATERIAL3" target="#Material3">
+                  <bind_vertex_input semantic="TEXCOORD0" input_semantic="TEXCOORD" input_set="0"/>
+                </instance_material>
+              </technique_common>
+            </bind_material>
+          </instance_geometry>
+        </node>
+        <node name="ポリゴンメッシュ" type="NODE">
+          <instance_geometry url="#geom-4">
+            <bind_material>
+              <technique_common>
+                <instance_material symbol="MATERIAL4" target="#Material4">
+                  <bind_vertex_input semantic="TEXCOORD0" input_semantic="TEXCOORD" input_set="0"/>
+                </instance_material>
+              </technique_common>
+            </bind_material>
+          </instance_geometry>
+        </node>
+      </node>
+    </visual_scene>
+  </library_visual_scenes>
+  <library_controllers>
+    <controller id="geom-1-skin">
+      <skin source="#geom-1">
+        <bind_shape_matrix>1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1</bind_shape_matrix>
+        <source id="geom-1-skin-joints">
+          <IDREF_array id="geom-1-skin-joints-array" count="0"></IDREF_array>
+          <technique_common>
+            <accessor source="#geom-1-skin-joints-array" count="0" stride="1">
+              <param name="JOINT" type="IDREF"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="geom-1-skin-bind_poses">
+          <float_array id="geom-1-skin-bind_poses-array" count="0"/>
+          <technique_common>
+            <accessor source="#geom-1-skin-bind_poses-array" count="0" stride="16">
+              <param name="TRANSFORM" type="float4x4"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="geom-1-skin-weights">
+          <float_array id="geom-1-skin-weights-array" count="0"></float_array>
+          <technique_common>
+            <accessor source="#geom-1-skin-weights-array" count="0" stride="1">
+              <param name="WEIGHT" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <joints>
+          <input semantic="JOINT" source="geom-1-skin-joints"/>
+          <input semantic="INV_BIND_MATRIX" source="geom-1-skin-bind_poses"/>
+        </joints>
+        <vertex_weights count="0">
+          <input semantic="JOINT" source="geom-1-skin-joints" offset="0"/>
+          <input semantic="WEIGHT" source="geom-1-skin-weights" offset="1"/>
+          <vcount></vcount>
+          <v></v>
+        </vertex_weights>
+      </skin>
+      <controller id="geom-2-skin">
+        <skin source="#geom-2">
+          <bind_shape_matrix>1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1</bind_shape_matrix>
+          <source id="geom-2-skin-joints">
+            <IDREF_array id="geom-2-skin-joints-array" count="0"></IDREF_array>
+            <technique_common>
+              <accessor source="#geom-2-skin-joints-array" count="0" stride="1">
+                <param name="JOINT" type="IDREF"/>
+              </accessor>
+            </technique_common>
+          </source>
+          <source id="geom-2-skin-bind_poses">
+            <float_array id="geom-2-skin-bind_poses-array" count="0"/>
+            <technique_common>
+              <accessor source="#geom-2-skin-bind_poses-array" count="0" stride="16">
+                <param name="TRANSFORM" type="float4x4"/>
+              </accessor>
+            </technique_common>
+          </source>
+          <source id="geom-2-skin-weights">
+            <float_array id="geom-2-skin-weights-array" count="0"></float_array>
+            <technique_common>
+              <accessor source="#geom-2-skin-weights-array" count="0" stride="1">
+                <param name="WEIGHT" type="float"/>
+              </accessor>
+            </technique_common>
+          </source>
+          <joints>
+            <input semantic="JOINT" source="geom-2-skin-joints"/>
+            <input semantic="INV_BIND_MATRIX" source="geom-2-skin-bind_poses"/>
+          </joints>
+          <vertex_weights count="0">
+            <input semantic="JOINT" source="geom-2-skin-joints" offset="0"/>
+            <input semantic="WEIGHT" source="geom-2-skin-weights" offset="1"/>
+            <vcount></vcount>
+            <v></v>
+          </vertex_weights>
+        </skin>
+        <controller id="geom-3-skin">
+          <skin source="#geom-3">
+            <bind_shape_matrix>1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1</bind_shape_matrix>
+            <source id="geom-3-skin-joints">
+              <IDREF_array id="geom-3-skin-joints-array" count="0"></IDREF_array>
+              <technique_common>
+                <accessor source="#geom-3-skin-joints-array" count="0" stride="1">
+                  <param name="JOINT" type="IDREF"/>
+                </accessor>
+              </technique_common>
+            </source>
+            <source id="geom-3-skin-bind_poses">
+              <float_array id="geom-3-skin-bind_poses-array" count="0"/>
+              <technique_common>
+                <accessor source="#geom-3-skin-bind_poses-array" count="0" stride="16">
+                  <param name="TRANSFORM" type="float4x4"/>
+                </accessor>
+              </technique_common>
+            </source>
+            <source id="geom-3-skin-weights">
+              <float_array id="geom-3-skin-weights-array" count="0"></float_array>
+              <technique_common>
+                <accessor source="#geom-3-skin-weights-array" count="0" stride="1">
+                  <param name="WEIGHT" type="float"/>
+                </accessor>
+              </technique_common>
+            </source>
+            <joints>
+              <input semantic="JOINT" source="geom-3-skin-joints"/>
+              <input semantic="INV_BIND_MATRIX" source="geom-3-skin-bind_poses"/>
+            </joints>
+            <vertex_weights count="0">
+              <input semantic="JOINT" source="geom-3-skin-joints" offset="0"/>
+              <input semantic="WEIGHT" source="geom-3-skin-weights" offset="1"/>
+              <vcount></vcount>
+              <v></v>
+            </vertex_weights>
+          </skin>
+          <controller id="geom-4-skin">
+            <skin source="#geom-4">
+              <bind_shape_matrix>1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1</bind_shape_matrix>
+              <source id="geom-4-skin-joints">
+                <IDREF_array id="geom-4-skin-joints-array" count="0"></IDREF_array>
+                <technique_common>
+                  <accessor source="#geom-4-skin-joints-array" count="0" stride="1">
+                    <param name="JOINT" type="IDREF"/>
+                  </accessor>
+                </technique_common>
+              </source>
+              <source id="geom-4-skin-bind_poses">
+                <float_array id="geom-4-skin-bind_poses-array" count="0"/>
+                <technique_common>
+                  <accessor source="#geom-4-skin-bind_poses-array" count="0" stride="16">
+                    <param name="TRANSFORM" type="float4x4"/>
+                  </accessor>
+                </technique_common>
+              </source>
+              <source id="geom-4-skin-weights">
+                <float_array id="geom-4-skin-weights-array" count="0"></float_array>
+                <technique_common>
+                  <accessor source="#geom-4-skin-weights-array" count="0" stride="1">
+                    <param name="WEIGHT" type="float"/>
+                  </accessor>
+                </technique_common>
+              </source>
+              <joints>
+                <input semantic="JOINT" source="geom-4-skin-joints"/>
+                <input semantic="INV_BIND_MATRIX" source="geom-4-skin-bind_poses"/>
+              </joints>
+              <vertex_weights count="0">
+                <input semantic="JOINT" source="geom-4-skin-joints" offset="0"/>
+                <input semantic="WEIGHT" source="geom-4-skin-weights" offset="1"/>
+                <vcount></vcount>
+                <v></v>
+              </vertex_weights>
+            </skin>
+          </controller>
+        </controller>
+      </controller>
+    </controller>
+  </library_controllers>
+  <library_animations/>
+  <scene>
+    <instance_visual_scene url="#DefaultScene"/>
+  </scene>
+</COLLADA>

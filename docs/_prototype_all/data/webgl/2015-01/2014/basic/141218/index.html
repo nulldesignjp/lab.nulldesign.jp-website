@@ -1,0 +1,209 @@
+<!doctype>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=yes">
+<meta name="keywords" content="">
+<meta name="description" content="PlaneGeometry,MeshPhongMaterial,sphere.geometry.vertices">
+<title>webgl sample</title>
+<style>
+html,body{height:100%;overflow:hidden;}
+body{
+	margin: 0;
+	padding: 0;
+	background: #000;
+}
+#container{
+	width: 100%;
+	height: 100%;
+}
+#counter{
+	position: fixed;
+	left: 32;
+	top: 32;
+	color: #FFF;
+	font-family: Arial;
+	z-index: 100;
+}
+</style>
+</head>
+<body>
+<p id="counter"></p>
+<div id="container"></div>
+<script src="../js/jquery-2.1.1.min.js"></script>
+<script src="../js/Detector.js"></script>
+<script src="../js/stats.min.js"></script>
+<script src="../js/three.min.js"></script>
+<script type="text/javascript">
+(function(){
+	var container
+	var camera
+	var scene
+	var renderer
+	var mesh
+	var stats
+
+	//	
+	if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
+
+	//
+	init();
+
+	//
+	//createObject();
+	var map;
+	THREE.ImageUtils.loadTexture( '../img/earth_atmos_2048.jpg', null, function(e){
+		map = e;
+		createObject();
+	} );
+
+	//	stats
+	createStats();
+
+	//
+	animate();
+
+	window.addEventListener( 'resize', onWindowResize, false );
+
+	function onWindowResize()
+	{
+		camera.aspect = window.innerWidth / window.innerHeight;
+		camera.updateProjectionMatrix();
+		renderer.setSize( window.innerWidth, window.innerHeight );
+	}
+
+	function init()
+	{
+		//	器
+		container = document.getElementById('container');
+
+		//	カメラ
+		var _width = window.innerWidth;
+		var _height = window.innerHeight;
+		camera = new THREE.PerspectiveCamera( 50, _width / _height, 1, 1000 );
+		camera.position.y = 100;
+
+		//	カメラフォーカス	
+		var _focus = new THREE.Vector3();
+		_focus.set( 0, 0, 0 );
+		camera.lookAt( _focus );
+
+		//	シーン
+		//	http://threejs.org/docs/#Reference/Scenes/Scene
+		scene = new THREE.Scene();
+		scene.fog = new THREE.Fog( 0x050505, 200, 1000 );
+
+		//	環境光（最小限の光的なの。適度に暗い方が質感が出る
+		scene.add( new THREE.AmbientLight( 0x050505 ) );
+
+		//	光
+		light = new THREE.DirectionalLight( 0xFFFFFF );
+		light.position.set( 1, 1, 0 );
+		scene.add( light );
+
+		light = new THREE.SpotLight(0xFFFFFF);
+		scene.add( light );
+
+		light.position.set(0, 400, 160);
+		light.distance = 1600;
+		light.intensity = 2;
+
+		light.castShadow = true;
+		light.shadowDarkness = 0.5;
+		light.shadowMapWidth = 1024;	//default: 512
+		light.shadowMapHeight = 1024;
+
+		//	renderer
+		createRenderer();
+
+
+	}
+
+	function createObject()
+	{
+		//var _d = 1;
+		//var geometry = new THREE.IcosahedronGeometry( 32, _d );
+		var geometry = new THREE.PlaneGeometry( 256, 128, 64, 32 );
+		var material = new THREE.MeshPhongMaterial({shading: THREE.NoShading, side: THREE.DoubleSide, color: 0xCCCCCC, map: map, wireframe:false});
+		material.emissive.set(0x333333);
+		material.shininess = 256;
+
+		//	verticesのZ座標をいじる
+		var len = geometry.vertices.length;
+		for( var i = 0; i < len; i++ )
+		{
+			geometry.vertices[i].z = Math.random() * 6 - 3;
+		}
+
+		var sphere = new THREE.Mesh(geometry, material);
+		sphere.position.x = 0;
+		sphere.position.y = 0;
+		sphere.position.z = 0;
+		scene.add(sphere);
+
+		//	https://gist.github.com/banksean/304522/download#
+		//	http://yomotsu.net/blog/2012/12/01/create-terrain-with-threejs.html
+		//	Face の再計算
+		geometry.computeFaceNormals();
+		geometry.computeVertexNormals();
+
+		/*
+		for( var i in sphere.geometry.vertices )
+		{
+			console.log( i );
+			console.log( sphere.geometry.vertices[i] );
+		}
+		*/
+	}
+
+	function createStats()
+	{
+		stats = new Stats();
+		stats.domElement.style.position = 'fixed';
+		stats.domElement.style.left = "0px";
+		stats.domElement.style.top = '0px';
+		container.appendChild( stats.domElement );
+	}	
+
+	function createRenderer()
+	{
+		renderer = new THREE.WebGLRenderer( { antialias: false } );
+		renderer.setClearColor( scene.fog.color, 1 );
+		renderer.setSize( window.innerWidth, window.innerHeight );
+
+		renderer.gammaInput = true;
+		renderer.gammaOutput = true;
+
+		container.appendChild( renderer.domElement );
+	}
+
+	function animate()
+	{
+		requestAnimationFrame( animate );
+		render();
+
+		stats.update();
+	}
+
+	function render()
+	{
+		var timer = Date.now() * 0.0001;
+		camera.position.x = Math.cos( timer ) * 200;
+		camera.position.y = Math.cos( timer * 0.5 ) * 200;
+		camera.position.z = Math.sin( timer ) * 200;
+		camera.lookAt( scene.position );
+
+		for ( var i = 0, l = scene.children.length; i < l; i ++ )
+		{
+			var object = scene.children[ i ];
+			object.rotation.x = timer * 5;
+			object.rotation.y = timer * 2.5;
+		}
+
+		renderer.render( scene, camera );
+	}
+
+})();
+</script>
+</body>
+</html>

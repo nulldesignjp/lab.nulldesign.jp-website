@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0">
+<meta name="description" content="1,000,000">
+<meta name="keywords" content="">
+<title>untitled</title>
+<style>
+html,body{height: 100%;overflow: hidden;}
+body{margin: 0;padding: 0;background: #000;}
+h1#title{position: fixed;left:32px;top:32px;margin:0;padding:0;color:#FFF;font-family:Arial;font-weight:normal;line-height:1;font-size:14px;z-index:1000;}
+#sns{
+    position: fixed;
+    right: 16px;
+    bottom: 16px;
+}
+#sns ul{
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+#sns li{
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+}
+</style>
+</head>
+<body>
+<h1 id="title">SAMPLE</h1>
+<div id="container"></div>
+<script type="x-shader/x-vertex" id="vertexshader">
+    uniform float time;
+    uniform float size;
+    attribute vec3 velocity;
+    attribute float delay;
+    attribute float imgIndex;
+    varying vec2 vUv;
+    varying float vIndex;
+    varying float vPar;
+
+    float easeInOutExpo( float t, float b, float c, float d ){
+        if (t==0.0) return b;
+        if (t==d) return b+c;
+        if ((t/=d/2.0) < 1.0) return c/2.0 * pow(2.0, 10.0 * (t - 1.0)) + b - c * 0.0005;
+        return c/2.0 * 1.0005 * (-pow(2.0, -10.0 * --t) + 2.0) + b;
+    }
+
+	void main()
+	{
+        vIndex = imgIndex;
+
+        float par = clamp(time - delay, 0.0, 100.0 );   //  clamp(x, a, b) = min(max(x, a), b);
+
+        //  0.0 to 100.0
+        par = ( sin( par / 100.0 * 3.1416  - 3.1416 * 0.5 ) + 1.0 ) * 0.5 * 100.0;
+        //par = easeInOutExpo( par, 0.0, 10000.0, 100.0 );
+        par *= par;
+        vPar = par;
+
+        vec3 pos = position + velocity * par;
+        vUv = uv;
+        vec4 mvPosition = modelViewMatrix * vec4( pos, 1.0 );
+        //gl_PointSize = size * (100.0 / length(mvPosition.xyz));
+        gl_PointSize = size * (100.0 / length(mvPosition.xyz)) * 2.0;
+		gl_Position = projectionMatrix * modelViewMatrix * vec4( pos, 1.0 );
+	}
+</script>
+<script type="x-shader/x-fragment" id="fragmentshader">
+    uniform sampler2D texture;
+    uniform sampler2D circle;
+    uniform sampler2D images[12];
+    uniform float time;
+    uniform float opacity;
+    varying vec2 vUv;
+    varying float vIndex;
+    varying float vPar;
+	
+    void main()
+	{
+        vec4 color = texture2D( texture, vUv );
+        vec4 tex = texture2D( circle, gl_PointCoord.xy );
+
+
+        //gl_FragColor = tex * vec4( color.rgb, 1.0 );
+
+        vec2 _tUV = vec2( gl_PointCoord.x, 1.0 - gl_PointCoord.y );
+        vec4 _tex = texture2D( images[0], _tUV );
+        int _index = int(vIndex);
+
+        if( _index == 1 )
+        {
+            _tex = texture2D( images[1], _tUV );
+        } else if( _index == 2 )
+        {
+            _tex = texture2D( images[2], _tUV );
+        } else if( _index == 3 )
+        {
+            _tex = texture2D( images[3], _tUV );
+        } else if( _index == 4 )
+        {
+            _tex = texture2D( images[4], _tUV );
+        } else if( _index == 5 )
+        {
+            _tex = texture2D( images[5], _tUV );
+        } else if( _index == 6 )
+        {
+            _tex = texture2D( images[6], _tUV );
+        } else if( _index == 7 )
+        {
+            _tex = texture2D( images[7], _tUV );
+        } else if( _index == 8 )
+        {
+            _tex = texture2D( images[8], _tUV );
+        } else if( _index == 9 )
+        {
+            _tex = texture2D( images[9], _tUV );
+        } else if( _index == 10 )
+        {
+            _tex = texture2D( images[10], _tUV );
+        } else if( _index == 11 )
+        {
+            _tex = texture2D( images[11], _tUV );
+        }
+
+        //gl_FragColor = tex * color;
+        //gl_FragColor = _tex * tex;
+
+
+        float _vPar = vPar > 5.0?5.0:vPar;
+        gl_FragColor = mix( color, _tex, _vPar * 0.2 ) * tex;
+
+        gl_FragColor.a *= opacity;
+	}
+</script>
+<script type="text/javascript" src="three.min.js"></script>
+<script type="text/javascript" src="stats.min.js"></script>
+<script type="text/javascript" src="HorizontalTiltShiftShader.js"></script>
+<script type="text/javascript" src="VerticalTiltShiftShader.js"></script>
+<script type="text/javascript" src="EffectComposer.js"></script>
+<script type="text/javascript" src="MaskPass.js"></script>
+<script type="text/javascript" src="RenderPass.js"></script>
+<script type="text/javascript" src="ShaderPass.js"></script>
+<script type="text/javascript" src="CopyShader.js"></script>
+<script type="text/javascript" src="OrbitControls.js"></script>
+<script type="text/javascript" src="TweenMax.min.js"></script>
+<script type="text/javascript" src="engine.js"></script>
+
+
+</body>
+</html>

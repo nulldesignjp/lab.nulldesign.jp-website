@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="ja-JP">
+<head>
+<title>WebGL 3D</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+<meta name="keywords" content="T.T. Study-000">
+<meta name="description" content="">
+<style>
+body { margin: 0; overflow: hidden; }
+#note{
+	position: fixed;
+	left: 32px;
+	top: 32px;
+	margin: 0;
+	padding: 8px;
+	width: 320px;
+	z-index: 1000;
+	background: rgba(255,255,255,0.6);
+	font-size: 14px;
+	font-family: Arial, Verdana;
+}
+</style>
+</head>
+<body>
+<p id="note">オリジナルは重たすぎるのでとりあえず軽量化。表面のmaterialをMeshPhongMaterialからMeshBasicMaterialに。AmbientLight削除。window.onresizeにバグが仕込まれていたので解消。Fogを追加。夜間モードがある場合はMeshPhongMaterialではなく、MeshLambertMaterialで対応かな。</p>
+<!-- 高さの強調度を変えたい場合は、「index.html」の48行目の数値を変更してください。 -->
+<!-- http://cyberjapandata.gsi.go.jp/3d/site/index.html?lat=36.84722222222222&lon=138.92444444444445&z=14 -->
+<div id="webgl" style="background-color:#333333"></div>
+<script type="text/javascript" src="shared/js/jquery-2.1.3.min.js"></script>
+<script type="text/javascript" src="shared/js/TweenMax.min.js"></script>
+<script type="text/javascript" src="shared/js/three.min.js"></script>
+<script src="http://cyberjapandata.gsi.go.jp/3d/TrackballControls.js"></script> 
+<script>
+//<!--
+
+var _o = [];
+var totalFaces = 0;
+function render() {
+  controls.update();
+  requestAnimationFrame(render);
+  renderer.render(scene, camera);
+
+  //
+  scene.rotation.z+= 0.0016;
+}
+
+width  = window.innerWidth;
+height = window.innerHeight;
+
+var xhr = new XMLHttpRequest();
+xhr.addEventListener('load', function(evt) {
+  scene = new THREE.Scene();
+  scene.fog = new THREE.Fog( 0x333333, 128, 256 );
+  //scene.add(new THREE.AmbientLight(0xffffff));
+  camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
+  camera.position.set(0, -60, 30);
+
+  renderer = new THREE.WebGLRenderer();
+  renderer.setSize(width, height);
+  renderer.setClearColor(0x333333);
+  
+  var x1 = 128;
+  var y1 = 128;
+  var x2 = 256;
+  var y2 = 256;
+  var geometry = new THREE.PlaneGeometry(x1, y1, x2 - 1, y2 - 1);
+  var s = (evt.target.response || evt.target.responseText).split("\n");
+  var c = 0;
+  for(var i = 0; i < y2; i++) {
+    var r = s[i].split(",")
+    for(var j in r) {
+      var h = r[j] == 'e' ? 0 : Number(r[j]);
+      geometry.vertices[c].z = h * 1;			//高さの強調度を変える場合は、ここの数値を変更する
+      c++;
+    }
+  }
+  var material = new THREE.MeshBasicMaterial({
+    map: THREE.ImageUtils.loadTexture('texture.png')
+  });
+  var plane = new THREE.Mesh(geometry, material);
+  scene.add(plane);
+
+  totalFaces += geometry.faces.length;
+
+	var material = new THREE.MeshBasicMaterial({color: 0x444444});
+	// 底面を追加
+	var geometry = new THREE.PlaneGeometry( x1, y1, 1, 1 );
+	for(i=0; i<geometry.vertices.length; i++){
+		geometry.vertices[i].z = -10;
+	}
+	geometry.vertices[0].y = -(x1/2);
+	geometry.vertices[1].y = -(y1/2);
+	geometry.vertices[2].y = x1/2;
+	geometry.vertices[3].y = y1/2;
+  totalFaces += geometry.faces.length;
+	scene.add(new THREE.Mesh(geometry,material));
+	// 側面1を追加
+	material = new THREE.MeshBasicMaterial({color: 0xcccccc});
+	geometry = new THREE.PlaneGeometry( x1, 1, x2-1, 1 );
+	for(i=0; i<geometry.vertices.length; i++){
+		if((0 <= i) && (i <= (x2-1))){
+			geometry.vertices[i].z = plane.geometry.vertices[(y2-1)*x2+i].z;
+		}
+		else{
+			geometry.vertices[i].z = -10;
+		}
+		geometry.vertices[i].y = -(y1/2);
+	}
+  totalFaces += geometry.faces.length;
+	scene.add(new THREE.Mesh(geometry,material));
+	// 側面2を追加
+	material = new THREE.MeshBasicMaterial({color: 0x888888});
+	geometry = new THREE.PlaneGeometry( y1, 1, y2-1, 1 );
+	for(i=0; i<geometry.vertices.length; i++){
+		if((0 <= i) && (i <= (y2-1))){
+			geometry.vertices[i].z = plane.geometry.vertices[i*x2].z;
+		}
+		else{
+			geometry.vertices[i].z = -10;
+		}
+		geometry.vertices[i].x = -(x1/2);
+		geometry.vertices[i].y = (y1/2)-y1/(y2-1)*(i%y2);
+	}
+  totalFaces += geometry.faces.length;
+	scene.add(new THREE.Mesh(geometry,material));
+	// 側面3を追加
+	material = new THREE.MeshBasicMaterial({color: 0xaaaaaa});
+	geometry = new THREE.PlaneGeometry( y1, 1, y2-1, 1 );
+	for(i=0; i<geometry.vertices.length; i++){
+		if((0 <= i) && (i <= (y2-1))){
+			geometry.vertices[i].z = plane.geometry.vertices[x2*(y2-1-i)+(x2-1)].z;
+		}
+		else{
+			geometry.vertices[i].z = -10;
+		}
+		geometry.vertices[i].x = x1/2;
+		geometry.vertices[i].y = -(y1/2)+y1/(y2-1)*(i%y2);
+	}
+  totalFaces += geometry.faces.length;
+	scene.add(new THREE.Mesh(geometry,material));
+	// 側面4を追加
+	material = new THREE.MeshBasicMaterial({color: 0x666666});
+	geometry = new THREE.PlaneGeometry( x1, 1, x2-1, 1 );
+	for(i=0; i<geometry.vertices.length; i++){
+		if((0 <= i) && (i <= (x2-1))){
+			geometry.vertices[i].z = plane.geometry.vertices[x2-1-i].z;
+		}
+		else{
+			geometry.vertices[i].z = -10;
+		}
+		geometry.vertices[i].x = x1/2-x1/(x2-1)*(i%x2);
+		geometry.vertices[i].y = y1/2;
+	}
+  totalFaces += geometry.faces.length;
+	scene.add(new THREE.Mesh(geometry,material));
+
+	var _txt = $('#note').text();
+	$('#note').html( _txt + "<br>polygon:" + totalFaces + "...." )
+
+  controls = new THREE.TrackballControls(camera);
+  document.getElementById('webgl').appendChild(renderer.domElement);
+  render();
+
+window.onresize = function(){
+	width  = window.innerWidth;
+	height = window.innerHeight;
+	renderer.setSize(width, height); // レンダラ―画面の再設定
+	camera.aspect = width/height; // カメラのアスペクト比の再調整
+	camera.updateProjectionMatrix();
+}
+
+}, false);
+xhr.open('GET', 
+  'dem.csv', true);
+xhr.send(null);
+//-->
+</script>
+</body>
+</html>

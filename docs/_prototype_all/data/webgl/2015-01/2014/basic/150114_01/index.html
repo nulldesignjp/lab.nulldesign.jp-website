@@ -1,0 +1,338 @@
+<!doctype>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=yes">
+<meta name="keywords" content="">
+<meta name="description" content="GLSL, ShaderMaterial, UV, noise">
+<title>webgl sample</title>
+<style>
+html,body{height:100%;overflow:hidden;}
+body{
+	margin: 0;
+	padding: 0;
+	background: #000;
+}
+#container{
+	width: 100%;
+	height: 100%;
+}
+#counter{
+	position: fixed;
+	left: 32;
+	top: 32;
+	color: #FFF;
+	font-family: Arial;
+	z-index: 100;
+}
+</style>
+</head>
+<body>
+<p id="counter"></p>
+<div id="container"></div>
+<script src="../js/jquery-2.1.1.min.js"></script>
+<script src="../js/Detector.js"></script>
+<script src="../js/stats.min.js"></script>
+<script src="../js/three.min.js"></script>
+<script type="x-shader/x-vertex" id="vertexShader">
+uniform vec2 mouse;
+uniform vec2 resolution;
+uniform float time;
+
+attribute vec3 color;
+varying vec2 vUv;
+void main()
+{
+
+	vec3 pos = position;
+	float _dx = pos.x - ( mouse.x - resolution.x * 0.5 );
+	float _dy = pos.y - ( mouse.y - resolution.y * 0.5 );
+
+	float _d = sqrt( _dx * _dx + _dy * _dy );
+
+	float _scale = 2.0;
+	float _power = _d - 100.0;
+
+	if( _power < 0.0 )
+	{
+		_dx += _dx / _d * ( 100.0 * _scale - _d ) * 0.4;
+		_dy += _dy / _d * ( 100.0 * _scale - _d ) * 0.4;
+
+		//pos.x += _dx;
+		//pos.y += _dy;
+	}
+
+	vUv = uv;
+	gl_Position = projectionMatrix * modelViewMatrix * vec4( pos, 1.0 );
+}
+</script>
+<script type="x-shader/x-fragment" id="fragmentShader">
+uniform float time;
+uniform sampler2D texture;
+varying vec2 vUv;
+
+// 乱数生成
+float rnd(vec2 p){
+    return fract(sin(dot(p ,vec2(12.9898,78.233))) * 43758.5453);
+}
+
+void main()
+{
+	vec4 tColor = texture2D( texture, vUv );
+
+	float _f = rnd( vec2( vUv.x + time, vUv.y ) );
+	vec4 _noise = vec4( vec3(_f*0.2), 1.0 );
+	gl_FragColor = tColor - _noise;
+}
+</script>
+<script type="text/javascript">
+(function(){
+	var container
+	var camera
+	var scene
+	var light
+	var renderer
+	var stats
+	var mouse = {x:$( window ).height() * 0.5,y:$( window ).width() * 0.5};
+
+	var uniforms;
+
+	//	
+	if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
+
+	init();
+	createAxis();
+	createObject();
+	createStats();
+	animate();
+
+	window.addEventListener( 'resize', onWindowResize, false );
+	$( window ).on( 'mousemove', _onMouseMove );
+	$( window ).on( 'touchmove', _onTouchMove );
+
+	function onWindowResize()
+	{
+		camera.aspect = window.innerWidth / window.innerHeight;
+		camera.updateProjectionMatrix();
+		renderer.setSize( window.innerWidth, window.innerHeight );
+
+		uniforms.resolution.value.x = window.innerWidth;
+		uniforms.resolution.value.y = window.innerHeight;
+	}
+
+	function _onMouseMove(e)
+	{
+		mouse.x = e.originalEvent.pageX;
+		mouse.y = e.originalEvent.pageY;
+		uniforms.mouse.value.x = e.pageX
+		uniforms.mouse.value.y = e.pageY
+		e.preventDefault();
+	}
+	function _onTouchMove(e)
+	{
+		e.preventDefault();
+		mouse.x = e.originalEvent.touches[0].pageX;
+		mouse.y = e.originalEvent.touches[0].pageY;
+		uniforms.mouse.value.x = e.originalEvent.touches[0].pageX * 2;
+		uniforms.mouse.value.y = e.originalEvent.touches[0].pageY * 2;
+	}
+
+	function init()
+	{
+		//	器
+		container = document.getElementById('container');
+
+		//	カメラ
+		var _width = window.innerWidth;
+		var _height = window.innerHeight;
+		camera = new THREE.PerspectiveCamera( 50, _width / _height, 1, 1000 );
+		camera.position.z = 200;
+
+		//	カメラフォーカス	
+		var _focus = new THREE.Vector3();
+		_focus.set( 0, 0, 0 );
+		camera.lookAt( _focus );
+
+		//	シーン
+		scene = new THREE.Scene();
+		scene.fog = new THREE.Fog( 0x050505, 100, 1000 );
+
+		//	環境光（最小限の光的なの。適度に暗い方が質感が出る
+		scene.add( new THREE.AmbientLight( 0x050505 ) );
+
+		//	光
+		light = new THREE.DirectionalLight( 0xCCCCCC );
+		light.position.set( 1, 1, 0 );
+		light.intensity = 2;
+		scene.add( light );
+
+		//	renderer
+		renderer = new THREE.WebGLRenderer( { antialias: false } );
+		renderer.setClearColor( scene.fog.color, 1 );
+		renderer.setSize( window.innerWidth, window.innerHeight );
+		renderer.gammaInput = true;
+		renderer.gammaOutput = true;
+
+		container.appendChild( renderer.domElement );
+
+		    var geometry = new THREE.Geometry();
+    for (var i = 0; i < 20000; i++) {
+      var vector = new THREE.Vector3(
+        Math.random() * 400 - 200, 
+        Math.random() * 400 - 200, 
+        Math.random() * 400 - 200
+      );
+      geometry.vertices.push( vector );
+    }
+    var material = new THREE.PointCloudMaterial({size:1,map:new THREE.ImageUtils.loadTexture('../img/particle01.png'),transparent: true});
+    var particles = new THREE.PointCloud(geometry, material);
+    scene.add(particles);
+
+
+	}
+
+	function createAxis()
+	{
+		var _axis = new THREE.AxisHelper(100);
+		scene.add(_axis);
+	}
+
+	function createObject()
+	{
+		var rang = 10;
+		var n = 2;
+		var geometry = new THREE.BufferGeometry();
+
+		//	vertex
+		var vertices = new Float32Array( n * 3 * 3 );
+		vertices[0] = -50.0;
+		vertices[1] = -50.0;
+		vertices[2] = 0.0;
+
+		vertices[3] = 50.0;
+		vertices[4] = -50.0;
+		vertices[5] = 0.0;
+
+		vertices[6] = 50.0;
+		vertices[7] = 50.0;
+		vertices[8] = 0.0;
+
+		vertices[9] = -50.0;
+		vertices[10] = 50.0;
+		vertices[11] = 0.0;
+
+		//	color
+		var colors = new Float32Array( n * 3 * 3 );
+		colors[0] = 1.0;
+		colors[1] = 0.0;
+		colors[2] = 0.0;
+
+		colors[3] = 0.0;
+		colors[4] = 1.0;
+		colors[5] = 0.0;
+		
+		colors[6] = 0.0;
+		colors[7] = 0.0;
+		colors[8] = 1.0;
+		
+		colors[9] = 1.0;
+		colors[10] = 0.0;
+		colors[11] = 1.0;
+
+		var index = new Uint16Array( n * 3 * 2 );
+		index[0] = 0;
+		index[1] = 1;
+		index[2] = 2;
+
+		index[3] = 0;
+		index[4] = 2;
+		index[5] = 3;
+
+		var uv = new Float32Array( n * 2 * 4 );
+		uv[0] = 0.0;
+		uv[1] = 0.0;
+		uv[2] = 1.0;
+		uv[3] = 0.0;
+		uv[4] = 1.0;
+		uv[5] = 1.0;
+		uv[6] = 0.0;
+		uv[7] = 1.0;
+
+		var texture = new THREE.ImageUtils.loadTexture('../img/img.jpg');
+		texture.wrapS = THREE.RepeatWrapping;
+		texture.wrapT = THREE.RepeatWrapping;
+
+		uniforms = {
+			texture: { type: 't', value: texture },
+			time: { type: "f", value: 1.0 },
+			resolution: { type: "v2", value: new THREE.Vector2() },
+			mouse: { type: "v2", value: new THREE.Vector2() }
+		}
+		
+		uniforms.resolution.value.x = window.innerWidth;
+		uniforms.resolution.value.y = window.innerHeight;
+		uniforms.mouse.value.x = window.innerWidth * 0.5;
+		uniforms.mouse.value.y = window.innerHeight * 0.5;
+
+		//	set attributes
+		geometry.addAttribute( 'position', new THREE.BufferAttribute( vertices, 3 ) );
+		geometry.addAttribute( 'color', new THREE.BufferAttribute( colors, 3 ) );
+		geometry.addAttribute( 'index', new THREE.BufferAttribute( index, 3 ) );
+		geometry.addAttribute( 'uv', new THREE.BufferAttribute( uv, 2 ) );
+
+		//
+		var material = new THREE.ShaderMaterial({
+			vertexShader: document.getElementById('vertexShader').textContent,
+			fragmentShader: document.getElementById('fragmentShader').textContent,
+			uniforms: uniforms,
+			side: THREE.DoubleSide
+		});
+
+
+		var _obj = new THREE.Mesh(geometry, material);
+		scene.add(_obj);
+	}
+
+	function createStats()
+	{
+		stats = new Stats();
+		stats.domElement.style.position = 'fixed';
+		stats.domElement.style.left = "0px";
+		stats.domElement.style.top = '0px';
+		container.appendChild( stats.domElement );
+	}	
+
+	function animate()
+	{
+		requestAnimationFrame( animate );
+		render();
+
+
+		uniforms.time.value += 0.05;
+
+		stats.update();
+	}
+
+	function render()
+	{
+		var _hh = $( window ).height() * 0.5;
+		var _hw = $( window ).width() * 0.5;
+		var _cx = ( _hw - mouse.x ) / _hw * Math.PI * 0.5;
+		var _cy = ( _hh - mouse.y ) / _hh * Math.PI * 0.5;
+		camera.position.x = Math.sin( _cx ) * 200;
+		camera.position.y = - Math.sin( _cy ) * 200;
+		camera.position.z = 200;
+		camera.lookAt( scene.position );
+		renderer.render( scene, camera );
+	}
+
+	function movePointer()
+	{
+		var _obj = {};
+		return _obj;
+	}
+
+})();
+</script>
+</body>
+</html>

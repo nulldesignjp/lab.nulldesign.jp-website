@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="ja-JP">
+<head>
+<title>re:creation</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+<meta name="keywords" content="">
+<meta name="description" content="">
+<link rel="stylesheet" type="text/css" href="assets/css/style.css" media="all">
+</head>
+<body>
+    <!--
+<h1>re:creation</h1>
+<h2>Book</h2>
+-->
+<div id="webglView"></div>
+<script type="x-shader/x-vertex" id="vertexshader">
+uniform float time;
+
+varying vec3 vViewPosition;
+#ifndef FLAT_SHADED
+    varying vec3 vNormal;
+#endif
+#include <common>
+#include <uv_pars_vertex>
+#include <uv2_pars_vertex>
+#include <displacementmap_pars_vertex>
+#include <envmap_pars_vertex>
+#include <color_pars_vertex>
+#include <fog_pars_vertex>
+#include <morphtarget_pars_vertex>
+#include <skinning_pars_vertex>
+#include <shadowmap_pars_vertex>
+#include <logdepthbuf_pars_vertex>
+#include <clipping_planes_pars_vertex>
+//const float PI = 3.141592;
+
+//  https://qiita.com/7CIT/items/ad76cfa6771641951d31
+float atan2(in float y, in float x){
+    return x == 0.0 ? sign(y)*PI/2.0 : atan(y, x);
+}
+
+void main()
+{
+    #include <uv_vertex>
+    #include <uv2_vertex>
+    #include <color_vertex>
+    #include <beginnormal_vertex>
+    #include <morphnormal_vertex>
+    #include <skinbase_vertex>
+    #include <skinnormal_vertex>
+    #include <defaultnormal_vertex>
+
+#ifndef FLAT_SHADED
+    vNormal = normalize( transformedNormal );
+#endif
+    #include <begin_vertex>
+    #include <morphtarget_vertex>
+    #include <skinning_vertex>
+    #include <displacementmap_vertex>
+    #include <project_vertex>
+    #include <logdepthbuf_vertex>
+    #include <clipping_planes_vertex>
+    vViewPosition = - mvPosition.xyz;
+    #include <worldpos_vertex>
+    #include <envmap_vertex>
+    #include <shadowmap_vertex>
+    #include <fog_vertex>
+
+    //  custom 
+    float _value = cos( time );
+    vec3 _pos = position;
+
+    float _baseRad = atan2( _pos.z, _pos.x );
+    float _targetRad = _value < 0.0? 0.0:PI;
+
+    //  rotation
+    float _hPI = PI * 0.5;
+    float _rad = ( _targetRad - _baseRad ) * abs( (time - _hPI )/PI * 2.0 );
+
+    float _sin = sin( _rad );
+    float _cos = cos( _rad );
+
+    float _x = _pos.x;
+    float _y = _pos.y;
+    float _z = _pos.z;
+
+    _pos.x = _x * _cos - _z * _sin;
+    _pos.z = _x * _sin + _z * _cos;
+    gl_Position = projectionMatrix * modelViewMatrix * vec4( _pos, 1.0 );
+}
+</script>
+<script type="text/javascript" src="assets/js/dat.gui.min.js"></script>
+<script type="text/javascript" src="assets/js/jquery-2.1.4.min.js"></script>
+<script type="text/javascript" src="assets/js/three.min.js"></script>
+<script type="text/javascript" src="assets/js/OrbitControls.js"></script>
+<script type="text/javascript" src="assets/js/perlin-noise-simplex.js"></script>
+<script type="text/javascript" src="assets/js/libs.js"></script>
+<script type="text/javascript" src="assets/js/SplineCurve.js"></script>
+<script type="text/javascript" src="assets/js/inflate.min.js"></script>
+<script type="text/javascript" src="assets/js/FBXLoader.js"></script>
+<script type="text/javascript" src="assets/js/OBJLoader.js"></script>
+<script type="text/javascript" src="assets/js/world.js"></script>
+<script type="text/javascript" src="assets/js/Tween.js"></script>
+<script type="text/javascript" src="assets/js/engine.js"></script>
+</body>
+</html>

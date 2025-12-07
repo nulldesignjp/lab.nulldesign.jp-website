@@ -1,0 +1,174 @@
+<!doctype>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=yes">
+<meta name="keywords" content="">
+<meta name="description" content="BufferGeometry">
+<title>webgl sample</title>
+<style>
+html,body{height:100%;overflow:hidden;}
+body{
+	margin: 0;
+	padding: 0;
+	background: #000;
+}
+#container{
+	width: 100%;
+	height: 100%;
+}
+#counter{
+	position: fixed;
+	left: 32;
+	top: 32;
+	color: #FFF;
+	font-family: Arial;
+	z-index: 100;
+}
+</style>
+</head>
+<body>
+<p id="counter"></p>
+<div id="container"></div>
+<script src="../js/three.min.js"></script>
+<script type="text/javascript">
+(function(){
+	var container
+	var camera
+	var scene
+	var renderer
+	var mesh
+
+	init();
+	animate();
+
+	window.addEventListener( 'resize', onWindowResize, false );
+
+	function onWindowResize()
+	{
+		camera.aspect = window.innerWidth / window.innerHeight;
+		camera.updateProjectionMatrix();
+		renderer.setSize( window.innerWidth, window.innerHeight );
+	}
+
+	function init()
+	{
+		//	器
+		container = document.getElementById('container');
+
+		//	カメラ
+		var _width = window.innerWidth;
+		var _height = window.innerHeight;
+		camera = new THREE.PerspectiveCamera( 27, _width / _height, 1, 3500 );
+		camera.position.z = 2750;
+		camera.position.y = 0;
+
+		var _focus = new THREE.Vector3();
+		//_focus.set( 0, -300, 0 );
+		_focus.set( 0, 0, 0 );
+		camera.lookAt( _focus );
+
+		//	シーン
+		//	http://threejs.org/docs/#Reference/Scenes/Scene
+		scene = new THREE.Scene();
+		scene.fog = new THREE.Fog( 0x050505, 2000, 3500 );
+
+		//scene.add( new THREE.AmbientLight( 0x444444 ) );
+		scene.add( new THREE.AmbientLight( 0xCCCCCC ) );
+
+		var geometry = new THREE.BufferGeometry();
+
+		//	pointlist
+		var vertexPositions = [];
+
+		var _num = Math.floor( Math.random() * 6 ) + 3;
+		var _len = Math.floor( Math.random() * 10000 ) + 1000;
+
+		for( var i = 0; i < _len; i++ )
+		{
+			var _rad = i / _num * Math.PI * 2
+			var _x = Math.cos( _rad ) * i;
+			var _y = Math.sin( _rad * 0.1 ) * 240 * ( 1 - i / _len );
+			var _z = Math.sin( _rad ) * i;
+
+			vertexPositions.push( [_x,_y,_z] );
+		}
+
+		_doit();
+
+		function _doit()
+		{
+			var indices = new Uint16Array( vertexPositions.length );
+			var normals = new Float32Array( vertexPositions.length * 3 );
+			var colors = new Float32Array( vertexPositions.length * 3 );
+			var positions = new Float32Array( vertexPositions.length * 3 );
+
+			var color = new THREE.Color();
+
+			for ( var i = 0; i < vertexPositions.length; i++ )
+			{
+				//	直線リストに
+				positions[ i*3 + 0 ] = vertexPositions[i][0];
+				positions[ i*3 + 1 ] = vertexPositions[i][1];
+				positions[ i*3 + 2 ] = vertexPositions[i][2];
+
+				//colors[ i * 3 + 0 ] = ( x / r ) + 0.5;
+				//colors[ i * 3 + 1 ] = ( y / r ) + 0.5;
+				//colors[ i * 3 + 2 ] = ( z / r ) + 0.5;
+
+				var __rad = Math.atan2( vertexPositions[i][2], vertexPositions[i][0] );
+				__rad /= Math.PI * 2;
+
+				color.setHSL( __rad, 1.0, 0.5 );
+				colors[ i * 3 + 0 ] = color.r;
+				colors[ i * 3 + 1 ] = color.g;
+				colors[ i * 3 + 2 ] = color.b;
+			}
+
+			geometry.addAttribute( 'position', new THREE.BufferAttribute( positions, 3 ) );
+			geometry.addAttribute( 'color', new THREE.BufferAttribute( colors, 3 ) );
+
+
+			//	material
+			//	http://threejs.org/docs/#Reference/Materials/MeshBasicMaterial
+			var material = new THREE.LineBasicMaterial({ vertexColors: THREE.VertexColors, linewidth: 1 });
+			mesh = new THREE.Line( geometry, material );
+
+			scene.add( mesh );
+
+			//	renderer
+			renderer = new THREE.WebGLRenderer( { antialias: false } );
+			renderer.setClearColor( scene.fog.color, 1 );
+			renderer.setSize( window.innerWidth, window.innerHeight );
+
+			renderer.gammaInput = true;
+			renderer.gammaOutput = true;
+
+			container.appendChild( renderer.domElement );
+
+		}
+
+	}
+
+	function animate()
+	{
+		requestAnimationFrame( animate );
+		render();
+	}
+
+	function render()
+	{
+		var time = Date.now() * 0.001;
+		mesh.rotation.x = time * 0.25;
+		mesh.rotation.y = time * 0.5;
+
+		renderer.render( scene, camera );
+
+		//camera.position.z = 1750 + Math.sin( time ) * 250;
+
+	}
+
+})();
+</script>
+</body>
+</html>
