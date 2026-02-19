@@ -8,11 +8,12 @@
 </template>
 
 <style lang="stylus" scoped>
-  h1,p
-    display none
+  .main
+    padding 32px
 
   iframe
     width 100%
     height 100vh
     border none
+    display none
 </style>    

@@ -1,1 +1,0 @@
-import{z as n,A as e,y as a,_ as l}from"./CPf-LqOi.js";const o={class:"main"};function s(c,t){return a(),n("div",o,[...t[0]||(t[0]=[e("h1",null,"lab.nulldeisn.jp",-1),e("p",null,"prototype archives.",-1),e("iframe",{src:"http://n46.heteml.net/lab/_prototype_all"},null,-1)])])}const r={},d=l(r,[["render",s],["__scopeId","data-v-d5e02fb8"]]);export{d as default};
