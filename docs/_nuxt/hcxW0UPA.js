@@ -1,1 +1,0 @@
-import{z as s,A as n,y as t,_ as o}from"./BwedgeCO.js";const a={class:"main"};function r(l,e){return t(),s("div",a,[...e[0]||(e[0]=[n("h1",null,"lab.nulldeisn.jp",-1),n("p",null,"prototype archives.",-1)])])}const c={},i=o(c,[["render",r],["__scopeId","data-v-e28588fb"]]);export{i as default};

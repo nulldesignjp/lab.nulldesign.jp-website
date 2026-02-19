@@ -1,0 +1,1 @@
+import{z as t,A as e,y as o,_ as s}from"./CMDBdv7t.js";const l={class:"main"};function r(c,n){return o(),t("div",l,[...n[0]||(n[0]=[e("h1",null,"lab.nulldeisn.jp",-1),e("p",null,"prototype archives.",-1),e("section",null,[e("p",null,"under construction.")],-1)])])}const a={},i=s(a,[["render",r],["__scopeId","data-v-02e875e0"]]);export{i as default};
