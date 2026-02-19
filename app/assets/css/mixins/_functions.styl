@@ -1,0 +1,21 @@
+
+// mixins
+
+pc()
+  @media screen and (min-width: ($BREAKPOINT + 1) * 1px)
+    {block}
+
+sp()
+  @media screen and (max-width: $BREAKPOINT * 1px)
+    {block}
+
+vw(size, viewport = $MOBILE_WIDTH)
+  1vw * size / viewport * 100
+
+z(name, array = $Z_MAP)
+  $FLAG = length(array) % 2
+  if $FLAG == 0
+    $LENGTH = length(array) / 2
+  else
+    $LENGTH = (length(array) - 1) / 2
+  index(array, name) - $LENGTH
