@@ -3,9 +3,10 @@
   h1 lab.nulldeisn.jp
   p prototype archives.
 
-  section
-    p under construction.
-
+  section(style="margin-top:16px;")
+    p
+      a(href="https://n46.heteml.net/lab/_prototype_all/" target="_blank") Prototype all
+      |  is not https.
   //- iframe(src="http://n46.heteml.net/lab/_prototype_all")
 
 </template>
