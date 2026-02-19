@@ -3,8 +3,10 @@
   h1 lab.nulldeisn.jp
   p prototype archives.
 
+  section
+    p under construction.
 
-  iframe(src="http://n46.heteml.net/lab/_prototype_all")
+  //- iframe(src="http://n46.heteml.net/lab/_prototype_all")
 
 </template>
 
@@ -16,4 +18,5 @@
     width 100%
     height 100vh
     border none
+    display none
 </style>    
