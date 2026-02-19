@@ -3,7 +3,7 @@
   h1 lab.nulldeisn.jp
   p prototype archives.
 
-  iframe(src="http://n46.heteml.net/lab/_prototype_all")
+  //- iframe(src="http://n46.heteml.net/lab/_prototype_all")
 
 </template>
 
