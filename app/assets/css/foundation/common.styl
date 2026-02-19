@@ -1,0 +1,55 @@
+/* ------------------------------
+
+  common
+
+------------------------------ */
+
+@import '../mixins/index.styl'
+
+/*
+  base
+------------------------------ */
+
+*
+  box-sizing border-box
+
+body
+  margin 0
+  background $color-background
+  font-family "Zen Kaku Gothic New", sans-serif
+  font-weight 400
+  color $color-text
+  font-size: 87.5%
+
+  &.static
+    overflow hidden
+
+::-webkit-scrollbar
+  width 0
+  height 0
+  display none
+
+img
+  vertical-align bottom
+
+h1,h2,h3,h4,h5,h6,p,ul,ol,dl,li,dt,dd
+  margin 0
+  padding 0
+  line-height 1
+
+ol,ul,li
+  list-style-style none
+
+
+
+
+h1,h2,h3,h4,h5,h6{
+	font-weight: 400;
+	font-family: "EB Garamond", serif;
+}
+
+a
+  text-decoration none
+  color $color-anchor
+
+
