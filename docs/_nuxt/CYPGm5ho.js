@@ -1,0 +1,1 @@
+import{z as n,A as e,y as a,_ as l}from"./CkBq2Yd7.js";const o={class:"main"};function s(c,t){return a(),n("div",o,[...t[0]||(t[0]=[e("h1",null,"lab.nulldeisn.jp",-1),e("p",null,"prototype archives.",-1),e("iframe",{src:"http://n46.heteml.net/lab/_prototype_all"},null,-1)])])}const r={},d=l(r,[["render",s],["__scopeId","data-v-2c3bd736"]]);export{d as default};
